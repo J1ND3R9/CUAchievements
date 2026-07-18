@@ -41,6 +41,11 @@ namespace CUAchievements.Services
                 return false;
             }
 
+            var progress = registeredAchievement.Progress;
+
+            if (progress.Unlocked)
+                return true;
+
             UnlockCore(registeredAchievement);
             AchievementPersistence.Save(registeredAchievement.PluginGuid);
 
