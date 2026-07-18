@@ -26,23 +26,8 @@ namespace CUAchievements
             Logger = base.Logger;
             Instance = this;
             RegisterModOptions();
-            RegisterTestAchievement();
             Logger.LogInfo("Plugin loaded!");
-            _harmony.PatchAll();
         }
-
-        private void RegisterTestAchievement()
-        {
-            var registry = AchievementRegistry.Create(ModGUID);
-            registry.Register(AchievementDefinition.Counter(
-                "eat_10_calories",
-                "Обжора",
-                "Съешьте еды на 10 калорий",
-                "",
-                10
-                ));
-        }
-
         private void RegisterModOptions()
         {
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
@@ -75,20 +60,6 @@ namespace CUAchievements
                    PlayerPrefs.Save();
                }
            ));
-        }
-    }
-
-    [HarmonyPatch(typeof(Body))]
-    internal class BodyPatch
-    {
-        [HarmonyPatch(nameof(Body.Eat))]
-        [HarmonyPostfix]
-        private static void EatPatch(float weightGain)
-        {
-            if (weightGain > 0)
-            {
-                AchievementService.AddProgress("eat_10_calories", weightGain);
-            }
         }
     }
 }
