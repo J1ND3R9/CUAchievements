@@ -37,30 +37,37 @@ namespace CUAchievements.Persistence
 
             return true;
         }
-
-        //public static bool Sync(string modGuid)
-        //{
-        //    return true;
-        //}
-
         public static bool Save(string modGuid)
         {
             var saveFile = GetSaveFilePath(modGuid);
-            var save = CreateSave(modGuid, 1);
+            AchievementSaveFile save;
 
-            foreach (var achievement in AchievementRegistry.GetAll())
-            {
-                if (achievement.Value.PluginGuid != modGuid)
-                    continue;
-                save.Achievements.Add(achievement.Value.Definition.Id, achievement.Value.Progress);
-            }
+
             var settings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 Formatting = Formatting.Indented
             };
-            string json = JsonConvert.SerializeObject(save, settings);
-            File.WriteAllText(saveFile, json);
+
+            if (File.Exists(saveFile))
+            {
+                var existingJson = File.ReadAllText(saveFile);
+                save = JsonConvert.DeserializeObject<AchievementSaveFile>(existingJson, settings);
+            }
+            else
+            {
+                save = CreateSave(modGuid, 1);
+            }
+
+            foreach (var achievement in AchievementRegistry.GetAll())
+            {
+                if (achievement.Value.PluginGuid != modGuid)
+                    continue;
+                save.Achievements[achievement.Value.Definition.Id] = achievement.Value.Progress;
+            }
+
+            string newJson = JsonConvert.SerializeObject(save, settings);
+            File.WriteAllText(saveFile, newJson);
 
             return true;
         }
