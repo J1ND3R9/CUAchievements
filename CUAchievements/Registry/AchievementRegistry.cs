@@ -43,7 +43,6 @@ namespace CUAchievements.Registry
             CUAchievementsPlugin.Logger.LogInfo($"Ачивка \"{achievement.Name}\" зарегистрирована!");
 
             AchievementPersistence.Load(_pluginGuid);
-            // AchievementPersistence.Sync(_pluginGuid);
             AchievementPersistence.Save(_pluginGuid);
 
             return true;
@@ -90,15 +89,5 @@ namespace CUAchievements.Registry
             }
             return null;
         }
-
-        //internal static IEnumerable<AchievementDefinition> GetAchievements(string pluginGuid)
-        //{
-        //    var achievementList = new List<AchievementDefinition>();
-        //    foreach (var achievement in RegisteredAchievements.Values)
-        //    {
-        //        if (achievement.PluginGuid == pluginGuid)
-        //            achievementList.Add(achievement.Definition);
-        //    }
-        //}
     }
 }
