@@ -13,10 +13,22 @@ namespace CUAchievements.Registry
         {
             _pluginGuid = pluginGuid;
         }
+        /// <summary>
+        /// Create a new <see cref="AchievementRegistry"/>.
+        /// </summary>
+        /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
+        /// <returns>
+        /// </returns>
         public static AchievementRegistry Create(string pluginGuid)
         {
             return new AchievementRegistry(pluginGuid);
         }
+        /// <summary>
+        /// Registers a new <see cref="AchievementDefinition"/>.
+        /// </summary>
+        /// <returns>
+        /// True achievement registration was successfully; otherwise false.
+        /// </returns>
         public bool Register(AchievementDefinition achievement)
         {
             if (string.IsNullOrEmpty(_pluginGuid))
@@ -43,13 +55,19 @@ namespace CUAchievements.Registry
             CUAchievementsPlugin.Logger.LogInfo($"Ачивка \"{achievement.Name}\" зарегистрирована!");
 
             AchievementPersistence.Load(_pluginGuid);
-            // AchievementPersistence.Sync(_pluginGuid);
             AchievementPersistence.Save(_pluginGuid);
 
             return true;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">Unique achievement identifier.</param>
+        /// <param name="achievement">Out <see cref="RegisteredAchievement"/> if it registered.</param>
+        /// <returns>
+        /// True if <see cref="RegisteredAchievement"/> is registered; otherwise false.
+        /// </returns>
         public static bool TryGet(string id, out RegisteredAchievement achievement)
         {
             achievement = null;
@@ -90,15 +108,5 @@ namespace CUAchievements.Registry
             }
             return null;
         }
-
-        //internal static IEnumerable<AchievementDefinition> GetAchievements(string pluginGuid)
-        //{
-        //    var achievementList = new List<AchievementDefinition>();
-        //    foreach (var achievement in RegisteredAchievements.Values)
-        //    {
-        //        if (achievement.PluginGuid == pluginGuid)
-        //            achievementList.Add(achievement.Definition);
-        //    }
-        //}
     }
 }

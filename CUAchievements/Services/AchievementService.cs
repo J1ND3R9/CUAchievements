@@ -5,6 +5,14 @@ namespace CUAchievements.Services
 {
     public sealed class AchievementService
     {
+        /// <summary>
+        /// Adds progress to a registered achievement.
+        /// </summary>
+        /// <param name="id">Unique achievement identifier.</param>
+        /// <param name="amount">Amount of progress to add. Default is 1.</param>
+        /// <returns>
+        /// True if the progress was added successfully; otherwise false.
+        /// </returns>
         public static bool AddProgress(string id, float amount = 1)
         {
             if (!AchievementRegistry.TryGet(id, out var registeredAchievement))
@@ -32,6 +40,13 @@ namespace CUAchievements.Services
 
             return true;
         }
+        /// <summary>
+        /// Unlock a registered achievement.
+        /// </summary>
+        /// <param name="id">Unique achievement identifier.</param>
+        /// <returns>
+        /// True if the unlock was successfully; otherwise false.
+        /// </returns>
 
         public static bool Unlock(string id)
         {

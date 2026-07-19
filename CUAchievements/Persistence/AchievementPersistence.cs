@@ -9,7 +9,7 @@ namespace CUAchievements.Persistence
 {
     internal sealed class AchievementPersistence
     {
-        public static bool Load(string modGuid)
+        internal static bool Load(string modGuid)
         {
             var saveFile = GetSaveFilePath(modGuid);
             var json = File.ReadAllText(saveFile);
@@ -37,7 +37,7 @@ namespace CUAchievements.Persistence
 
             return true;
         }
-        public static bool Save(string modGuid)
+        internal static bool Save(string modGuid)
         {
             var saveFile = GetSaveFilePath(modGuid);
             AchievementSaveFile save;
