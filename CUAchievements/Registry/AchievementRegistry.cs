@@ -24,7 +24,7 @@ namespace CUAchievements.Registry
                 CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: AchievementRegistry was not created.");
                 return false;
             }
-            var errorText = Validate(achievement);
+            string errorText = Validate(achievement);
             if (!string.IsNullOrEmpty(errorText))
             {
                 CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: {errorText}");
@@ -36,8 +36,8 @@ namespace CUAchievements.Registry
                 return false;
             }
 
-            var progress = new AchievementProgressData(achievement.Id);
-            var registeredAchievement = new RegisteredAchievement(_pluginGuid, achievement, progress);
+            AchievementProgressData progress = new AchievementProgressData(achievement.Id);
+            RegisteredAchievement registeredAchievement = new RegisteredAchievement(_pluginGuid, achievement, progress);
             RegisteredAchievements[achievement.Id] = registeredAchievement;
 
             CUAchievementsPlugin.Logger.LogInfo($"Ачивка \"{achievement.Name}\" зарегистрирована!");

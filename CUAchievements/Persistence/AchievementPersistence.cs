@@ -11,25 +11,25 @@ namespace CUAchievements.Persistence
     {
         public static bool Load(string modGuid)
         {
-            var saveFile = GetSaveFilePath(modGuid);
-            var json = File.ReadAllText(saveFile);
+            string saveFile = GetSaveFilePath(modGuid);
+            string json = File.ReadAllText(saveFile);
 
             if (string.IsNullOrWhiteSpace(json))
                 return true;
 
-            var settings = new JsonSerializerSettings
+            JsonSerializerSettings settings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 Formatting = Formatting.Indented
             };
-            var achievementSaveFile = JsonConvert.DeserializeObject<AchievementSaveFile>(json, settings);
+            AchievementSaveFile achievementSaveFile = JsonConvert.DeserializeObject<AchievementSaveFile>(json, settings);
 
             if (achievementSaveFile == null)
                 return false;
 
-            foreach (var achievementProgress in achievementSaveFile.Achievements)
+            foreach (KeyValuePair<string, AchievementProgressData> achievementProgress in achievementSaveFile.Achievements)
             {
-                if (!AchievementRegistry.TryGet(achievementProgress.Key, out var achievement))
+                if (!AchievementRegistry.TryGet(achievementProgress.Key, out RegisteredAchievement achievement))
                     continue;
                 achievement.Progress.Progress = achievementProgress.Value.Progress;
                 achievement.Progress.Unlocked = achievementProgress.Value.Unlocked;
@@ -39,11 +39,9 @@ namespace CUAchievements.Persistence
         }
         public static bool Save(string modGuid)
         {
-            var saveFile = GetSaveFilePath(modGuid);
+            string saveFile = GetSaveFilePath(modGuid);
             AchievementSaveFile save;
-
-
-            var settings = new JsonSerializerSettings
+            JsonSerializerSettings settings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 Formatting = Formatting.Indented
@@ -51,15 +49,18 @@ namespace CUAchievements.Persistence
 
             if (File.Exists(saveFile))
             {
-                var existingJson = File.ReadAllText(saveFile);
-                save = JsonConvert.DeserializeObject<AchievementSaveFile>(existingJson, settings);
+                string existingJson = File.ReadAllText(saveFile);
+                if (!string.IsNullOrWhiteSpace(existingJson))
+                    save = JsonConvert.DeserializeObject<AchievementSaveFile>(existingJson, settings);
+                else
+                    save = CreateSave(modGuid, 1);
             }
             else
             {
                 save = CreateSave(modGuid, 1);
             }
 
-            foreach (var achievement in AchievementRegistry.GetAll())
+            foreach (KeyValuePair<string, RegisteredAchievement> achievement in AchievementRegistry.GetAll())
             {
                 if (achievement.Value.PluginGuid != modGuid)
                     continue;
@@ -74,7 +75,7 @@ namespace CUAchievements.Persistence
 
         private static string GetDirectory()
         {
-            var directoryPath = Path.Combine(Paths.PluginPath, "CUAchievements", "Data");
+            string directoryPath = Path.Combine(Paths.PluginPath, "CUAchievements", "Data");
             if (!Directory.Exists(directoryPath))
             {
                 CUAchievementsPlugin.Logger.LogInfo("Directory with achievements not exists. Creating...");
@@ -85,8 +86,8 @@ namespace CUAchievements.Persistence
 
         private static string GetSaveFilePath(string modGuid)
         {
-            var directoryPath = GetDirectory();
-            var filePath = Path.Combine(directoryPath, $"{modGuid}.json");
+            string directoryPath = GetDirectory();
+            string filePath = Path.Combine(directoryPath, $"{modGuid}.json");
             if (!File.Exists(filePath))
             {
                 CUAchievementsPlugin.Logger.LogInfo($"File with achievements for plugin {modGuid} not exists. Creating...");
