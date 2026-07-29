@@ -1,5 +1,8 @@
 ﻿namespace CUAchievements.Persistence
 {
+    /// <summary>
+    /// Represents an achievement progress registered by a plugin.
+    /// </summary>
     public sealed class AchievementProgressData
     {
         public string Id { get; set; }
