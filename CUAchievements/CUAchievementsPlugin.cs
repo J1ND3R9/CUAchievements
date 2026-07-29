@@ -4,8 +4,12 @@ using CUAchievements.Definitions;
 using CUAchievements.Registry;
 using CUAchievements.Services;
 using CUCoreLib.Data;
+using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace CUAchievements
@@ -16,7 +20,7 @@ namespace CUAchievements
     {
         public const string ModGUID = "com.github.j1nd3r9.cuachievements";
         public const string ModName = "CUAchievements";
-        public const string ModVersion = "1.0.0";
+        public const string ModVersion = "1.0.0.0";
 
         internal static new ManualLogSource Logger;
         private readonly Harmony _harmony = new Harmony(ModGUID);
