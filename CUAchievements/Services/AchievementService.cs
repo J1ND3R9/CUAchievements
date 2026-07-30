@@ -15,13 +15,13 @@ namespace CUAchievements.Services
         /// </returns>
         public static bool AddProgress(string id, float amount = 1)
         {
-            if (!AchievementRegistry.TryGet(id, out var registeredAchievement))
+            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement registeredAchievement))
             {
                 CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: AchievementDefinition with id {id} does not exists.");
                 return false;
             }
 
-            var progress = registeredAchievement.Progress;
+            AchievementProgressData progress = registeredAchievement.Progress;
 
             if (progress.Unlocked)
                 return true;
@@ -50,13 +50,13 @@ namespace CUAchievements.Services
 
         public static bool Unlock(string id)
         {
-            if (!AchievementRegistry.TryGet(id, out var registeredAchievement))
+            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement registeredAchievement))
             {
                 CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: AchievementDefinition with id {id} does not exists.");
                 return false;
             }
 
-            var progress = registeredAchievement.Progress;
+            AchievementProgressData progress = registeredAchievement.Progress;
 
             if (progress.Unlocked)
                 return true;
