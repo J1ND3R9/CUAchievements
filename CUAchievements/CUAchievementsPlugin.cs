@@ -29,8 +29,16 @@ namespace CUAchievements
         {
             Logger = base.Logger;
             Instance = this;
+            LoadModAssets();
+            _harmony.PatchAll();
             RegisterModOptions();
             Logger.LogInfo("Plugin loaded!");
+        }
+        private void LoadModAssets()
+        {
+            Sprite achievementButtonIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_button.png");
+            AssetLoader.CacheSprite("achievement_button", achievementButtonIcon);
+            AssetLoader.CacheSprite("achievement_button_overlay", achievementButtonIcon); // временное решение
         }
         private void RegisterModOptions()
         {
