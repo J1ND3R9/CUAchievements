@@ -2,6 +2,7 @@
 using CUCoreLib.Registries;
 using HarmonyLib;
 using System.Linq;
+using System.Xml.Xsl;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,7 @@ namespace CUAchievements.UI
             Sprite baseSprite = AssetLoader.GetCachedSprite("achievement_button");
             Sprite overlaySprite = AssetLoader.GetCachedSprite("achievement_button_overlay");
 
-            AchievementButtonBuilder.EnsureButton(menuBackground, baseSprite, overlaySprite, LocaleRegistry.Get("achievementsbutton", "Achivements"));
+            AchievementButtonBuilder.EnsureButton(menuBackground, baseSprite, overlaySprite, LocaleRegistry.Get("achievementsbutton", "Achievements"));
         }
     }
 }
