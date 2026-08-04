@@ -99,6 +99,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_button.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\achievement_button_overlay.png" />
+  </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />

@@ -37,8 +37,9 @@ namespace CUAchievements
         private void LoadModAssets()
         {
             Sprite achievementButtonIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_button.png");
+            Sprite achievementButtonIconOverlay = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_button_overlay.png"); // НЕ РАБОТАЕТ!!! РЕШИ ПРОБЛЕМУ, УБЛЮДОК
             AssetLoader.CacheSprite("achievement_button", achievementButtonIcon);
-            AssetLoader.CacheSprite("achievement_button_overlay", achievementButtonIcon); // временное решение
+            AssetLoader.CacheSprite("achievement_button_overlay", achievementButtonIconOverlay);
         }
         private void RegisterModOptions()
         {
