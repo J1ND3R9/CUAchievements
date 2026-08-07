@@ -68,6 +68,9 @@
     <Reference Include="UnityEngine">
       <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
@@ -79,7 +82,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Definitions\AchievementDefinition.cs" />
@@ -95,12 +100,27 @@
     <Compile Include="Registry\RegisteredAchievement.cs" />
     <Compile Include="UI\AchievementButtonBuilder.cs" />
     <Compile Include="UI\AchievementButtonHoverVisual.cs" />
+    <Compile Include="UI\AchievementPopupManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_button.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_button_overlay.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Audio\achievement_sound_unlocked.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v1.png" />
+    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v1alt.png" />
+    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v2.png" />
+    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v3alt.png" />
+    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v3.png" />
+    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v2alt.png" />
   </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />

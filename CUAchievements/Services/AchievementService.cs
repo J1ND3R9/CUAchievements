@@ -1,5 +1,6 @@
 ﻿using CUAchievements.Persistence;
 using CUAchievements.Registry;
+using CUAchievements.UI;
 
 namespace CUAchievements.Services
 {
@@ -54,6 +55,7 @@ namespace CUAchievements.Services
 
             UnlockCore(achievement);
             AchievementPersistence.Save(achievement.PluginGuid);
+            AchievementPopupManager.Show(achievement.Definition);
 
             return true;
         }
@@ -64,7 +66,6 @@ namespace CUAchievements.Services
                 return;
 
             registeredAchievement.Progress.Unlocked = true;
-            CUAchievementsPlugin.Logger.LogInfo($"Achievement \"{registeredAchievement.Definition.Name}\" ({registeredAchievement.Definition.Id}) unlocked!");
         }
     }
 }
