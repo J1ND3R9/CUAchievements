@@ -52,7 +52,7 @@ namespace CUAchievements.Registry
             RegisteredAchievement registeredAchievement = new RegisteredAchievement(_pluginGuid, achievement, progress);
             RegisteredAchievements[achievement.Id] = registeredAchievement;
 
-            CUAchievementsPlugin.Logger.LogInfo($"Ачивка \"{achievement.Name}\" зарегистрирована!");
+            CUAchievementsPlugin.Logger.LogInfo($"Ачивка \"{achievement.Title}\" зарегистрирована!");
 
             AchievementPersistence.Load(_pluginGuid);
             AchievementPersistence.Save(_pluginGuid);
@@ -98,7 +98,7 @@ namespace CUAchievements.Registry
             {
                 return "achievement type is counter, but MaxProgress is or below zero.";
             }
-            if (string.IsNullOrEmpty(achievement.Name))
+            if (string.IsNullOrEmpty(achievement.Title))
             {
                 return "achievement name was null or empty.";
             }

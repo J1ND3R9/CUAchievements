@@ -17,13 +17,13 @@ namespace CUAchievements.UI
         public static void EnsureButton(Transform menuBackground, Sprite baseSprite, Sprite overlaySprite, string labelText)
         {
             Transform existing = menuBackground.Find(ButtonName);
-            GameObject go = existing != null ? existing.gameObject : new GameObject(ButtonName, typeof(RectTransform), typeof(Image));
-            go.transform.SetParent(menuBackground, false);
+            GameObject gameObject = existing != null ? existing.gameObject : new GameObject(ButtonName, typeof(RectTransform), typeof(Image));
+            gameObject.transform.SetParent(menuBackground, false);
 
-            RectTransform rect = go.GetComponent<RectTransform>();
+            RectTransform rect = gameObject.GetComponent<RectTransform>();
             ConfigureFullscreenRect(rect);
 
-            Image image = go.GetComponent<Image>() ?? go.AddComponent<Image>();
+            Image image = gameObject.GetComponent<Image>() ?? gameObject.AddComponent<Image>();
             image.sprite = baseSprite;
             image.type = Image.Type.Simple;
             image.preserveAspect = false;
@@ -34,10 +34,10 @@ namespace CUAchievements.UI
             RectTransform clickRect = EnsureClickableRect(rect);
             TextMeshProUGUI label = EnsureHoverLabel(rect, labelText);
 
-            AchievementButtonHoverVisual hover = go.GetComponent<AchievementButtonHoverVisual>() ?? go.AddComponent<AchievementButtonHoverVisual>();
+            AchievementButtonHoverVisual hover = gameObject.GetComponent<AchievementButtonHoverVisual>() ?? gameObject.AddComponent<AchievementButtonHoverVisual>();
             hover.Initialize(clickRect, overlay, label, OnClicked);
 
-            AddParallax(go);
+            AddParallax(gameObject);
         }
 
         private static void OnClicked()
@@ -71,13 +71,13 @@ namespace CUAchievements.UI
         private static Image EnsureOverlayImage(RectTransform parentRect, Sprite overlaySprite)
         {
             Transform existing = parentRect.Find(OverlayName);
-            GameObject go = existing != null ? existing.gameObject : new GameObject(OverlayName, typeof(RectTransform), typeof(Image));
+            GameObject gameObject = existing != null ? existing.gameObject : new GameObject(OverlayName, typeof(RectTransform), typeof(Image));
 
-            RectTransform rect = go.GetComponent<RectTransform>();
+            RectTransform rect = gameObject.GetComponent<RectTransform>();
             ConfigureFullscreenRect(rect);
             rect.SetAsLastSibling();
 
-            Image image = go.GetComponent<Image>() ?? go.AddComponent<Image>();
+            Image image = gameObject.GetComponent<Image>() ?? gameObject.AddComponent<Image>();
             image.sprite = overlaySprite;
             image.type = Image.Type.Simple;
             image.preserveAspect = false;
@@ -90,10 +90,10 @@ namespace CUAchievements.UI
         private static RectTransform EnsureClickableRect(RectTransform parentRect)
         {
             Transform existing = parentRect.Find(ClickableName);
-            GameObject go = existing != null ? existing.gameObject : new GameObject(ClickableName, typeof(RectTransform));
-            go.transform.SetParent(parentRect, false);
+            GameObject gameObject = existing != null ? existing.gameObject : new GameObject(ClickableName, typeof(RectTransform));
+            gameObject.transform.SetParent(parentRect, false);
 
-            RectTransform rect = go.GetComponent<RectTransform>();
+            RectTransform rect = gameObject.GetComponent<RectTransform>();
 
             // TODO: Подсчитать нужные anchor
             rect.anchorMin = new Vector2(0.7f, 0.75f);
@@ -109,10 +109,10 @@ namespace CUAchievements.UI
         private static TextMeshProUGUI EnsureHoverLabel(RectTransform parentRect, string labelText)
         {
             Transform existing = parentRect.Find(HoverLabelName);
-            GameObject go = existing != null ? existing.gameObject : new GameObject(HoverLabelName, typeof(RectTransform), typeof(TextMeshProUGUI));
-            go.transform.SetParent(parentRect, false);
+            GameObject gameObject = existing != null ? existing.gameObject : new GameObject(HoverLabelName, typeof(RectTransform), typeof(TextMeshProUGUI));
+            gameObject.transform.SetParent(parentRect, false);
 
-            RectTransform rect = go.GetComponent<RectTransform>();
+            RectTransform rect = gameObject.GetComponent<RectTransform>();
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
 
@@ -122,7 +122,7 @@ namespace CUAchievements.UI
             rect.localScale = Vector3.one;
             rect.SetAsLastSibling();
 
-            TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>() ?? go.AddComponent<TextMeshProUGUI>();
+            TextMeshProUGUI tmp = gameObject.GetComponent<TextMeshProUGUI>() ?? gameObject.AddComponent<TextMeshProUGUI>();
             tmp.text = labelText;
             tmp.color = new Color(1f, 1f, 1f, 0f);
             tmp.raycastTarget = false;

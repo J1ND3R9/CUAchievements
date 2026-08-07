@@ -1,4 +1,7 @@
-﻿namespace CUAchievements.Definitions
+﻿using CUCoreLib.Helpers;
+using UnityEngine;
+
+namespace CUAchievements.Definitions
 {
     /// <summary>
     /// Represents an achievement definition registered by a plugin.
@@ -7,22 +10,27 @@
     {
         public AchievementType Type { get; private set; }
         public string Id { get; private set; }
-        public string Name { get; private set; }
+        public string Title { get; private set; }
         public string Description { get; private set; }
-        public string Icon { get; private set; }
+        public Sprite Sprite { get; private set; }
         public bool Hidden { get; private set; }
         public float MaxProgress { get; private set; }
 
         private AchievementDefinition() { }
 
-        private static AchievementDefinition CreateBase(string id, string name, string description, string icon, bool hidden)
+        private static AchievementDefinition CreateBase(string id, string title, string description, Sprite sprite, bool hidden)
         {
+            if (sprite == null)
+            {
+                CUAchievementsPlugin.Logger.LogWarning($"Achievement sprite with ID '{id}' is null. Using default sprite.");
+                sprite = AssetLoader.GetCachedSprite("achievement_default_sprite");
+            }
             return new AchievementDefinition
             {
                 Id = id,
-                Name = name,
+                Title = title,
                 Description = description,
-                Icon = icon,
+                Sprite = sprite,
                 Hidden = hidden
             };
         }
@@ -30,17 +38,17 @@
         /// Create the <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Counter"/>
         /// </summary>
         /// <param name="id">Unique achievement identifier.</param>
-        /// <param name="name">Displayed achievement name.</param>
-        /// <param name="description">Displayed description name.</param>
-        /// <param name="icon">Not yet implemented... for now.</param>
+        /// <param name="title">Displayed achievement title.</param>
+        /// <param name="description">Displayed achievement description.</param>
+        /// <param name="icon">Displayed achievement icon.</param>
         /// <param name="maxProgress">The progress required for the achievement to unlock.</param>
         /// <param name="hidden">Not yet implemented... for now.</param>
         /// <returns>
         /// Returns new <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Counter"/>
         /// </returns>
-        public static AchievementDefinition Counter(string id, string name, string description, string icon, float maxProgress, bool hidden = false)
+        public static AchievementDefinition Counter(string id, string title, string description, string icon, float maxProgress, bool hidden = false)
         {
-            AchievementDefinition def = CreateBase(id, name, description, icon, hidden);
+            AchievementDefinition def = CreateBase(id, title, description, sprite, hidden);
 
             def.MaxProgress = maxProgress;
             def.Type = AchievementType.Counter;
@@ -52,16 +60,16 @@
         /// Create the <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Instant"/>
         /// </summary>
         /// <param name="id">Unique achievement identifier.</param>
-        /// <param name="name">Displayed achievement name.</param>
-        /// <param name="description">Displayed description name.</param>
-        /// <param name="icon">Not yet implemented... for now.</param>
+        /// <param name="title">Displayed achievement title.</param>
+        /// <param name="description">Displayed achievement description.</param>
+        /// <param name="icon">Displayed achievement icon.</param>
         /// <param name="hidden">Not yet implemented... for now.</param>
         /// <returns>
         /// Returns new <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Instant"/>
         /// </returns>
-        public static AchievementDefinition Instant(string id, string name, string description, string icon, bool hidden = false)
+        public static AchievementDefinition Instant(string id, string title, string description, string icon, bool hidden = false)
         {
-            AchievementDefinition def = CreateBase(id, name, description, icon, hidden);
+            AchievementDefinition def = CreateBase(id, title, description, sprite, hidden);
 
             def.Type = AchievementType.Instant;
 

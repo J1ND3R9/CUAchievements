@@ -1,5 +1,6 @@
 ﻿using CUAchievements.Persistence;
 using CUAchievements.Registry;
+using CUAchievements.UI;
 
 namespace CUAchievements.Services
 {
@@ -15,28 +16,34 @@ namespace CUAchievements.Services
         /// </returns>
         public static bool AddProgress(string id, float amount = 1)
         {
-            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement registeredAchievement))
+            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: AchievementDefinition with id {id} does not exists.");
+                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
-            AchievementProgressData progress = registeredAchievement.Progress;
+            if (achievement.Definition.Type != Definitions.AchievementType.Counter)
+            {
+                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} is not a counter type."); 
+                return false;
+            }
+
+            var progress = achievement.Progress;
 
             if (progress.Unlocked)
                 return true;
 
             progress.Progress += amount;
 
-            CUAchievementsPlugin.Logger.LogInfo($"\"{registeredAchievement.Definition.Id}\" {progress.Progress}/{registeredAchievement.Definition.MaxProgress}"); // TODO: If debug mode is on
+            CUAchievementsPlugin.Logger.LogInfo($"\"{achievement.Definition.Id}\" {progress.Progress}/{achievement.Definition.MaxProgress}"); // TODO: If debug mode is on
 
-            if (progress.Progress >= registeredAchievement.Definition.MaxProgress)
+            if (progress.Progress >= achievement.Definition.MaxProgress)
             {
-                progress.Progress = registeredAchievement.Definition.MaxProgress;
-                UnlockCore(registeredAchievement);
+                progress.Progress = achievement.Definition.MaxProgress;
+                UnlockCore(achievement);
             }
 
-            AchievementPersistence.Save(registeredAchievement.PluginGuid);
+            AchievementPersistence.Save(achievement.PluginGuid);
 
             return true;
         }
@@ -50,19 +57,20 @@ namespace CUAchievements.Services
 
         public static bool Unlock(string id)
         {
-            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement registeredAchievement))
+            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: AchievementDefinition with id {id} does not exists.");
+                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
-            AchievementProgressData progress = registeredAchievement.Progress;
+            var progress = achievement.Progress;
 
             if (progress.Unlocked)
                 return true;
 
-            UnlockCore(registeredAchievement);
-            AchievementPersistence.Save(registeredAchievement.PluginGuid);
+            UnlockCore(achievement);
+            AchievementPersistence.Save(achievement.PluginGuid);
+            AchievementPopupManager.Show(achievement.Definition);
 
             return true;
         }
@@ -73,7 +81,6 @@ namespace CUAchievements.Services
                 return;
 
             registeredAchievement.Progress.Unlocked = true;
-            CUAchievementsPlugin.Logger.LogInfo($"Achievement \"{registeredAchievement.Definition.Name}\" ({registeredAchievement.Definition.Id}) unlocked!");
         }
     }
 }
