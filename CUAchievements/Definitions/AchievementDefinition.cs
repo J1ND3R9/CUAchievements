@@ -4,7 +4,7 @@
     {
         public AchievementType Type { get; private set; }
         public string Id { get; private set; }
-        public string Name { get; private set; }
+        public string Title { get; private set; }
         public string Description { get; private set; }
         public string Icon { get; private set; }
         public bool Hidden { get; private set; }
