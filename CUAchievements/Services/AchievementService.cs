@@ -13,6 +13,12 @@ namespace CUAchievements.Services
                 return false;
             }
 
+            if (achievement.Definition.Type != Definitions.AchievementType.Counter)
+            {
+                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} is not a counter type."); 
+                return false;
+            }
+
             var progress = achievement.Progress;
 
             if (progress.Unlocked)
