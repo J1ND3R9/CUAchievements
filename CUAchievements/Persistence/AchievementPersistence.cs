@@ -2,6 +2,7 @@
 using CUAchievements.Registry;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -75,7 +76,8 @@ namespace CUAchievements.Persistence
 
         private static string GetDirectory()
         {
-            string directoryPath = Path.Combine(Paths.PluginPath, "CUAchievements", "Data");
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string directoryPath = Path.Combine(Directory.GetParent(localAppData).FullName, "LocalLow", "Orsoniks", "CasualtiesUnknown", "CUAchievements", "Data");
             if (!Directory.Exists(directoryPath))
             {
                 CUAchievementsPlugin.Logger.LogInfo("Directory with achievements not exists. Creating...");
