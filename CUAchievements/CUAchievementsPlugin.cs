@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using CUAchievements.Definitions;
 using CUAchievements.Registry;
 using CUAchievements.Services;
+using CUAchievements.UI;
 using CUCoreLib.Data;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
@@ -38,16 +39,36 @@ namespace CUAchievements
         {
             Sprite achievementButtonIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_button.png");
             Sprite achievementButtonIconOverlay = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_button_overlay.png"); // НЕ РАБОТАЕТ!!! РЕШИ ПРОБЛЕМУ, УБЛЮДОК
+            Sprite achievementIconPlaceholder = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_default_sprite.png");
+
+            Sprite achievementPopupFrameV1 = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v1.png");
+            Sprite achievementPopupFrameV1Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v1alt.png");
+            Sprite achievementPopupFrameV2 = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v2.png");
+            Sprite achievementPopupFrameV2Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v2alt.png");
+            Sprite achievementPopupFrameV3 = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v3.png");
+            Sprite achievementPopupFrameV3Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v3alt.png");
+
+            AudioClip achievementPopUpAudio = AssetLoader.LoadEmbeddedAudio("Assets.Audio.achievement_sound_unlocked.mp3");
+
             AssetLoader.CacheSprite("achievement_button", achievementButtonIcon);
             AssetLoader.CacheSprite("achievement_button_overlay", achievementButtonIconOverlay);
+            AssetLoader.CacheSprite("achievement_default_sprite", achievementIconPlaceholder);
+            AssetLoader.CacheSprite("achievement_popup_frame_v1", achievementPopupFrameV1);
+            AssetLoader.CacheSprite("achievement_popup_frame_v1alt", achievementPopupFrameV1Alt);
+            AssetLoader.CacheSprite("achievement_popup_frame_v2", achievementPopupFrameV2);
+            AssetLoader.CacheSprite("achievement_popup_frame_v2alt", achievementPopupFrameV2Alt);
+            AssetLoader.CacheSprite("achievement_popup_frame_v3", achievementPopupFrameV3);
+            AssetLoader.CacheSprite("achievement_popup_frame_v3alt", achievementPopupFrameV3Alt);
+
+            AssetLoader.CacheAudioClip("achievement_sound_unlocked", achievementPopUpAudio);
         }
         private void RegisterModOptions()
         {
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
                "cuachievements.achievements.enabled",
-               LocaleRegistry.Get("gamesetcuachievements.achievements.enabled", "Enable achievements"),
-               LocaleRegistry.Get("gamesetcuachievements.achievements.enableddsc", "Enable achievements"),
-               LocaleRegistry.Get("gamesetcuachievements.achievements.category", "Achievements"),
+               "Enable achievements",
+               "Enable achievements",
+               "Achievements",
                true,
                value =>
                {
@@ -57,15 +78,15 @@ namespace CUAchievements
            ));
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
                "cuachievements.achievements.alerttype",
-               LocaleRegistry.Get("gamesetcuachievements.achievements.alerttype", "Alert type"),
-               LocaleRegistry.Get("gamesetcuachievements.achievements.alerttypedsc", "Alert type"),
-               LocaleRegistry.Get("gamesetcuachievements.achievements.category", "Achievements"),
+               "Alert type",
+               "Alert type",
+               "Achievements",
                PlayerPrefs.GetInt("Achievements_AlertType", 0),
                new[]
                {
-                   new ModDropdownChoice("steam", LocaleRegistry.Get("gamesetcuachievements.achievements.alerttypesteam", "Steam-Like")),
-                   new ModDropdownChoice("default", LocaleRegistry.Get("gamesetcuachievements.achievements.alerttypedefault", "Default alert")),
-                   new ModDropdownChoice("hidden", LocaleRegistry.Get("gamesetcuachievements.achievements.alerttypehidden", "Hidden"))
+                   new ModDropdownChoice("popup", "Pop-up"),
+                   new ModDropdownChoice("default", "Default alert. No icon"),
+                   new ModDropdownChoice("hidden", "Hidden")
                },
                value =>
                {
@@ -73,6 +94,49 @@ namespace CUAchievements
                    PlayerPrefs.Save();
                }
            ));
+
+            ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
+               "cuachievements.achievements.achievementdisplay",
+               "Achievement display",
+               "Achievement display (only work on popup achievements)",
+               "Achievements",
+               PlayerPrefs.GetInt("Achievements_AchievementDisplay", 0),
+               new[]
+               {
+                   new ModDropdownChoice("bottom", "Bottom-side"),
+                   new ModDropdownChoice("left","Left-side"),
+                   new ModDropdownChoice("up", "Up-side")
+               },
+               value =>
+               {
+                   PlayerPrefs.SetInt("Achievements_AchievementDisplay", value);
+                   PlayerPrefs.Save();
+                   AchievementPopupManager.DebugShow();
+               }
+           ));
+
+            ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
+              "cuachievements.achievements.achievementframe",
+              "Achievement frame",
+              "Achievement frame (only work on popup achievements)",
+              "Achievements",
+              PlayerPrefs.GetInt("Achievements_AchievementFrame", 0),
+              new[]
+              {
+                   new ModDropdownChoice("v1", "Icon + Title with Description. Black bg"),
+                   new ModDropdownChoice("v1alt","Icon + Title with Description. Alternative bg"),
+                   new ModDropdownChoice("v2", "Icon seperated from Title with Description. Black bg"),
+                   new ModDropdownChoice("v2alt", "Icon seperated from Title with Description. Alternative bg"),
+                   new ModDropdownChoice("v3", "Only icon. Black bg"),
+                   new ModDropdownChoice("v3alt", "Only icon. Alternative bg"),
+              },
+              value =>
+              {
+                  PlayerPrefs.SetInt("Achievements_AchievementFrame", value);
+                  PlayerPrefs.Save();
+                  AchievementPopupManager.DebugShow();
+              }
+          ));
         }
     }
 }
