@@ -9,7 +9,7 @@ namespace CUAchievements.Services
         {
             if (!AchievementRegistry.TryGet(id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: AchievementDefinition with id {id} does not exists.");
+                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace CUAchievements.Services
         {
             if (!AchievementRegistry.TryGet(id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: AchievementDefinition with id {id} does not exists.");
+                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
