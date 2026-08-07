@@ -40,13 +40,13 @@ namespace CUAchievements.Definitions
         /// <param name="id">Unique achievement identifier.</param>
         /// <param name="title">Displayed achievement title.</param>
         /// <param name="description">Displayed achievement description.</param>
-        /// <param name="icon">Displayed achievement icon.</param>
+        /// <param name="sprite">Displayed achievement icon.</param>
         /// <param name="maxProgress">The progress required for the achievement to unlock.</param>
         /// <param name="hidden">Not yet implemented... for now.</param>
         /// <returns>
         /// Returns new <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Counter"/>
         /// </returns>
-        public static AchievementDefinition Counter(string id, string title, string description, string icon, float maxProgress, bool hidden = false)
+        public static AchievementDefinition Counter(string id, string title, string description, Sprite sprite, float maxProgress, bool hidden = false)
         {
             AchievementDefinition def = CreateBase(id, title, description, sprite, hidden);
 
@@ -62,12 +62,12 @@ namespace CUAchievements.Definitions
         /// <param name="id">Unique achievement identifier.</param>
         /// <param name="title">Displayed achievement title.</param>
         /// <param name="description">Displayed achievement description.</param>
-        /// <param name="icon">Displayed achievement icon.</param>
+        /// <param name="sprite">Displayed achievement icon.</param>
         /// <param name="hidden">Not yet implemented... for now.</param>
         /// <returns>
         /// Returns new <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Instant"/>
         /// </returns>
-        public static AchievementDefinition Instant(string id, string title, string description, string icon, bool hidden = false)
+        public static AchievementDefinition Instant(string id, string title, string description, Sprite sprite, bool hidden = false)
         {
             AchievementDefinition def = CreateBase(id, title, description, sprite, hidden);
 
