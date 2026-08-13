@@ -14,7 +14,9 @@ namespace CUAchievements.UI
         private const string OverlayName = "Overlay";
         private const string ClickableName = "Clickable";
         private const string HoverLabelName = "HoverLabel";
-        public static void EnsureButton(Transform menuBackground, Sprite baseSprite, Sprite overlaySprite, string labelText)
+
+        private static AchievementMenuManager achievementMenu;
+        public static void EnsureButton(Transform menuBackground, Sprite baseSprite, Sprite overlaySprite, string labelText, PreRunScript preRunScript)
         {
             Transform existing = menuBackground.Find(ButtonName);
             GameObject gameObject = existing != null ? existing.gameObject : new GameObject(ButtonName, typeof(RectTransform), typeof(Image));
@@ -37,13 +39,19 @@ namespace CUAchievements.UI
             AchievementButtonHoverVisual hover = gameObject.GetComponent<AchievementButtonHoverVisual>() ?? gameObject.AddComponent<AchievementButtonHoverVisual>();
             hover.Initialize(clickRect, overlay, label, OnClicked);
 
+            var canvas = preRunScript.mainCanvas;
+            GameObject modalMenu = new GameObject("ModalMenu", typeof(RectTransform));
+            modalMenu.transform.SetParent(canvas.transform, false);
+            achievementMenu = modalMenu.AddComponent<AchievementMenuManager>();
+            achievementMenu.Initialize();
+
             AddParallax(gameObject);
         }
 
         private static void OnClicked()
         {
-            // сюда логика открытия окна достижений
-            // пока лэээнь....
+            if (achievementMenu == null) return;
+            achievementMenu.SetVisible(true);
         }
 
         private static void AddParallax(GameObject gameObject)

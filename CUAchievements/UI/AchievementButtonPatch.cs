@@ -19,7 +19,7 @@ namespace CUAchievements.UI
             Sprite baseSprite = AssetLoader.GetCachedSprite("achievement_button");
             Sprite overlaySprite = AssetLoader.GetCachedSprite("achievement_button_overlay");
 
-            AchievementButtonBuilder.EnsureButton(menuBackground, baseSprite, overlaySprite, LocaleRegistry.Get("achievementsbutton", "Achievements"));
+            AchievementButtonBuilder.EnsureButton(menuBackground, baseSprite, overlaySprite, LocaleRegistry.Get("achievementsbutton", "Achievements"), __instance);
         }
     }
 }
