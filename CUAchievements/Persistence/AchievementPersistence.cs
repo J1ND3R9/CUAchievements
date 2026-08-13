@@ -30,7 +30,7 @@ namespace CUAchievements.Persistence
 
             foreach (KeyValuePair<string, AchievementProgressData> achievementProgress in achievementSaveFile.Achievements)
             {
-                if (!AchievementRegistry.TryGet(achievementProgress.Key, out RegisteredAchievement achievement))
+                if (!AchievementRegistry.TryGet(achievementSaveFile.PluginGuid, achievementProgress.Key, out RegisteredAchievement achievement))
                     continue;
                 achievement.Progress.Progress = achievementProgress.Value.Progress;
                 achievement.Progress.Unlocked = achievementProgress.Value.Unlocked;

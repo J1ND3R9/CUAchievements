@@ -6,6 +6,24 @@ namespace CUAchievements.Services
 {
     public sealed class AchievementService
     {
+        private readonly string _pluginGuid;
+
+        private AchievementService(string pluginGuid)
+        {
+            _pluginGuid = pluginGuid;
+        }
+
+        /// <summary>
+        /// Create a new <see cref="AchievementService"/>. Not recommended. Use <see cref="Services.CUAchievements"/>.
+        /// </summary>
+        /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
+        /// <returns>
+        /// </returns>
+        public static AchievementService Create(string pluginGuid)
+        {
+            return new AchievementService(pluginGuid);
+        }
+
         /// <summary>
         /// Adds progress to a registered achievement.
         /// </summary>
@@ -14,9 +32,9 @@ namespace CUAchievements.Services
         /// <returns>
         /// True if the progress was added successfully; otherwise false.
         /// </returns>
-        public static bool AddProgress(string id, float amount = 1)
+        public bool AddProgress(string id, float amount = 1)
         {
-            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement achievement))
+            if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
             {
                 CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} does not exists.");
                 return false;
@@ -55,9 +73,9 @@ namespace CUAchievements.Services
         /// True if the unlock was successfully; otherwise false.
         /// </returns>
 
-        public static bool Unlock(string id)
+        public bool Unlock(string id)
         {
-            if (!AchievementRegistry.TryGet(id, out RegisteredAchievement achievement))
+            if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
             {
                 CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
                 return false;
@@ -70,16 +88,16 @@ namespace CUAchievements.Services
 
             UnlockCore(achievement);
             AchievementPersistence.Save(achievement.PluginGuid);
-            AchievementPopupManager.Show(achievement.Definition);
 
             return true;
         }
 
-        private static void UnlockCore(RegisteredAchievement registeredAchievement)
+        private void UnlockCore(RegisteredAchievement registeredAchievement)
         {
+
             if (registeredAchievement.Progress.Unlocked)
                 return;
-
+            AchievementPopupManager.Show(registeredAchievement.Definition);
             registeredAchievement.Progress.Unlocked = true;
         }
     }

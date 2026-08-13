@@ -14,7 +14,7 @@ namespace CUAchievements.Registry
             _pluginGuid = pluginGuid;
         }
         /// <summary>
-        /// Create a new <see cref="AchievementRegistry"/>.
+        /// Create a new <see cref="AchievementRegistry"/>. Not recommended. Use <see cref="Services.CUAchievements"/>.
         /// </summary>
         /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
         /// <returns>
@@ -42,15 +42,16 @@ namespace CUAchievements.Registry
                 CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: {errorText}");
                 return false;
             }
-            if (RegisteredAchievements.ContainsKey(achievement.Id))
+            string fullId = $"{_pluginGuid}::{achievement.Id}";
+            if (RegisteredAchievements.ContainsKey(fullId))
             {
                 CUAchievementsPlugin.Logger.LogWarning($"Achievement {achievement.Id} already registered. Ignored duplicate.");
                 return false;
             }
 
-            AchievementProgressData progress = new AchievementProgressData(achievement.Id);
+            AchievementProgressData progress = new AchievementProgressData(fullId);
             RegisteredAchievement registeredAchievement = new RegisteredAchievement(_pluginGuid, achievement, progress);
-            RegisteredAchievements[achievement.Id] = registeredAchievement;
+            RegisteredAchievements[fullId] = registeredAchievement;
 
             CUAchievementsPlugin.Logger.LogInfo($"Ачивка \"{achievement.Title}\" зарегистрирована!");
 
@@ -68,12 +69,25 @@ namespace CUAchievements.Registry
         /// <returns>
         /// True if <see cref="RegisteredAchievement"/> is registered; otherwise false.
         /// </returns>
-        public static bool TryGet(string id, out RegisteredAchievement achievement)
+        public static bool TryGet(string pluginGuid, string id, out RegisteredAchievement achievement)
         {
             achievement = null;
-            if (RegisteredAchievements.ContainsKey(id))
+            string fullId = $"{pluginGuid}::{id}";
+            if (RegisteredAchievements.ContainsKey(fullId))
             {
-                achievement = RegisteredAchievements[id];
+                achievement = RegisteredAchievements[fullId];
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryGet(string id, out RegisteredAchievement achievement)
+        {
+            achievement = null;
+            string fullId = $"{_pluginGuid}::{id}";
+            if (RegisteredAchievements.ContainsKey(fullId))
+            {
+                achievement = RegisteredAchievements[fullId];
                 return true;
             }
             return false;
