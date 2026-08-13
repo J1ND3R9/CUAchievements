@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
@@ -126,8 +127,6 @@ namespace CUAchievements.UI
                 Instance.RebuildUI();
             }
 
-            CUCoreUtils.PlaySoundAt(achievementPopUpAudio, null);
-
             if (Instance.debugShowCoroutine != null)
             {
                 Instance.StopCoroutine(Instance.debugShowCoroutine);
@@ -192,7 +191,7 @@ namespace CUAchievements.UI
             frameRect.offsetMin = Vector2.zero;
             frameRect.offsetMax = Vector2.zero;
             Image frameImage = frameGameObject.GetComponent<Image>();
-            frameImage.sprite = AssetLoader.GetCachedSprite("achievement_popup_frame_v1");
+            ChooseFrameForAchievement(frameImage);
             frameImage.type = Image.Type.Simple;
             frameImage.preserveAspect = false;
             frameImage.raycastTarget = false;
@@ -203,7 +202,12 @@ namespace CUAchievements.UI
             iconRect.anchorMin = iconRect.anchorMax = new Vector2(0f, 0.5f);
             iconRect.pivot = new Vector2(0.5f, 0.5f);
             iconRect.sizeDelta = new Vector2(90f, 90f);
-            iconRect.anchoredPosition = new Vector2(60f, 0f);
+
+            if (popupFrameType == PopupFrameType.V3 || popupFrameType == PopupFrameType.V3Alt)
+                iconRect.anchoredPosition = new Vector2(210f, 0f);
+            else
+                iconRect.anchoredPosition = new Vector2(60f, 0f);
+
             iconImage = iconGameObject.GetComponent<Image>();
             iconImage.preserveAspect = true;
             iconImage.raycastTarget = false;
@@ -248,6 +252,31 @@ namespace CUAchievements.UI
             }
         }
 
+        private void ChooseFrameForAchievement(Image frame)
+        {
+            switch (popupFrameType)
+            {
+                case PopupFrameType.V1:
+                    frame.sprite = AssetLoader.GetCachedSprite("achievement_popup_frame_v1");
+                    break;
+                case PopupFrameType.V1Alt:
+                    frame.sprite = AssetLoader.GetCachedSprite("achievement_popup_frame_v1alt");
+                    break;
+                case PopupFrameType.V2:
+                    frame.sprite = AssetLoader.GetCachedSprite("achievement_popup_frame_v2");
+                    break;
+                case PopupFrameType.V2Alt:
+                    frame.sprite = AssetLoader.GetCachedSprite("achievement_popup_frame_v2alt");
+                    break;
+                case PopupFrameType.V3:
+                    frame.sprite = AssetLoader.GetCachedSprite("achievement_popup_frame_v3");
+                    break;
+                case PopupFrameType.V3Alt:
+                    frame.sprite = AssetLoader.GetCachedSprite("achievement_popup_frame_v3alt");
+                    break;
+            }
+        }
+
         private TextMeshProUGUI CreateText(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax, int fontSize, FontStyles style)
         {
             TMP_FontAsset fontAsset = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Retro GamingPix");
@@ -277,8 +306,16 @@ namespace CUAchievements.UI
             {
                 var (icon, title, desc) = queue.Dequeue();
                 iconImage.sprite = icon;
-                titleText.text = title;
-                descText.text = desc;
+                if (popupFrameType == PopupFrameType.V3 || popupFrameType == PopupFrameType.V3Alt)
+                {
+                    titleText.text = "";
+                    descText.text = "";
+                }
+                else
+                {
+                    titleText.text = title;
+                    descText.text = desc;
+                }
 
                 yield return SlideTo(shownPos);
                 yield return new WaitForSeconds(ShowDuration);
@@ -290,8 +327,16 @@ namespace CUAchievements.UI
         private IEnumerator DebugShowCoroutine(AchievementDefinition achievement)
         {
             iconImage.sprite = achievement.Sprite;
-            titleText.text = achievement.Title;
-            descText.text = achievement.Description;
+            if (popupFrameType == PopupFrameType.V3 || popupFrameType == PopupFrameType.V3Alt)
+            {
+                titleText.text = "";
+                descText.text = "";
+            }
+            else
+            {
+                titleText.text = achievement.Title;
+                descText.text = achievement.Description;
+            }
 
             yield return SlideTo(shownPos);
             yield return new WaitForSeconds(ShowDuration);

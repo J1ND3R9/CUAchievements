@@ -46,7 +46,7 @@
     <Reference Include="BepInEx">
       <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="CUCoreLib, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="CUCoreLib, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\plugins\CUCoreLib.dll</HintPath>
     </Reference>
@@ -78,6 +78,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.UI.dll</HintPath>
@@ -100,6 +104,8 @@
     <Compile Include="Registry\RegisteredAchievement.cs" />
     <Compile Include="UI\AchievementButtonBuilder.cs" />
     <Compile Include="UI\AchievementButtonHoverVisual.cs" />
+    <Compile Include="UI\AchievementMenuManager.cs" />
+    <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
   </ItemGroup>
   <ItemGroup>

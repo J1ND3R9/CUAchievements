@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace CUAchievements.UI
 {
     [HarmonyPatch(typeof(PreRunScript), "Start")]
-    public static class AchievementButtonPatch // Thanks Custom Structures code.
+    internal static class AchievementButtonPatch // Thanks Custom Structures code.
     {
         public static void Postfix(PreRunScript __instance)
         {
@@ -19,7 +19,7 @@ namespace CUAchievements.UI
             Sprite baseSprite = AssetLoader.GetCachedSprite("achievement_button");
             Sprite overlaySprite = AssetLoader.GetCachedSprite("achievement_button_overlay");
 
-            AchievementButtonBuilder.EnsureButton(menuBackground, baseSprite, overlaySprite, LocaleRegistry.Get("achievementsbutton", "Achievements"));
+            AchievementButtonBuilder.EnsureButton(menuBackground, baseSprite, overlaySprite, LocaleRegistry.Get("achievementsbutton", "Achievements"), __instance);
         }
     }
 }
