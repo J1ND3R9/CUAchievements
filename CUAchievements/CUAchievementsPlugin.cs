@@ -33,6 +33,7 @@ namespace CUAchievements
             LoadModAssets();
             _harmony.PatchAll();
             RegisterModOptions();
+            RegisterDebugAchievement();
             Logger.LogInfo("Plugin loaded!");
         }
         private void LoadModAssets()
@@ -137,6 +138,13 @@ namespace CUAchievements
                   AchievementPopupManager.DebugShow();
               }
           ));
+        }
+
+        internal void RegisterDebugAchievement()
+        {
+            var registry = AchievementRegistry.Create(ModGUID);
+            for (int i = 0; i < 15; i++)
+                registry.Register(AchievementDefinition.Instant($"test{i}", $"TestTitle{i}", $"TestDesc{i}", null));
         }
     }
 }
