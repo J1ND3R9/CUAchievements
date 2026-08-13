@@ -8,15 +8,15 @@ using UnityEngine.UI;
 
 namespace CUAchievements.UI
 {
-    public static class AchievementButtonBuilder
+    internal static class AchievementButtonBuilder
     {
-        private const string ButtonName = "AchievementsButton";
-        private const string OverlayName = "Overlay";
-        private const string ClickableName = "Clickable";
-        private const string HoverLabelName = "HoverLabel";
+        internal const string ButtonName = "AchievementsButton";
+        internal const string OverlayName = "Overlay";
+        internal const string ClickableName = "Clickable";
+        internal const string HoverLabelName = "HoverLabel";
 
-        private static AchievementMenuManager achievementMenu;
-        public static void EnsureButton(Transform menuBackground, Sprite baseSprite, Sprite overlaySprite, string labelText, PreRunScript preRunScript)
+        internal static AchievementMenuManager achievementMenu;
+        internal static void EnsureButton(Transform menuBackground, Sprite baseSprite, Sprite overlaySprite, string labelText, PreRunScript preRunScript)
         {
             Transform existing = menuBackground.Find(ButtonName);
             GameObject gameObject = existing != null ? existing.gameObject : new GameObject(ButtonName, typeof(RectTransform), typeof(Image));
@@ -43,18 +43,18 @@ namespace CUAchievements.UI
             GameObject modalMenu = new GameObject("ModalMenu", typeof(RectTransform));
             modalMenu.transform.SetParent(canvas.transform, false);
             achievementMenu = modalMenu.AddComponent<AchievementMenuManager>();
-            achievementMenu.Initialize();
+            achievementMenu.Initialize(FindFont());
 
             AddParallax(gameObject);
         }
 
-        private static void OnClicked()
+        internal static void OnClicked()
         {
             if (achievementMenu == null) return;
             achievementMenu.SetVisible(true);
         }
 
-        private static void AddParallax(GameObject gameObject)
+        internal static void AddParallax(GameObject gameObject)
         {
             MenuParallax.ParallaxLayerInfo layer = new MenuParallax.ParallaxLayerInfo
             {
@@ -65,7 +65,7 @@ namespace CUAchievements.UI
             MenuParallax.instance.parallax.layers.Add(layer);
         }
 
-        private static void ConfigureFullscreenRect(RectTransform rect)
+        internal static void ConfigureFullscreenRect(RectTransform rect)
         {
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
@@ -76,7 +76,7 @@ namespace CUAchievements.UI
             rect.localRotation = Quaternion.identity;
         }
 
-        private static Image EnsureOverlayImage(RectTransform parentRect, Sprite overlaySprite)
+        internal static Image EnsureOverlayImage(RectTransform parentRect, Sprite overlaySprite)
         {
             Transform existing = parentRect.Find(OverlayName);
             GameObject gameObject = existing != null ? existing.gameObject : new GameObject(OverlayName, typeof(RectTransform), typeof(Image));
@@ -95,7 +95,7 @@ namespace CUAchievements.UI
             return image;
         }
 
-        private static RectTransform EnsureClickableRect(RectTransform parentRect)
+        internal static RectTransform EnsureClickableRect(RectTransform parentRect)
         {
             Transform existing = parentRect.Find(ClickableName);
             GameObject gameObject = existing != null ? existing.gameObject : new GameObject(ClickableName, typeof(RectTransform));
@@ -114,7 +114,7 @@ namespace CUAchievements.UI
             return rect;
         }
 
-        private static TextMeshProUGUI EnsureHoverLabel(RectTransform parentRect, string labelText)
+        internal static TextMeshProUGUI EnsureHoverLabel(RectTransform parentRect, string labelText)
         {
             Transform existing = parentRect.Find(HoverLabelName);
             GameObject gameObject = existing != null ? existing.gameObject : new GameObject(HoverLabelName, typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -140,6 +140,6 @@ namespace CUAchievements.UI
             return tmp;
         }
 
-        private static TMP_FontAsset FindFont() => Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Retro GamingPix");
+        internal static TMP_FontAsset FindFont() => Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Retro GamingPix");
     }
 }

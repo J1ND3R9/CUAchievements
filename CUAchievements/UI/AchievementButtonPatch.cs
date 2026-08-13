@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace CUAchievements.UI
 {
     [HarmonyPatch(typeof(PreRunScript), "Start")]
-    public static class AchievementButtonPatch // Thanks Custom Structures code.
+    internal static class AchievementButtonPatch // Thanks Custom Structures code.
     {
         public static void Postfix(PreRunScript __instance)
         {
