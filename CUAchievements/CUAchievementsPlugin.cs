@@ -33,7 +33,7 @@ namespace CUAchievements
             LoadModAssets();
             _harmony.PatchAll();
             RegisterModOptions();
-            RegisterDebugAchievement();
+            RegisterDebugShit();
             Logger.LogInfo("Plugin loaded!");
         }
         private void LoadModAssets()
@@ -140,11 +140,42 @@ namespace CUAchievements
           ));
         }
 
-        internal void RegisterDebugAchievement()
+        internal void RegisterDebugShit()
         {
-            var registry = AchievementRegistry.Create(ModGUID);
-            for (int i = 0; i < 15; i++)
-                registry.Register(AchievementDefinition.Instant($"test{i}", $"TestTitle{i}", $"TestDesc{i}", null));
+            var achievements = Services.CUAchievements.Create(ModGUID);
+            for (int i = 0; i < 5; i++)
+                achievements.Registry.Register(AchievementDefinition.Instant($"testInstant{i}", $"TestTitleI{i}", $"TestDescI{i}", null));
+            for (int i = 0; i < 5; i++)
+                achievements.Registry.Register(AchievementDefinition.Counter($"testCounter{i}", $"TestTitleC{i}", $"TestDescC{i}", null, 10));
+            ConsoleCommandRegistry.Register(
+                "progress_achievement",
+                "Add progress to achievement",
+                args =>
+                {
+                    if (args.Length < 2) return;
+                    if (string.IsNullOrEmpty(args[1]))
+                        return;
+                    achievements.Achievements.AddProgress(args[1]);
+                },
+                null,
+                ("id", "Achievement ID")
+                );
+
+            ConsoleCommandRegistry.Register(
+                "popup_achievement",
+                "Force popup for achievement",
+                args =>
+                {
+                    if (args.Length < 2) return;
+                    if (string.IsNullOrEmpty(args[1]))
+                        return;
+
+                    if (achievements.Registry.TryGet(args[1], out var ach))
+                        AchievementPopupManager.Show(ach.Definition);
+                },
+                null,
+                ("id", "Achievement ID")
+                );
         }
     }
 }
