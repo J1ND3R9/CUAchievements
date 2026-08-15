@@ -124,12 +124,12 @@ namespace CUAchievements
               PlayerPrefs.GetInt("Achievements_AchievementFrame", 0),
               new[]
               {
-                   new ModDropdownChoice("v1", "Icon + Title with Description. Black bg"),
-                   new ModDropdownChoice("v1alt","Icon + Title with Description. Alternative bg"),
-                   new ModDropdownChoice("v2", "Icon seperated from Title with Description. Black bg"),
-                   new ModDropdownChoice("v2alt", "Icon seperated from Title with Description. Alternative bg"),
-                   new ModDropdownChoice("v3", "Only icon. Black bg"),
-                   new ModDropdownChoice("v3alt", "Only icon. Alternative bg"),
+                   new ModDropdownChoice("v1", "V1"),
+                   new ModDropdownChoice("v1alt", "V1 Alt BG"),
+                   new ModDropdownChoice("v2", "V2"),
+                   new ModDropdownChoice("v2alt", "V2 Alt BG"),
+                   new ModDropdownChoice("v3", "V3"),
+                   new ModDropdownChoice("v3alt", "V3 Alt BG"),
               },
               value =>
               {
