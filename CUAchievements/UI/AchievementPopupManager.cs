@@ -304,29 +304,20 @@ namespace CUAchievements.UI
             isShowing = true;
             while (queue.Count > 0)
             {
-                var (icon, title, desc) = queue.Dequeue();
-                iconImage.sprite = icon;
-                if (popupFrameType == PopupFrameType.V3 || popupFrameType == PopupFrameType.V3Alt)
-                {
-                    titleText.text = "";
-                    descText.text = "";
-                }
-                else
-                {
-                    titleText.text = title;
-                    descText.text = desc;
-                }
-
-                yield return SlideTo(shownPos);
-                yield return new WaitForSeconds(ShowDuration);
-                yield return SlideTo(hiddenPos);
+                (Sprite icon, string title, string desc) = queue.Dequeue();
+                yield return AnimatePopup(icon, title, desc);
             }
             isShowing = false;
         }
-
+        
         private IEnumerator DebugShowCoroutine(AchievementDefinition achievement)
         {
-            iconImage.sprite = achievement.Sprite;
+            yield return AnimatePopup(achievement.Sprite, achievement.Title, achievement.Description);
+        }
+
+        private IEnumerator AnimatePopup(Sprite icon, string title, string desc)
+        {
+            iconImage.sprite = icon;
             if (popupFrameType == PopupFrameType.V3 || popupFrameType == PopupFrameType.V3Alt)
             {
                 titleText.text = "";
@@ -334,8 +325,8 @@ namespace CUAchievements.UI
             }
             else
             {
-                titleText.text = achievement.Title;
-                descText.text = achievement.Description;
+                titleText.text = title;
+                descText.text = desc;
             }
 
             yield return SlideTo(shownPos);
