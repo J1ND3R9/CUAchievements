@@ -9,6 +9,7 @@ namespace CUAchievements.Services
     public sealed class AchievementService
     {
         private readonly string _pluginGuid;
+        private readonly ConditionalAchievementTracker _conditions = new ConditionalAchievementTracker();
 
         private AchievementService(string pluginGuid)
         {
@@ -102,6 +103,10 @@ namespace CUAchievements.Services
             registeredAchievement.Progress.Unlocked = true;
         }
 
+        /// <summary>
+        /// Tracks the fulfillment of conditions across different layers of code, scoped to this plugin.
+        /// </summary>
+        public ConditionalAchievementTracker Conditions => _conditions;
         public sealed class ConditionalAchievementTracker
         {
             private readonly Dictionary<string, bool> flags = new Dictionary<string, bool>();
