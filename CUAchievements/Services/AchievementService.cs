@@ -1,6 +1,8 @@
 ﻿using CUAchievements.Persistence;
 using CUAchievements.Registry;
 using CUAchievements.UI;
+using System.Collections.Generic;
+using UnityEngine.Windows.Speech;
 
 namespace CUAchievements.Services
 {
@@ -94,11 +96,19 @@ namespace CUAchievements.Services
 
         private void UnlockCore(RegisteredAchievement registeredAchievement)
         {
-
             if (registeredAchievement.Progress.Unlocked)
                 return;
             AchievementPopupManager.Show(registeredAchievement.Definition);
             registeredAchievement.Progress.Unlocked = true;
+        }
+
+        public sealed class ConditionalAchievementTracker
+        {
+            private readonly Dictionary<string, bool> flags = new Dictionary<string, bool>();
+
+            public void SetFlag(string flagName, bool value) => flags[flagName] = value;
+            public bool GetFlag(string flagName) => flags.TryGetValue(flagName, out var v) && v;
+            public void ClearFlag(string flagName) => flags.Remove(flagName);
         }
     }
 }
