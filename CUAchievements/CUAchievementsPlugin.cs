@@ -150,9 +150,6 @@ namespace CUAchievements
                 null,
                 ("id", "Achievement ID")
                 );
-
-
-            var eat100foodAchievemnt = achievements.Register(AchievementDefinition.Counter("eat_100_food", "сожри его ебло тупое", "qwada", null, 100));
         }
     }
 }

@@ -19,30 +19,35 @@ namespace CUAchievements.UI
 {
     internal sealed class AchievementMenuManager : MonoBehaviour
     {
-        internal GameObject vanillaPanel;
-        internal RectTransform vanillaPanelRect;
-        internal ScrollRect scrollRect;
-        internal RectTransform content;
-        internal Button closeButton;
-        internal Canvas modalCanvas;
-        internal CanvasGroup modalCanvasGroup;
-        internal GraphicRaycaster modalRaycaster;
-        internal TMP_FontAsset font;
-        internal bool visible;
-        internal static bool IsModalOpen { get; private set; }
-        internal Button achievementListTab;
-        internal Button settingsTab;
-        internal GameObject buttonTemplate;
-
-        internal Dictionary<string, List<RegisteredAchievement>> registeredAchievement;
+        private GameObject vanillaPanel;
+        private RectTransform vanillaPanelRect;
+        private ScrollRect scrollRect;
+        private RectTransform content;
+        private Button closeButton;
+        private Canvas modalCanvas;
+        private CanvasGroup modalCanvasGroup;
+        private GraphicRaycaster modalRaycaster;
+        private TMP_FontAsset font;
+        private bool visible;
+        public static bool IsModalOpen { get; private set; }
+        private Button achievementListTab;
+        private Button settingsTab;
+        private GameObject buttonTemplate;
+        private Dictionary<string, List<RegisteredAchievement>> registeredAchievement;
+        private bool needsRefresh = true;
 
         internal void Initialize(TMP_FontAsset font)
         {
             this.font = font;
             BuildModal();
             SetVisible(false);
-        }
 
+            AchievementEvents.AchievementsChanged += OnAchievementsChanged;
+        }
+        private void OnAchievementsChanged()
+        {
+            needsRefresh = true;
+        }
         internal void SetVisible(bool show)
         {
             visible = show;
@@ -55,10 +60,13 @@ namespace CUAchievements.UI
                 modalCanvasGroup.blocksRaycasts = show;
             }
             if (vanillaPanel != null) vanillaPanel.SetActive(show);
-            if (show)
+            if (show && needsRefresh)
+            {
                 RefreshAchievementList();
+                needsRefresh = false;
+            }
         }
-        internal void BuildTabs() // Thanks Makeshift Prosthetics code
+        private void BuildTabs() // Thanks Makeshift Prosthetics code
         {
             Transform panelTransform = vanillaPanel.transform.Find("Panel");
             if (panelTransform == null) return;
@@ -91,7 +99,7 @@ namespace CUAchievements.UI
             settingsTab = BuildButton(horizontalLayoutGroup.transform, "AchievementSettingsTab", "Settings"); // TODO: Localization
         }
 
-        internal Button BuildButton(Transform parent, string name, string label)
+        private Button BuildButton(Transform parent, string name, string label)
         {
             GameObject buttonTemplate = this.buttonTemplate;
             if (buttonTemplate == null) return null;
@@ -117,7 +125,7 @@ namespace CUAchievements.UI
             return button;
         }
 
-        internal void BuildModal()
+        private void BuildModal()
         {
             RectTransform selfRect = GetComponent<RectTransform>();
             selfRect.anchorMin = Vector2.zero;
@@ -142,7 +150,6 @@ namespace CUAchievements.UI
 
             vanillaPanel = Instantiate(template, transform, false);
             vanillaPanel.name = "Modal";
-            LogHierarchy(vanillaPanel.transform);
 
             foreach (var mb in vanillaPanel.GetComponentsInChildren<MonoBehaviour>(true))
             {
@@ -201,7 +208,7 @@ namespace CUAchievements.UI
             BuildTabs();
         }
 
-        internal void RefreshAchievementList()
+        private void RefreshAchievementList()
         {
             for (int i = content.childCount - 1; i >= 0; i--)
             {
@@ -230,7 +237,7 @@ namespace CUAchievements.UI
             return 1; 
         }
 
-        internal void BuildAchievementRow(string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
+        private void BuildAchievementRow(string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
         {
             if (content == null) return;
             if (pluginRegisteredAchievements.Count() == 0) return;
@@ -253,7 +260,7 @@ namespace CUAchievements.UI
             }
         }
 
-        internal void CreateAchievementRowHeader(Transform parent, string pluginName)
+        private void CreateAchievementRowHeader(Transform parent, string pluginName)
         {
             GameObject buttonTemplate = this.buttonTemplate;
             if (buttonTemplate == null) return;
@@ -282,7 +289,7 @@ namespace CUAchievements.UI
 
             headerObject.SetActive(true);
         }
-        internal void AddAchievementObject(Transform parent, RegisteredAchievement achievement)
+        private void AddAchievementObject(Transform parent, RegisteredAchievement achievement)
         {
             if (achievement == null) return;
 
@@ -397,13 +404,9 @@ namespace CUAchievements.UI
             canvasGroup.alpha = achievement.Progress.Unlocked ? 1f : 0.35f;
         }
 
-        private static void LogHierarchy(Transform root, int depth = 0)
+        private void OnDestroy()
         {
-            CUAchievementsPlugin.Logger.LogInfo(new string(' ', depth * 2) + root.name);
-            foreach (Transform child in root)
-            {
-                LogHierarchy(child, depth + 1);
-            }
+            AchievementEvents.AchievementsChanged -= OnAchievementsChanged;
         }
     }
 }

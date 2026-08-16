@@ -67,6 +67,7 @@ namespace CUAchievements.Services
             }
 
             AchievementPersistence.Save(achievement.PluginGuid);
+            AchievementEvents.RaiseAchievementsChanged();
 
             return true;
         }
@@ -77,8 +78,11 @@ namespace CUAchievements.Services
 
             achievement.Progress.Unlocked = true;
             achievement.Progress.UnlockedAt = DateTime.UtcNow;
+
             AchievementPopupManager.Show(achievement.Definition);
             AchievementPersistence.Save(achievement.PluginGuid);
+            AchievementEvents.RaiseAchievementsChanged();
+
             return true;
         }
     }

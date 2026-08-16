@@ -107,6 +107,7 @@
     <Compile Include="Registry\RegisteredAchievement.cs" />
     <Compile Include="UI\AchievementButtonBuilder.cs" />
     <Compile Include="UI\AchievementButtonHoverVisual.cs" />
+    <Compile Include="UI\AchievementEvents.cs" />
     <Compile Include="UI\AchievementMenuManager.cs" />
     <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
