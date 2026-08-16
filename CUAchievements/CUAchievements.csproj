@@ -108,12 +108,14 @@
     <Compile Include="UI\AchievementMenuManager.cs" />
     <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
+    <Compile Include="UI\LayoutIgnorer.cs" />
+    <Compile Include="UI\SpriteSlicer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_button.png" />
+    <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_button_overlay.png" />
+    <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
@@ -122,12 +124,18 @@
     <EmbeddedResource Include="Assets\Audio\achievement_sound_unlocked.mp3" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v1.png" />
-    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v1alt.png" />
-    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v2.png" />
-    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v3alt.png" />
-    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v3.png" />
-    <EmbeddedResource Include="Assets\Images\achievement_popup_frame_v2alt.png" />
+    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v1.png" />
+    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v1alt.png" />
+    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v2.png" />
+    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v3alt.png" />
+    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v3.png" />
+    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v2alt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\UI\achievement_frame_common.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\UI\achievement_frame_image.png" />
   </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />

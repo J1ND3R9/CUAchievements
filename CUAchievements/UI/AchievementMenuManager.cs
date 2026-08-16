@@ -1,7 +1,11 @@
-﻿using CUAchievements.Definitions;
+﻿using BepInEx;
+using BepInEx.Bootstrap;
+using CUAchievements.Definitions;
 using CUAchievements.Persistence;
 using CUAchievements.Registry;
+using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +19,7 @@ namespace CUAchievements.UI
 {
     internal sealed class AchievementMenuManager : MonoBehaviour
     {
-        internal GameObject modalBackdrop;
+        //internal GameObject modalBackdrop;
         internal GameObject vanillaPanel;
         internal RectTransform vanillaPanelRect;
         internal ScrollRect scrollRect;
@@ -30,6 +34,8 @@ namespace CUAchievements.UI
         internal Button achievementListTab;
         internal Button settingsTab;
         internal GameObject buttonTemplate;
+
+        internal Dictionary<string, List<RegisteredAchievement>> registeredAchievement;
 
         internal void Initialize(TMP_FontAsset font)
         {
@@ -49,7 +55,7 @@ namespace CUAchievements.UI
                 modalCanvasGroup.interactable = show;
                 modalCanvasGroup.blocksRaycasts = show;
             }
-            if (modalBackdrop != null) modalBackdrop.SetActive(show);
+            //if (modalBackdrop != null) modalBackdrop.SetActive(show);
             if (vanillaPanel != null) vanillaPanel.SetActive(show);
             if (show)
                 RefreshAchievementList();
@@ -123,22 +129,22 @@ namespace CUAchievements.UI
 
             modalCanvas = gameObject.AddComponent<Canvas>();
             modalCanvas.overrideSorting = true;
-            modalCanvas.sortingOrder = 30000;
+            modalCanvas.sortingOrder = 500;
 
             modalRaycaster = gameObject.AddComponent<GraphicRaycaster>();
 
             modalCanvasGroup = gameObject.AddComponent<CanvasGroup>();
 
-            modalBackdrop = new GameObject("Backdrop", typeof(RectTransform), typeof(Image));
-            modalBackdrop.transform.SetParent(transform, false);
-            RectTransform backdropRect = modalBackdrop.GetComponent<RectTransform>();
-            backdropRect.anchorMin = Vector2.zero;
-            backdropRect.anchorMax = Vector2.one;
-            backdropRect.offsetMin = Vector2.zero;
-            backdropRect.offsetMax = Vector2.zero;
-            Image backdropImage = modalBackdrop.GetComponent<Image>();
-            backdropImage.color = new Color(0f, 0f, 0f, 0.72f);
-            backdropImage.raycastTarget = true;
+            //modalBackdrop = new GameObject("Backdrop", typeof(RectTransform), typeof(Image));
+            //modalBackdrop.transform.SetParent(transform, false);
+            //RectTransform backdropRect = modalBackdrop.GetComponent<RectTransform>();
+            //backdropRect.anchorMin = Vector2.zero;
+            //backdropRect.anchorMax = Vector2.one;
+            //backdropRect.offsetMin = Vector2.zero;
+            //backdropRect.offsetMax = Vector2.zero;
+            //Image backdropImage = modalBackdrop.GetComponent<Image>();
+            //backdropImage.color = new Color(0f, 0f, 0f, 0.72f);
+            //backdropImage.raycastTarget = true;
 
             GameObject template = Resources.Load<GameObject>("Special/SettingsMenu");
             if (template == null)
@@ -148,7 +154,7 @@ namespace CUAchievements.UI
             }
 
             vanillaPanel = Instantiate(template, transform, false);
-            vanillaPanel.name = "AchievementsModal";
+            vanillaPanel.name = "Modal";
             LogHierarchy(vanillaPanel.transform);
 
             foreach (var mb in vanillaPanel.GetComponentsInChildren<MonoBehaviour>(true))
@@ -170,7 +176,7 @@ namespace CUAchievements.UI
 
             scrollRect = vanillaPanel.GetComponentInChildren<ScrollRect>(true);
             content = scrollRect != null ? scrollRect.content : null;
-            
+
             if (content != null)
             {
                 for (int i = content.childCount - 1; i >= 0; i--)
@@ -204,8 +210,20 @@ namespace CUAchievements.UI
 
                 buttonTemplate = closeButton.gameObject;
             }
-            Transform panelTransform = vanillaPanel.transform.Find("Panel");
-            panelTransform.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.85f);
+            //Transform panelTransform = vanillaPanel.transform.Find("Panel");
+            //if (panelTransform != null)
+            //{
+            //    panelTransform.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1500f);
+
+            //    Transform scrollTransform = panelTransform.Find("Scroll");
+            //    scrollTransform.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1475f);
+
+            //    Transform buttonTransform = panelTransform.Find("Button");
+            //    RectTransform buttonRectTransform = buttonTransform.GetComponent<RectTransform>();
+
+            //    buttonRectTransform.anchoredPosition = new Vector2(-656f, buttonRectTransform.anchoredPosition.y);
+            //}
+
             BuildTabs();
         }
 
@@ -213,61 +231,172 @@ namespace CUAchievements.UI
         {
             for (int i = content.childCount - 1; i >= 0; i--)
             {
-                if (content.GetChild(i).name == "AchievementRow")
+                if (content.GetChild(i).name == "AchievementPluginContainer")
                     Destroy(content.GetChild(i).gameObject);
             }
 
-            foreach (var registeredAchievement in AchievementRegistry.GetAll())
-            {
-                AddAchievementRow(registeredAchievement.Value);
+            if (registeredAchievement == null) registeredAchievement = AchievementRegistry.GetAchievementsPerPlugin(true);
 
-                // DEBUG INFO
-                CUAchievementsPlugin.Logger.LogInfo($"[UI INFO] [{registeredAchievement.Key}]|[{registeredAchievement.Value.Definition.Title}] | UNLOCKED: {registeredAchievement.Value.Progress.Unlocked}");
+            foreach (var pluginAchievement in registeredAchievement)
+            {
+                BuildAchievementRow(pluginAchievement.Key, pluginAchievement.Value);
             }
         }
-        internal void AddAchievementRow(RegisteredAchievement achievement)
+
+        internal void BuildAchievementRow(string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
         {
             if (content == null) return;
+            if (pluginRegisteredAchievements.Count() == 0) return;
 
-            GameObject row = new GameObject("AchievementRow", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
-            row.transform.SetParent(content, false);
+            GameObject achievementPluginContainer = new GameObject("AchievementPluginContainer", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement), typeof(ContentSizeFitter));
+            achievementPluginContainer.transform.SetParent(content, false);
 
-            LayoutElement layoutElement = row.GetComponent<LayoutElement>();
-            layoutElement.preferredHeight = 90f;
+            VerticalLayoutGroup achievementsVerticalLayout = achievementPluginContainer.GetComponent<VerticalLayoutGroup>();
+            achievementsVerticalLayout.spacing = 12f;
+            achievementsVerticalLayout.childControlHeight = true;
+            achievementsVerticalLayout.childForceExpandHeight = false;
 
-            HorizontalLayoutGroup horizontalLayoutGroup = row.GetComponent<HorizontalLayoutGroup>();
-            horizontalLayoutGroup.padding = new RectOffset(8, 8, 8, 8);
-            horizontalLayoutGroup.spacing = 12f;
-            horizontalLayoutGroup.childControlHeight = true;
-            horizontalLayoutGroup.childAlignment = TextAnchor.MiddleLeft;
+            ContentSizeFitter fitter = achievementPluginContainer.GetComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            GameObject iconGameObject = new GameObject("Icon", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
-            iconGameObject.transform.SetParent(row.transform, false);
-            iconGameObject.GetComponent<LayoutElement>().preferredHeight = 74f;
-            iconGameObject.GetComponent<LayoutElement>().preferredWidth = 74f;
-            Image iconImg = iconGameObject.GetComponent<Image>();
-            iconImg.sprite = achievement.Definition.Sprite;
-            iconImg.preserveAspect = true;
-            iconImg.color = achievement.Progress.Unlocked ? Color.white : new Color(1f, 1f, 1f, 0.3f);
+            CreateAchievementRowHeader(achievementPluginContainer.transform, pluginName);
+            foreach (var achievement in pluginRegisteredAchievements)
+            {
+                AddAchievementObject(achievementPluginContainer.transform, achievement);
+            }
+        }
 
-            GameObject textGameObject = new GameObject("Text", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
-            textGameObject.transform.SetParent(row.transform, false);
-            textGameObject.GetComponent<LayoutElement>().flexibleWidth = 1f;
+        internal void CreateAchievementRowHeader(Transform parent, string pluginName)
+        {
+            GameObject buttonTemplate = this.buttonTemplate;
+            if (buttonTemplate == null) return;
+
+            GameObject headerObject = Instantiate(buttonTemplate, parent, false);
+            headerObject.SetActive(false);
+            headerObject.name = "PluginName";
+
+            Button headerButton = headerObject.GetComponent<Button>();
+            if (headerButton == null) headerButton = headerObject.GetComponentInChildren<Button>(true);
+
+            headerButton.onClick = new Button.ButtonClickedEvent();
+            headerButton.interactable = false;
+            TMP_Text headerTmpText = headerButton.GetComponentInChildren<TMP_Text>();
+            if (headerTmpText != null) headerTmpText.text = pluginName;
+
+            Destroy(headerButton);
+
+            headerObject.SetActive(true);
+        }
+        internal void AddAchievementObject(Transform parent, RegisteredAchievement achievement)
+        {
+            if (achievement == null) return;
+
+            GameObject achievementObject = new GameObject("AchievementContainer", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement)); 
+            achievementObject.transform.SetParent(parent, false);
+
+            LayoutElement layoutElement = achievementObject.GetComponent<LayoutElement>();
+            layoutElement.preferredHeight = 140f;
+
+            HorizontalLayoutGroup achievementHorizontalLayout = achievementObject.GetComponent<HorizontalLayoutGroup>();
+            achievementHorizontalLayout.padding = new RectOffset(25, 25, 5, 5);
+            achievementHorizontalLayout.spacing = 10f;
+            achievementHorizontalLayout.childControlWidth = true;
+            achievementHorizontalLayout.childControlHeight = false;
+            achievementHorizontalLayout.childForceExpandWidth = false;
+            achievementHorizontalLayout.childForceExpandHeight = false;
+            achievementHorizontalLayout.childAlignment = TextAnchor.MiddleLeft;
+
+            GameObject bgObject = new GameObject("Background", typeof(RectTransform), typeof(Image), typeof(LayoutIgnorer));
+            bgObject.transform.SetParent(achievementObject.transform, false);
+
+            RectTransform bgRect = bgObject.GetComponent<RectTransform>();
+            bgRect.anchorMin = Vector2.zero;
+            bgRect.anchorMax = Vector2.one;
+            bgRect.offsetMin = Vector2.zero;
+            bgRect.offsetMax = Vector2.zero;
+
+            Image bgImage = bgObject.GetComponent<Image>();
+            bgImage.color = Color.black;
+            bgImage.raycastTarget = false;
+
+            GameObject frameObject = new GameObject("Frame", typeof(RectTransform), typeof(Image), typeof(LayoutIgnorer));
+            frameObject.transform.SetParent(achievementObject.transform, false);
+
+            RectTransform frameRectTransform = frameObject.GetComponent<RectTransform>();
+            frameRectTransform.anchorMin = Vector2.zero;
+            frameRectTransform.anchorMax = Vector2.one;
+            frameRectTransform.offsetMin = Vector2.zero;
+            frameRectTransform.offsetMax = Vector2.zero;
+
+            Image frameImage = frameObject.GetComponent<Image>();
+            frameImage.sprite = AssetLoader.GetCachedSprite("achievement_frame_common");
+            frameImage.type = Image.Type.Sliced;
+            frameImage.color = Color.white;
+            frameImage.raycastTarget = false;
+
+            GameObject achievementIconObject = new GameObject("Icon", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+            achievementIconObject.transform.SetParent(achievementObject.transform, false);
+            LayoutElement iconLayout = achievementIconObject.GetComponent<LayoutElement>();
+            iconLayout.preferredWidth = 96f;
+            iconLayout.preferredHeight = 96f;
+            iconLayout.minWidth = 96f;
+            iconLayout.minHeight = 96f;
+
+            Image iconImage = achievementIconObject.GetComponent<Image>();
+            iconImage.sprite = achievement.Definition.Sprite;
+            iconImage.preserveAspect = true;
+
+            GameObject iconFrameObject = new GameObject("IconFrame", typeof(RectTransform), typeof(Image));
+            iconFrameObject.transform.SetParent(achievementIconObject.transform, false);
+            RectTransform iconFrameRectTransform = iconFrameObject.GetComponent<RectTransform>();
+            iconFrameRectTransform.anchorMin = Vector2.zero;
+            iconFrameRectTransform.anchorMax = Vector2.one;
+            iconFrameRectTransform.offsetMin = Vector2.zero;
+            iconFrameRectTransform.offsetMax = Vector2.zero;
+
+            Image iconFrameImage = iconFrameObject.GetComponent<Image>();
+            iconFrameImage.sprite = AssetLoader.GetCachedSprite("achievement_frame_image");
+            iconFrameImage.type = Image.Type.Simple;
+            iconFrameImage.raycastTarget = false;
+
+            GameObject textObject = new GameObject("Text", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            textObject.transform.SetParent(achievementObject.transform, false);
+            LayoutElement textLayout = textObject.GetComponent<LayoutElement>();
+            textLayout.flexibleWidth = 1f;
+
+            VerticalLayoutGroup textVerticalLayout = textObject.GetComponent<VerticalLayoutGroup>();
+            textVerticalLayout.childControlWidth = true;
+            textVerticalLayout.childControlHeight = true;
+            textVerticalLayout.childForceExpandWidth = true;
+            textVerticalLayout.spacing = 4f;
 
             var titleTmp = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
-            titleTmp.transform.SetParent(textGameObject.transform, false);
+            titleTmp.transform.SetParent(textObject.transform, false);
             titleTmp.text = achievement.Definition.Title;
-            titleTmp.fontSize = 20;
+            titleTmp.fontSize = 24;
             titleTmp.fontStyle = FontStyles.Bold;
             titleTmp.color = Color.white;
             titleTmp.font = this.font;
+            titleTmp.enableWordWrapping = true;
+            titleTmp.overflowMode = TextOverflowModes.Ellipsis;
+            titleTmp.maxVisibleLines = 1;
 
-            var descTmp = new GameObject("Description", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
-            descTmp.transform.SetParent(textGameObject.transform, false);
+            var descObj = new GameObject("Description", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            descObj.transform.SetParent(textObject.transform, false);
+
+            var descTmp = descObj.GetComponent<TextMeshProUGUI>();
+            descTmp.transform.SetParent(textObject.transform, false);
             descTmp.text = achievement.Definition.Description;
-            descTmp.fontSize = 15;
+            descTmp.fontSize = 18;
             descTmp.color = new Color(1f, 1f, 1f, 0.7f);
             descTmp.font = this.font;
+            descTmp.enableWordWrapping = true;
+            descTmp.overflowMode = TextOverflowModes.Ellipsis;
+            descTmp.maxVisibleLines = 2;
+
+            LayoutElement descLayout = descObj.GetComponent<LayoutElement>();
+            descLayout.preferredHeight = 45f;
+            descLayout.flexibleHeight = 0f;
         }
 
         private static void LogHierarchy(Transform root, int depth = 0)
