@@ -40,7 +40,7 @@ namespace CUAchievements.UI
             hover.Initialize(clickRect, overlay, label, OnClicked);
 
             var canvas = preRunScript.mainCanvas;
-            GameObject modalMenu = new GameObject("ModalMenu", typeof(RectTransform));
+            GameObject modalMenu = new GameObject("AchievementModal", typeof(RectTransform));
             modalMenu.transform.SetParent(canvas.transform, false);
             achievementMenu = modalMenu.AddComponent<AchievementMenuManager>();
             achievementMenu.Initialize(FindFont());
