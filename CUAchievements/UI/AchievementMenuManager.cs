@@ -261,6 +261,10 @@ namespace CUAchievements.UI
             GameObject headerObject = Instantiate(buttonTemplate, parent, false);
             headerObject.SetActive(false);
             headerObject.name = "PluginName";
+            
+            LayoutElement headerLayoutElement = headerObject.AddComponent<LayoutElement>();
+            headerLayoutElement.preferredHeight = 60f;
+            headerLayoutElement.minHeight = 60f;
 
             Button headerButton = headerObject.GetComponent<Button>();
             if (headerButton == null) headerButton = headerObject.GetComponentInChildren<Button>(true);
@@ -268,7 +272,11 @@ namespace CUAchievements.UI
             headerButton.onClick = new Button.ButtonClickedEvent();
             headerButton.interactable = false;
             TMP_Text headerTmpText = headerButton.GetComponentInChildren<TMP_Text>();
-            if (headerTmpText != null) headerTmpText.text = pluginName;
+            if (headerTmpText != null)
+            {
+                headerTmpText.text = pluginName;
+                headerTmpText.fontSize = 12;
+            }
 
             Destroy(headerButton);
 
