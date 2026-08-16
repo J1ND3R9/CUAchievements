@@ -79,7 +79,16 @@ namespace CUAchievements.UI
         internal static Image EnsureOverlayImage(RectTransform parentRect, Sprite overlaySprite)
         {
             Transform existing = parentRect.Find(OverlayName);
-            GameObject gameObject = existing != null ? existing.gameObject : new GameObject(OverlayName, typeof(RectTransform), typeof(Image));
+            GameObject gameObject;
+            if (existing != null)
+            {
+                gameObject = existing.gameObject;
+            }
+            else
+            {
+                gameObject = new GameObject(OverlayName, typeof(RectTransform), typeof(Image));
+                gameObject.transform.SetParent(parentRect, false);
+            }
 
             RectTransform rect = gameObject.GetComponent<RectTransform>();
             ConfigureFullscreenRect(rect);
