@@ -42,6 +42,7 @@ namespace CUAchievements
             Sprite achievementButtonIconOverlay = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_button_overlay.png", 100f); // НЕ РАБОТАЕТ!!! РЕШИ ПРОБЛЕМУ, УБЛЮДОК
 
             Sprite achievementIconPlaceholder = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_default_sprite.png", 100f);
+            Sprite achievementLockedIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_default_locked.png", 100f);
 
             Sprite achievementPopupFrameV1 = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v1.png", 100f);
             Sprite achievementPopupFrameV1Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v1alt.png", 100f);
@@ -61,6 +62,7 @@ namespace CUAchievements
             AssetLoader.CacheSprite("achievement_button", achievementButtonIcon);
             AssetLoader.CacheSprite("achievement_button_overlay", achievementButtonIconOverlay);
             AssetLoader.CacheSprite("achievement_default_sprite", achievementIconPlaceholder);
+            AssetLoader.CacheSprite("achievement_default_locked", achievementLockedIcon);
             AssetLoader.CacheSprite("achievement_popup_frame_v1", achievementPopupFrameV1);
             AssetLoader.CacheSprite("achievement_popup_frame_v1alt", achievementPopupFrameV1Alt);
             AssetLoader.CacheSprite("achievement_popup_frame_v2", achievementPopupFrameV2);
