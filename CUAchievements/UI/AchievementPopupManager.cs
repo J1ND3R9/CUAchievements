@@ -295,6 +295,8 @@ namespace CUAchievements.UI
             tmpText.color = Color.white;
             tmpText.alignment = TextAlignmentOptions.MidlineLeft;
             tmpText.enableWordWrapping = true;
+            tmpText.overflowMode = TextOverflowModes.Ellipsis;
+            tmpText.maxVisibleLines = 2;
             tmpText.raycastTarget = false;
             return tmpText;
         }
