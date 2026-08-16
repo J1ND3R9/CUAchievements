@@ -1,6 +1,7 @@
 ﻿using CUAchievements.Persistence;
 using CUAchievements.Registry;
 using CUAchievements.UI;
+using System;
 using System.Collections.Generic;
 using UnityEngine.Windows.Speech;
 
@@ -101,6 +102,7 @@ namespace CUAchievements.Services
                 return;
             AchievementPopupManager.Show(registeredAchievement.Definition);
             registeredAchievement.Progress.Unlocked = true;
+            registeredAchievement.Progress.UnlockedAt = DateTime.UtcNow;
         }
 
         /// <summary>
