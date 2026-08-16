@@ -1,4 +1,6 @@
-﻿using CUAchievements.Definitions;
+﻿using BepInEx;
+using BepInEx.Bootstrap;
+using CUAchievements.Definitions;
 using CUAchievements.Persistence;
 using System;
 using System.Collections.Generic;
@@ -96,6 +98,29 @@ namespace CUAchievements.Registry
         internal static Dictionary<string, RegisteredAchievement> GetAll()
         {
             return RegisteredAchievements;
+        }
+
+        internal static Dictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid)
+        {
+            Dictionary<string, List<RegisteredAchievement>> pluginAchievements = new Dictionary<string, List<RegisteredAchievement>>();
+            foreach (var achievement in RegisteredAchievements.Values)
+            {
+                string plugin = achievement.PluginGuid;
+                if (nameInsteadGuid)
+                {
+                    if (Chainloader.PluginInfos.TryGetValue(achievement.PluginGuid, out PluginInfo info))
+                    {
+                        plugin = info.Metadata.Name;
+                    }
+                }
+
+                if (!pluginAchievements.ContainsKey(plugin))
+                    pluginAchievements[plugin] = new List<RegisteredAchievement>();
+
+                pluginAchievements[plugin].Add(achievement);
+
+            }
+            return pluginAchievements;
         }
 
         private string Validate(AchievementDefinition achievement)
