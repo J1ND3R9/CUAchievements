@@ -19,7 +19,6 @@ namespace CUAchievements.UI
 {
     internal sealed class AchievementMenuManager : MonoBehaviour
     {
-        //internal GameObject modalBackdrop;
         internal GameObject vanillaPanel;
         internal RectTransform vanillaPanelRect;
         internal ScrollRect scrollRect;
@@ -55,7 +54,6 @@ namespace CUAchievements.UI
                 modalCanvasGroup.interactable = show;
                 modalCanvasGroup.blocksRaycasts = show;
             }
-            //if (modalBackdrop != null) modalBackdrop.SetActive(show);
             if (vanillaPanel != null) vanillaPanel.SetActive(show);
             if (show)
                 RefreshAchievementList();
@@ -135,17 +133,6 @@ namespace CUAchievements.UI
 
             modalCanvasGroup = gameObject.AddComponent<CanvasGroup>();
 
-            //modalBackdrop = new GameObject("Backdrop", typeof(RectTransform), typeof(Image));
-            //modalBackdrop.transform.SetParent(transform, false);
-            //RectTransform backdropRect = modalBackdrop.GetComponent<RectTransform>();
-            //backdropRect.anchorMin = Vector2.zero;
-            //backdropRect.anchorMax = Vector2.one;
-            //backdropRect.offsetMin = Vector2.zero;
-            //backdropRect.offsetMax = Vector2.zero;
-            //Image backdropImage = modalBackdrop.GetComponent<Image>();
-            //backdropImage.color = new Color(0f, 0f, 0f, 0.72f);
-            //backdropImage.raycastTarget = true;
-
             GameObject template = Resources.Load<GameObject>("Special/SettingsMenu");
             if (template == null)
             {
@@ -210,19 +197,6 @@ namespace CUAchievements.UI
 
                 buttonTemplate = closeButton.gameObject;
             }
-            //Transform panelTransform = vanillaPanel.transform.Find("Panel");
-            //if (panelTransform != null)
-            //{
-            //    panelTransform.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1500f);
-
-            //    Transform scrollTransform = panelTransform.Find("Scroll");
-            //    scrollTransform.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1475f);
-
-            //    Transform buttonTransform = panelTransform.Find("Button");
-            //    RectTransform buttonRectTransform = buttonTransform.GetComponent<RectTransform>();
-
-            //    buttonRectTransform.anchoredPosition = new Vector2(-656f, buttonRectTransform.anchoredPosition.y);
-            //}
 
             BuildTabs();
         }
