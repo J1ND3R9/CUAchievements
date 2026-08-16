@@ -38,16 +38,23 @@ namespace CUAchievements
         }
         private void LoadModAssets()
         {
-            Sprite achievementButtonIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_button.png");
-            Sprite achievementButtonIconOverlay = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_button_overlay.png"); // НЕ РАБОТАЕТ!!! РЕШИ ПРОБЛЕМУ, УБЛЮДОК
-            Sprite achievementIconPlaceholder = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_default_sprite.png");
+            Sprite achievementButtonIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_button.png", 100f);
+            Sprite achievementButtonIconOverlay = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_button_overlay.png", 100f); // НЕ РАБОТАЕТ!!! РЕШИ ПРОБЛЕМУ, УБЛЮДОК
 
-            Sprite achievementPopupFrameV1 = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v1.png");
-            Sprite achievementPopupFrameV1Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v1alt.png");
-            Sprite achievementPopupFrameV2 = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v2.png");
-            Sprite achievementPopupFrameV2Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v2alt.png");
-            Sprite achievementPopupFrameV3 = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v3.png");
-            Sprite achievementPopupFrameV3Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_popup_frame_v3alt.png");
+            Sprite achievementIconPlaceholder = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_default_sprite.png", 100f);
+
+            Sprite achievementPopupFrameV1 = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v1.png", 100f);
+            Sprite achievementPopupFrameV1Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v1alt.png", 100f);
+            Sprite achievementPopupFrameV2 = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v2.png", 100f);
+            Sprite achievementPopupFrameV2Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v2alt.png", 100f);
+            Sprite achievementPopupFrameV3 = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v3.png", 100f);
+            Sprite achievementPopupFrameV3Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v3alt.png", 100f);
+
+            Sprite achievementImageFrame = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_frame_image.png", 100f);
+
+            Sprite achievementCommonFrame = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_frame_common.png", 100f);
+            Sprite achievementCommonFrameSliced = SpriteSlicer.MakeSliced(achievementCommonFrame, 6f);
+
 
             AudioClip achievementPopUpAudio = AssetLoader.LoadEmbeddedAudio("Assets.Audio.achievement_sound_unlocked.mp3");
 
@@ -60,6 +67,8 @@ namespace CUAchievements
             AssetLoader.CacheSprite("achievement_popup_frame_v2alt", achievementPopupFrameV2Alt);
             AssetLoader.CacheSprite("achievement_popup_frame_v3", achievementPopupFrameV3);
             AssetLoader.CacheSprite("achievement_popup_frame_v3alt", achievementPopupFrameV3Alt);
+            AssetLoader.CacheSprite("achievement_frame_image", achievementImageFrame);
+            AssetLoader.CacheSprite("achievement_frame_common", achievementCommonFrameSliced);
 
             AssetLoader.CacheAudioClip("achievement_sound_unlocked", achievementPopUpAudio);
         }
@@ -144,9 +153,9 @@ namespace CUAchievements
         {
             var achievements = Services.CUAchievements.Create(ModGUID);
             for (int i = 0; i < 5; i++)
-                achievements.Registry.Register(AchievementDefinition.Instant($"testInstant{i}", $"TestTitleI{i}", $"TestDescI{i}", null));
+                achievements.Registry.Register(AchievementDefinition.Instant($"testInstant{i}", $"Крутое достижение #{i}", "Банальные, но неопровержимые выводы, а также представители современных социальных резервов, вне зависимости от их уровня, должны быть заблокированы в рамках своих собственных рациональных ограничений. Следует отметить, что консультация с широким активом в значительной степени обусловливает важность системы обучения кадров, соответствующей насущным потребностям. Мы вынуждены отталкиваться от того, что внедрение современных методик однозначно определяет каждого участника как способного принимать собственные решения касаемо укрепления моральных ценностей.", null));
             for (int i = 0; i < 5; i++)
-                achievements.Registry.Register(AchievementDefinition.Counter($"testCounter{i}", $"TestTitleC{i}", $"TestDescC{i}", null, 10));
+                achievements.Registry.Register(AchievementDefinition.Counter($"testCounter{i}", $"Крутое достижение СЧЁТЧИК #{i}", "bruh", null, 10));
             ConsoleCommandRegistry.Register(
                 "progress_achievement",
                 "Add progress to achievement",
