@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\PluginAssetLoader.cs" />
     <Compile Include="Definitions\AchievementDefinition.cs" />
     <Compile Include="Definitions\AchievementType.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />

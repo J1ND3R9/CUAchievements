@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using CUAchievements.Assets;
 using CUAchievements.Definitions;
 using CUAchievements.Registry;
 using CUAchievements.Services;
@@ -30,49 +31,11 @@ namespace CUAchievements
         {
             Logger = base.Logger;
             Instance = this;
-            LoadModAssets();
+            PluginAssetLoader.LoadAssets();
             _harmony.PatchAll();
             RegisterModOptions();
             RegisterDebugShit();
             Logger.LogInfo("Plugin loaded!");
-        }
-        private void LoadModAssets()
-        {
-            Sprite achievementButtonIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_button.png", 100f);
-            Sprite achievementButtonIconOverlay = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_button_overlay.png", 100f);
-
-            Sprite achievementIconPlaceholder = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_default_sprite.png", 100f);
-            Sprite achievementLockedIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.achievement_default_locked.png", 100f);
-
-            Sprite achievementPopupFrameV1 = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v1.png", 100f);
-            Sprite achievementPopupFrameV1Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v1alt.png", 100f);
-            Sprite achievementPopupFrameV2 = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v2.png", 100f);
-            Sprite achievementPopupFrameV2Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v2alt.png", 100f);
-            Sprite achievementPopupFrameV3 = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v3.png", 100f);
-            Sprite achievementPopupFrameV3Alt = AssetLoader.LoadEmbeddedSprite("Assets.Images.PopUp.achievement_popup_frame_v3alt.png", 100f);
-
-            Sprite achievementImageFrame = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_frame_image.png", 100f);
-
-            Sprite achievementCommonFrame = AssetLoader.LoadEmbeddedSprite("Assets.Images.UI.achievement_frame_common.png", 100f);
-            Sprite achievementCommonFrameSliced = SpriteSlicer.MakeSliced(achievementCommonFrame, 6f);
-
-
-            AudioClip achievementPopUpAudio = AssetLoader.LoadEmbeddedAudio("Assets.Audio.achievement_sound_unlocked.mp3");
-
-            AssetLoader.CacheSprite("achievement_button", achievementButtonIcon);
-            AssetLoader.CacheSprite("achievement_button_overlay", achievementButtonIconOverlay);
-            AssetLoader.CacheSprite("achievement_default_sprite", achievementIconPlaceholder);
-            AssetLoader.CacheSprite("achievement_default_locked", achievementLockedIcon);
-            AssetLoader.CacheSprite("achievement_popup_frame_v1", achievementPopupFrameV1);
-            AssetLoader.CacheSprite("achievement_popup_frame_v1alt", achievementPopupFrameV1Alt);
-            AssetLoader.CacheSprite("achievement_popup_frame_v2", achievementPopupFrameV2);
-            AssetLoader.CacheSprite("achievement_popup_frame_v2alt", achievementPopupFrameV2Alt);
-            AssetLoader.CacheSprite("achievement_popup_frame_v3", achievementPopupFrameV3);
-            AssetLoader.CacheSprite("achievement_popup_frame_v3alt", achievementPopupFrameV3Alt);
-            AssetLoader.CacheSprite("achievement_frame_image", achievementImageFrame);
-            AssetLoader.CacheSprite("achievement_frame_common", achievementCommonFrameSliced);
-
-            AssetLoader.CacheAudioClip("achievement_sound_unlocked", achievementPopUpAudio);
         }
         private void RegisterModOptions()
         {
