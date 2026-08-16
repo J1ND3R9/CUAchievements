@@ -137,6 +137,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\UI\achievement_frame_image.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\achievement_default_locked.png" />
+  </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />

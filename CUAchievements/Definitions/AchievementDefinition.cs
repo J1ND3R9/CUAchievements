@@ -45,7 +45,7 @@ namespace CUAchievements.Definitions
         /// <param name="description">Displayed achievement description.</param>
         /// <param name="sprite">Displayed achievement icon. If null, the default sprite will be used.</param>
         /// <param name="maxProgress">The progress required for the achievement to unlock.</param>
-        /// <param name="lockedSprite">The icon displayed for a locked achievement. A darkened sprite will be used by default.</param>
+        /// <param name="lockedSprite">The icon displayed for a locked achievement.</param>
         /// <param name="hidden">Not yet implemented... for now.</param>
         /// <returns>
         /// Returns new <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Counter"/>
@@ -67,7 +67,7 @@ namespace CUAchievements.Definitions
         /// <param name="title">Displayed achievement title.</param>
         /// <param name="description">Displayed achievement description.</param>
         /// <param name="sprite">Displayed achievement icon.</param>
-        /// <param name="lockedSprite">The icon displayed for a locked achievement. A darkened sprite will be used by default.</param>
+        /// <param name="lockedSprite">The icon displayed for a locked achievement.</param>
         /// <param name="hidden">Not yet implemented... for now.</param>
         /// <returns>
         /// Returns new <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Instant"/>
