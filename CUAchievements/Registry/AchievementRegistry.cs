@@ -95,7 +95,7 @@ namespace CUAchievements.Registry
             return false;
         }
 
-        internal static Dictionary<string, RegisteredAchievement> GetAll()
+        internal static IReadOnlyDictionary<string, RegisteredAchievement> GetAll()
         {
             return RegisteredAchievements;
         }
