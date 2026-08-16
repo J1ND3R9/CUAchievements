@@ -1,12 +1,15 @@
 ﻿using CUAchievements.Persistence;
 using CUAchievements.Registry;
 using CUAchievements.UI;
+using System.Collections.Generic;
+using UnityEngine.Windows.Speech;
 
 namespace CUAchievements.Services
 {
     public sealed class AchievementService
     {
         private readonly string _pluginGuid;
+        private readonly ConditionalAchievementTracker _conditions = new ConditionalAchievementTracker();
 
         private AchievementService(string pluginGuid)
         {
@@ -94,11 +97,23 @@ namespace CUAchievements.Services
 
         private void UnlockCore(RegisteredAchievement registeredAchievement)
         {
-
             if (registeredAchievement.Progress.Unlocked)
                 return;
             AchievementPopupManager.Show(registeredAchievement.Definition);
             registeredAchievement.Progress.Unlocked = true;
+        }
+
+        /// <summary>
+        /// Tracks the fulfillment of conditions across different layers of code, scoped to this plugin.
+        /// </summary>
+        public ConditionalAchievementTracker Conditions => _conditions;
+        public sealed class ConditionalAchievementTracker
+        {
+            private readonly Dictionary<string, bool> flags = new Dictionary<string, bool>();
+
+            public void SetFlag(string flagName, bool value) => flags[flagName] = value;
+            public bool GetFlag(string flagName) => flags.TryGetValue(flagName, out var v) && v;
+            public void ClearFlag(string flagName) => flags.Remove(flagName);
         }
     }
 }
