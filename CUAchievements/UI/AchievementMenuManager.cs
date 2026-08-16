@@ -239,7 +239,7 @@ namespace CUAchievements.UI
 
             foreach (var pluginAchievement in registeredAchievement)
             {
-                var sortedAchievements = pluginAchievement.Value.OrderBy(a => GetSortRank(a)).ToList();
+                var sortedAchievements = pluginAchievement.Value.OrderBy(a => GetSortRank(a)).ThenByDescending(a => a.Progress.UnlockedAt != null ? a.Progress.UnlockedAt : DateTime.MinValue).ToList();
 
                 BuildAchievementRow(pluginAchievement.Key, sortedAchievements);
             }
