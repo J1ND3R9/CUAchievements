@@ -4,10 +4,11 @@ using CUAchievements.Definitions;
 using CUAchievements.Persistence;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CUAchievements.Registry
 {
-    public sealed class AchievementRegistry
+    internal sealed class AchievementRegistry
     {
         private static readonly Dictionary<string, RegisteredAchievement> RegisteredAchievements = new Dictionary<string, RegisteredAchievement>(StringComparer.Ordinal);
         private readonly string _pluginGuid;
@@ -21,34 +22,29 @@ namespace CUAchievements.Registry
         /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
         /// <returns>
         /// </returns>
-        public static AchievementRegistry Create(string pluginGuid)
+        internal static AchievementRegistry Create(string pluginGuid)
         {
             return new AchievementRegistry(pluginGuid);
         }
-        /// <summary>
-        /// Registers a new <see cref="AchievementDefinition"/>.
-        /// </summary>
-        /// <returns>
-        /// True achievement registration was successfully; otherwise false.
-        /// </returns>
-        public bool Register(AchievementDefinition achievement)
+        
+        internal RegisteredAchievement Register(AchievementDefinition achievement)
         {
             if (string.IsNullOrEmpty(_pluginGuid))
             {
                 CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: AchievementRegistry was not created.");
-                return false;
+                return null;
             }
             string errorText = Validate(achievement);
             if (!string.IsNullOrEmpty(errorText))
             {
                 CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: {errorText}");
-                return false;
+                return null;
             }
             string fullId = $"{_pluginGuid}::{achievement.Id}";
             if (RegisteredAchievements.ContainsKey(fullId))
             {
                 CUAchievementsPlugin.Logger.LogWarning($"Achievement {achievement.Id} already registered. Ignored duplicate.");
-                return false;
+                return null;
             }
 
             AchievementProgressData progress = new AchievementProgressData(fullId);
@@ -60,18 +56,11 @@ namespace CUAchievements.Registry
             AchievementPersistence.Load(_pluginGuid);
             AchievementPersistence.Save(_pluginGuid);
 
-            return true;
+            return registeredAchievement;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id">Unique achievement identifier.</param>
-        /// <param name="achievement">Out <see cref="RegisteredAchievement"/> if it registered.</param>
-        /// <returns>
-        /// True if <see cref="RegisteredAchievement"/> is registered; otherwise false.
-        /// </returns>
-        public static bool TryGet(string pluginGuid, string id, out RegisteredAchievement achievement)
+        
+        internal static bool TryGet(string pluginGuid, string id, out RegisteredAchievement achievement)
         {
             achievement = null;
             string fullId = $"{pluginGuid}::{id}";
@@ -83,7 +72,7 @@ namespace CUAchievements.Registry
             return false;
         }
 
-        public bool TryGet(string id, out RegisteredAchievement achievement)
+        internal bool TryGet(string id, out RegisteredAchievement achievement)
         {
             achievement = null;
             string fullId = $"{_pluginGuid}::{id}";
