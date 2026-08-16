@@ -15,7 +15,7 @@ namespace CUAchievements.Definitions
         public string Description { get; private set; }
         public Sprite Sprite { get; private set; }
         public Sprite LockedSprite { get; private set; }
-        public bool Hidden { get; private set; }
+        public bool IsHidden { get; private set; }
         public float MaxProgress { get; private set; }
 
         private AchievementDefinition() { }
@@ -34,7 +34,7 @@ namespace CUAchievements.Definitions
                 Description = description,
                 Sprite = sprite,
                 LockedSprite = lockedSprite,
-                Hidden = hidden
+                IsHidden = hidden
             };
         }
         /// <summary>
