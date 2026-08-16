@@ -239,8 +239,21 @@ namespace CUAchievements.UI
 
             foreach (var pluginAchievement in registeredAchievement)
             {
-                BuildAchievementRow(pluginAchievement.Key, pluginAchievement.Value);
+                var sortedAchievements = pluginAchievement.Value.OrderBy(a => GetSortRank(a)).ToList();
+
+                BuildAchievementRow(pluginAchievement.Key, sortedAchievements);
             }
+        }
+
+        private static int GetSortRank(RegisteredAchievement achievement)
+        {
+            if (achievement.Progress.Unlocked)
+                return 0;
+
+            if (achievement.Definition.IsHidden)
+                return 2;
+
+            return 1; 
         }
 
         internal void BuildAchievementRow(string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
@@ -291,7 +304,7 @@ namespace CUAchievements.UI
         {
             if (achievement == null) return;
 
-            GameObject achievementObject = new GameObject("AchievementContainer", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement)); 
+            GameObject achievementObject = new GameObject("AchievementContainer", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup)); 
             achievementObject.transform.SetParent(parent, false);
 
             LayoutElement layoutElement = achievementObject.GetComponent<LayoutElement>();
@@ -343,7 +356,7 @@ namespace CUAchievements.UI
             iconLayout.minHeight = 96f;
 
             Image iconImage = achievementIconObject.GetComponent<Image>();
-            iconImage.sprite = achievement.Definition.Sprite;
+            iconImage.sprite = achievement.Progress.Unlocked ? achievement.Definition.Sprite : AssetLoader.GetCachedSprite("achievement_default_locked");
             iconImage.preserveAspect = true;
 
             GameObject iconFrameObject = new GameObject("IconFrame", typeof(RectTransform), typeof(Image));
@@ -397,6 +410,9 @@ namespace CUAchievements.UI
             LayoutElement descLayout = descObj.GetComponent<LayoutElement>();
             descLayout.preferredHeight = 45f;
             descLayout.flexibleHeight = 0f;
+
+            CanvasGroup canvasGroup = achievementObject.GetComponent<CanvasGroup>();
+            canvasGroup.alpha = achievement.Progress.Unlocked ? 1f : 0.35f;
         }
 
         private static void LogHierarchy(Transform root, int depth = 0)
