@@ -17,26 +17,12 @@ namespace CUAchievements.Services
             _pluginGuid = pluginGuid;
         }
 
-        /// <summary>
-        /// Create a new <see cref="AchievementService"/>. Not recommended. Use <see cref="Services.CUAchievements"/>.
-        /// </summary>
-        /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
-        /// <returns>
-        /// </returns>
-        public static AchievementService Create(string pluginGuid)
+        internal static AchievementService Create(string pluginGuid)
         {
             return new AchievementService(pluginGuid);
         }
 
-        /// <summary>
-        /// Adds progress to a registered achievement.
-        /// </summary>
-        /// <param name="id">Unique achievement identifier.</param>
-        /// <param name="amount">Amount of progress to add. Default is 1.</param>
-        /// <returns>
-        /// True if the progress was added successfully; otherwise false.
-        /// </returns>
-        public bool AddProgress(string id, float amount = 1)
+        internal bool AddProgress(string id, float amount)
         {
             if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
             {
@@ -44,9 +30,25 @@ namespace CUAchievements.Services
                 return false;
             }
 
+            return AddProgressInternal(achievement, amount);
+        }
+
+        internal bool Unlock(string id)
+        {
+            if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
+            {
+                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
+                return false;
+            }
+
+            return UnlockInternal(achievement);
+        }
+
+        internal static bool AddProgressInternal(RegisteredAchievement achievement, float amount)
+        {
             if (achievement.Definition.Type != Definitions.AchievementType.Counter)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} is not a counter type."); 
+                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {achievement.Definition.Id} is not a counter type.");
                 return false;
             }
 
@@ -62,7 +64,7 @@ namespace CUAchievements.Services
             if (progress.Progress >= achievement.Definition.MaxProgress)
             {
                 progress.Progress = achievement.Definition.MaxProgress;
-                UnlockCore(achievement);
+                UnlockInternal(achievement);
             }
 
             AchievementPersistence.Save(achievement.PluginGuid);
@@ -77,20 +79,13 @@ namespace CUAchievements.Services
         /// True if the unlock was successfully; otherwise false.
         /// </returns>
 
-        public bool Unlock(string id)
+        internal static bool UnlockInternal(RegisteredAchievement achievement)
         {
-            if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
-            {
-                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
-                return false;
-            }
+            if (achievement.Progress.Unlocked) return true;
 
-            var progress = achievement.Progress;
-
-            if (progress.Unlocked)
-                return true;
-
-            UnlockCore(achievement);
+            achievement.Progress.Unlocked = true;
+            achievement.Progress.UnlockedAt = DateTime.UtcNow;
+            AchievementPopupManager.Show(achievement.Definition);
             AchievementPersistence.Save(achievement.PluginGuid);
 
             return true;
