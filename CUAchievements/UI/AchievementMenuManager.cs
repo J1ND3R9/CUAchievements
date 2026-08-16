@@ -356,7 +356,7 @@ namespace CUAchievements.UI
             iconLayout.minHeight = 96f;
 
             Image iconImage = achievementIconObject.GetComponent<Image>();
-            iconImage.sprite = achievement.Progress.Unlocked ? achievement.Definition.Sprite : AssetLoader.GetCachedSprite("achievement_default_locked");
+            iconImage.sprite = achievement.Progress.Unlocked ? achievement.Definition.Sprite : achievement.Definition.LockedSprite;
             iconImage.preserveAspect = true;
 
             GameObject iconFrameObject = new GameObject("IconFrame", typeof(RectTransform), typeof(Image));
