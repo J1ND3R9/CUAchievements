@@ -1,5 +1,7 @@
 ﻿using CUAchievements.Definitions;
 using CUAchievements.Persistence;
+using CUAchievements.Services;
+using System;
 
 namespace CUAchievements.Registry
 {
@@ -8,11 +10,13 @@ namespace CUAchievements.Registry
     /// </summary>
     public sealed class RegisteredAchievement
     {
-        public string PluginGuid { get; }
-
+        internal string PluginGuid { get; }
         public AchievementDefinition Definition { get; }
+        internal AchievementProgressData Progress { get; }
 
-        public AchievementProgressData Progress { get; set; }
+        public bool IsUnlocked => Progress.Unlocked;
+        public float CurrentProgress => Progress.Progress;
+        public DateTime? UnlockedAt => Progress.UnlockedAt;
 
         internal RegisteredAchievement(string pluginGuid, AchievementDefinition definition, AchievementProgressData progress)
         {

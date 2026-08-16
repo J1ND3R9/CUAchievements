@@ -95,6 +95,7 @@
     <Compile Include="Definitions\AchievementDefinition.cs" />
     <Compile Include="Definitions\AchievementType.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />
+    <Compile Include="Services\ConditionalAchievementTracker.cs" />
     <Compile Include="Services\CUAchievements.cs" />
     <Compile Include="UI\AchievementButtonPatch.cs" />
     <Compile Include="Registry\AchievementRegistry.cs" />

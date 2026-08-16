@@ -118,9 +118,9 @@ namespace CUAchievements
         {
             var achievements = Services.CUAchievements.Create(ModGUID);
             for (int i = 0; i < 5; i++)
-                achievements.Registry.Register(AchievementDefinition.Instant($"testInstant{i}", $"Крутое достижение #{i}", "Банальные, но неопровержимые выводы, а также представители современных социальных резервов, вне зависимости от их уровня, должны быть заблокированы в рамках своих собственных рациональных ограничений. Следует отметить, что консультация с широким активом в значительной степени обусловливает важность системы обучения кадров, соответствующей насущным потребностям. Мы вынуждены отталкиваться от того, что внедрение современных методик однозначно определяет каждого участника как способного принимать собственные решения касаемо укрепления моральных ценностей.", null));
+                achievements.Register(AchievementDefinition.Instant($"testInstant{i}", $"Крутое достижение #{i}", "Банальные, но неопровержимые выводы, а также представители современных социальных резервов, вне зависимости от их уровня, должны быть заблокированы в рамках своих собственных рациональных ограничений. Следует отметить, что консультация с широким активом в значительной степени обусловливает важность системы обучения кадров, соответствующей насущным потребностям. Мы вынуждены отталкиваться от того, что внедрение современных методик однозначно определяет каждого участника как способного принимать собственные решения касаемо укрепления моральных ценностей.", null));
             for (int i = 0; i < 5; i++)
-                achievements.Registry.Register(AchievementDefinition.Counter($"testCounter{i}", $"Крутое достижение СЧЁТЧИК #{i}", "bruh", null, 10));
+                achievements.Register(AchievementDefinition.Counter($"testCounter{i}", $"Крутое достижение СЧЁТЧИК #{i}", "bruh", null, 10));
             ConsoleCommandRegistry.Register(
                 "progress_achievement",
                 "Add progress to achievement",
@@ -129,7 +129,7 @@ namespace CUAchievements
                     if (args.Length < 2) return;
                     if (string.IsNullOrEmpty(args[1]))
                         return;
-                    achievements.Achievements.AddProgress(args[1]);
+                    achievements.AddProgress(args[1]);
                 },
                 null,
                 ("id", "Achievement ID")
@@ -144,12 +144,15 @@ namespace CUAchievements
                     if (string.IsNullOrEmpty(args[1]))
                         return;
 
-                    if (achievements.Registry.TryGet(args[1], out var ach))
+                    if (achievements.TryGet(args[1], out var ach))
                         AchievementPopupManager.Show(ach.Definition);
                 },
                 null,
                 ("id", "Achievement ID")
                 );
+
+
+            var eat100foodAchievemnt = achievements.Register(AchievementDefinition.Counter("eat_100_food", "сожри его ебло тупое", "qwada", null, 100));
         }
     }
 }

@@ -2,17 +2,16 @@
 using CUAchievements.Registry;
 using CUAchievements.UI;
 using System;
-using System.Collections.Generic;
 using UnityEngine.Windows.Speech;
 
 namespace CUAchievements.Services
 {
-    public sealed class AchievementService
+    internal sealed class AchievementService
     {
-        private readonly string _pluginGuid;
-        private readonly ConditionalAchievementTracker _conditions = new ConditionalAchievementTracker();
+        internal readonly string _pluginGuid;
+        internal readonly ConditionalAchievementTracker _conditions = new ConditionalAchievementTracker();
 
-        private AchievementService(string pluginGuid)
+        internal AchievementService(string pluginGuid)
         {
             _pluginGuid = pluginGuid;
         }
@@ -71,13 +70,6 @@ namespace CUAchievements.Services
 
             return true;
         }
-        /// <summary>
-        /// Unlock a registered achievement.
-        /// </summary>
-        /// <param name="id">Unique achievement identifier.</param>
-        /// <returns>
-        /// True if the unlock was successfully; otherwise false.
-        /// </returns>
 
         internal static bool UnlockInternal(RegisteredAchievement achievement)
         {
@@ -87,30 +79,7 @@ namespace CUAchievements.Services
             achievement.Progress.UnlockedAt = DateTime.UtcNow;
             AchievementPopupManager.Show(achievement.Definition);
             AchievementPersistence.Save(achievement.PluginGuid);
-
             return true;
-        }
-
-        private void UnlockCore(RegisteredAchievement registeredAchievement)
-        {
-            if (registeredAchievement.Progress.Unlocked)
-                return;
-            AchievementPopupManager.Show(registeredAchievement.Definition);
-            registeredAchievement.Progress.Unlocked = true;
-            registeredAchievement.Progress.UnlockedAt = DateTime.UtcNow;
-        }
-
-        /// <summary>
-        /// Tracks the fulfillment of conditions across different layers of code, scoped to this plugin.
-        /// </summary>
-        public ConditionalAchievementTracker Conditions => _conditions;
-        public sealed class ConditionalAchievementTracker
-        {
-            private readonly Dictionary<string, bool> flags = new Dictionary<string, bool>();
-
-            public void SetFlag(string flagName, bool value) => flags[flagName] = value;
-            public bool GetFlag(string flagName) => flags.TryGetValue(flagName, out var v) && v;
-            public void ClearFlag(string flagName) => flags.Remove(flagName);
         }
     }
 }
