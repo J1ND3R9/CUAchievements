@@ -34,6 +34,7 @@ namespace CUAchievements.Persistence
                     continue;
                 achievement.Progress.Progress = achievementProgress.Value.Progress;
                 achievement.Progress.Unlocked = achievementProgress.Value.Unlocked;
+                achievement.Progress.UnlockedAt = achievementProgress.Value.UnlockedAt;
             }
 
             return true;
