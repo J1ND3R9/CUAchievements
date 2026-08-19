@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="Assets\PluginAssetLoader.cs" />
     <Compile Include="Definitions\AchievementDefinition.cs" />
+    <Compile Include="Definitions\AchievementDifficulty.cs" />
     <Compile Include="Definitions\AchievementType.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />
     <Compile Include="Services\ConditionalAchievementTracker.cs" />
@@ -124,9 +125,6 @@
     <EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Audio\achievement_sound_unlocked.mp3" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v1.png" />
     <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v1alt.png" />
     <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v2.png" />
@@ -135,10 +133,16 @@
     <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v2alt.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_frame_common.png" />
+    <EmbeddedResource Include="Assets\Images\UI\achievement_frame_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\UI\achievement_frame_image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\achievement_default_hidden.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Audio\Unlock\unlock0.wav" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_default_locked.png" />

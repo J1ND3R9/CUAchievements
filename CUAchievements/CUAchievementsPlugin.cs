@@ -40,7 +40,7 @@ namespace CUAchievements
         private void RegisterModOptions()
         {
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-               "cuachievements.achievements.enabled",
+               "cuachievements.enabled",
                "Enable achievements",
                "Enable achievements",
                "Achievements",
@@ -52,7 +52,7 @@ namespace CUAchievements
                }
            ));
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-               "cuachievements.achievements.alerttype",
+               "cuachievements.alerttype",
                "Alert type",
                "Alert type",
                "Achievements",
@@ -71,7 +71,7 @@ namespace CUAchievements
            ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-               "cuachievements.achievements.achievementdisplay",
+               "cuachievements.achievementdisplay",
                "Achievement display",
                "Achievement display (only work on popup achievements)",
                "Achievements",
@@ -91,7 +91,7 @@ namespace CUAchievements
            ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-              "cuachievements.achievements.achievementframe",
+              "cuachievements.achievementframe",
               "Achievement frame",
               "Achievement frame (only work on popup achievements)",
               "Achievements",
@@ -112,15 +112,55 @@ namespace CUAchievements
                   AchievementPopupManager.DebugShow();
               }
           ));
+
+          //  ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
+          //    "cuachievements.achievementsound",
+          //    "Achievement sound",
+          //    "Achievement sound (only work on popup achievements)",
+          //    "Achievements",
+          //    PlayerPrefs.GetInt("Achievements_AchievementUnlockSound", 0),
+          //    new[]
+          //    {
+          //         new ModDropdownChoice("lvlup", "Lvl-Up"),
+          //    },
+          //    value =>
+          //    {
+          //        PlayerPrefs.SetInt("Achievements_AchievementUnlockSound", value);
+          //        PlayerPrefs.Save();
+          //        CUCoreUtils.PlaySoundAt(AssetLoader.GetCachedAudioClip($"unlock{value}"), volume: 0.5f);
+          //    }
+          //));
         }
 
         internal void RegisterDebugShit()
         {
             var achievements = Services.CUAchievements.Create(ModGUID);
-            for (int i = 0; i < 5; i++)
-                achievements.Register(AchievementDefinition.Instant($"testInstant{i}", $"Крутое достижение #{i}", "Банальные, но неопровержимые выводы, а также представители современных социальных резервов, вне зависимости от их уровня, должны быть заблокированы в рамках своих собственных рациональных ограничений. Следует отметить, что консультация с широким активом в значительной степени обусловливает важность системы обучения кадров, соответствующей насущным потребностям. Мы вынуждены отталкиваться от того, что внедрение современных методик однозначно определяет каждого участника как способного принимать собственные решения касаемо укрепления моральных ценностей.", null));
-            for (int i = 0; i < 5; i++)
-                achievements.Register(AchievementDefinition.Counter($"testCounter{i}", $"Крутое достижение СЧЁТЧИК #{i}", "bruh", null, 10));
+
+            for (int i = 1; i < 5; i++)
+            {
+                achievements.Register(AchievementDefinition.Counter($"testCounter{i}", "Ачивка счётчик", "Не следует, однако, забывать, что синтетическое тестирование прекрасно подходит для реализации дальнейших направлений развития.", 10, null));
+            }
+
+            for (int i = 1; i < 5; i++)
+            {
+                achievements.Register(AchievementDefinition.Instant($"testInstant{i}", "Ачивка", "Приятно, граждане, наблюдать, как сторонники тоталитаризма в науке освещают чрезвычайно интересные особенности картины в целом, однако конкретные выводы, разумеется, заблокированы в рамках своих собственных рациональных ограничений. Но высокое качество позиционных исследований не оставляет шанса для инновационных методов управления процессами.", null));
+            }
+
+            for (int i = 1; i < 3; i++)
+            {
+                achievements.Register(AchievementDefinition.Counter($"testCounterDifficult{i}", "Сложная ачивка", "Не следует, однако, забывать, что синтетическое тестирование прекрасно подходит для реализации дальнейших направлений развития.", 3, null, null, AchievementDifficulty.Difficult));
+            }
+
+            for (int i = 1; i < 3; i++)
+            {
+                achievements.Register(AchievementDefinition.Counter($"testCounterHard{i}", "Оч. сложная ачивка", "Не следует, однако, забывать, что синтетическое тестирование прекрасно подходит для реализации дальнейших направлений развития.", 3, null, null, AchievementDifficulty.Hard));
+            }
+
+            for (int i = 1; i < 3; i++)
+            {
+                achievements.Register(AchievementDefinition.Counter($"testHidden{i}", "Скрытая ачивка", "Не следует, однако, забывать, что синтетическое тестирование прекрасно подходит для реализации дальнейших направлений развития.", 3, null, null, AchievementDifficulty.Hard, null, true));
+            }
+
             ConsoleCommandRegistry.Register(
                 "progress_achievement",
                 "Add progress to achievement",

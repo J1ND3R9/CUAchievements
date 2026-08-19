@@ -33,7 +33,7 @@ namespace CUAchievements.UI
         private Button achievementListTab;
         private Button settingsTab;
         private GameObject buttonTemplate;
-        private Dictionary<string, List<RegisteredAchievement>> registeredAchievement;
+        private Dictionary<string, List<RegisteredAchievement>> registeredAchievements;
         private bool needsRefresh = true;
 
         internal void Initialize(TMP_FontAsset font)
@@ -216,11 +216,34 @@ namespace CUAchievements.UI
                     Destroy(content.GetChild(i).gameObject);
             }
 
-            if (registeredAchievement == null) registeredAchievement = AchievementRegistry.GetAchievementsPerPlugin(true);
+            if (registeredAchievements == null) registeredAchievements = AchievementRegistry.GetAchievementsPerPlugin(true);
 
-            foreach (var pluginAchievement in registeredAchievement)
+            foreach (var pluginAchievement in registeredAchievements)
             {
-                var sortedAchievements = pluginAchievement.Value.OrderBy(a => GetSortRank(a)).ThenByDescending(a => a.Progress.UnlockedAt != null ? a.Progress.UnlockedAt : DateTime.MinValue).ToList();
+                var achievements = pluginAchievement.Value;
+
+                var unlocked = achievements
+                    .Where(a => a.Progress.Unlocked)
+                    .OrderByDescending(a => a.Progress.UnlockedAt)
+                    .ThenBy(a => (int)a.Definition.Difficulty)
+                    .ToList();
+
+                var lockedVisible = achievements
+                    .Where(a => !a.Progress.Unlocked && !a.Definition.IsHidden)
+                    .OrderBy(a => (int)a.Definition.Difficulty)
+                    .ThenBy(a => a.Definition.Title)
+                    .ToList();
+
+                var hidden = achievements
+                    .Where(a => !a.Progress.Unlocked && a.Definition.IsHidden)
+                    .OrderBy(a => (int)a.Definition.Difficulty)
+                    .ThenBy(a => a.Definition.Title)
+                    .ToList();
+
+                var sortedAchievements = unlocked
+                    .Concat(lockedVisible)
+                    .Concat(hidden)
+                    .ToList();
 
                 BuildAchievementRow(pluginAchievement.Key, sortedAchievements);
             }
@@ -234,7 +257,7 @@ namespace CUAchievements.UI
             if (achievement.Definition.IsHidden)
                 return 2;
 
-            return 1; 
+            return 1;
         }
 
         private void BuildAchievementRow(string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
@@ -254,9 +277,20 @@ namespace CUAchievements.UI
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             CreateAchievementRowHeader(achievementPluginContainer.transform, pluginName);
+
+            List<RegisteredAchievement> hiddenAchievements = new List<RegisteredAchievement>();
             foreach (var achievement in pluginRegisteredAchievements)
             {
-                AddAchievementObject(achievementPluginContainer.transform, achievement);
+                if (!achievement.IsUnlocked && achievement.Definition.IsHidden)
+                {
+                    hiddenAchievements.Add(achievement);
+                    continue;
+                }
+                CreateAchievementObject(achievementPluginContainer.transform, achievement);
+            }
+            if (hiddenAchievements.Count > 0)
+            {
+                CreateHiddenAchievementObject(achievementPluginContainer.transform, hiddenAchievements);
             }
         }
 
@@ -268,7 +302,7 @@ namespace CUAchievements.UI
             GameObject headerObject = Instantiate(buttonTemplate, parent, false);
             headerObject.SetActive(false);
             headerObject.name = "PluginName";
-            
+
             LayoutElement headerLayoutElement = headerObject.AddComponent<LayoutElement>();
             headerLayoutElement.preferredHeight = 60f;
             headerLayoutElement.minHeight = 60f;
@@ -289,11 +323,12 @@ namespace CUAchievements.UI
 
             headerObject.SetActive(true);
         }
-        private void AddAchievementObject(Transform parent, RegisteredAchievement achievement)
-        {
-            if (achievement == null) return;
 
-            GameObject achievementObject = new GameObject("AchievementContainer", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup)); 
+        private GameObject CreateAchievementObject(Transform parent, RegisteredAchievement achievement)
+        {
+            if (achievement == null) return null;
+
+            GameObject achievementObject = new GameObject("AchievementContainer", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup));
             achievementObject.transform.SetParent(parent, false);
 
             LayoutElement layoutElement = achievementObject.GetComponent<LayoutElement>();
@@ -331,7 +366,7 @@ namespace CUAchievements.UI
             frameRectTransform.offsetMax = Vector2.zero;
 
             Image frameImage = frameObject.GetComponent<Image>();
-            frameImage.sprite = AssetLoader.GetCachedSprite("achievement_frame_common");
+            frameImage.sprite = GetAchievementFrame(achievement.Definition.Difficulty);
             frameImage.type = Image.Type.Sliced;
             frameImage.color = Color.white;
             frameImage.raycastTarget = false;
@@ -345,7 +380,7 @@ namespace CUAchievements.UI
             iconLayout.minHeight = 96f;
 
             Image iconImage = achievementIconObject.GetComponent<Image>();
-            iconImage.sprite = achievement.Progress.Unlocked ? achievement.Definition.Sprite : achievement.Definition.LockedSprite;
+            iconImage.sprite = achievement.IsUnlocked ? achievement.Definition.Sprite : achievement.Definition.LockedSprite;
             iconImage.preserveAspect = true;
 
             GameObject iconFrameObject = new GameObject("IconFrame", typeof(RectTransform), typeof(Image));
@@ -372,7 +407,7 @@ namespace CUAchievements.UI
             textVerticalLayout.childForceExpandWidth = true;
             textVerticalLayout.spacing = 4f;
 
-            var titleTmp = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI titleTmp = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
             titleTmp.transform.SetParent(textObject.transform, false);
             titleTmp.text = achievement.Definition.Title;
             titleTmp.fontSize = 24;
@@ -383,7 +418,7 @@ namespace CUAchievements.UI
             titleTmp.overflowMode = TextOverflowModes.Ellipsis;
             titleTmp.maxVisibleLines = 1;
 
-            var descObj = new GameObject("Description", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            GameObject descObj = new GameObject("Description", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
             descObj.transform.SetParent(textObject.transform, false);
 
             var descTmp = descObj.GetComponent<TextMeshProUGUI>();
@@ -402,6 +437,41 @@ namespace CUAchievements.UI
 
             CanvasGroup canvasGroup = achievementObject.GetComponent<CanvasGroup>();
             canvasGroup.alpha = achievement.Progress.Unlocked ? 1f : 0.35f;
+
+            return achievementObject;
+        }
+
+        private void CreateHiddenAchievementObject(Transform parent, List<RegisteredAchievement> hiddenAchievements)
+        {
+            if (hiddenAchievements == null || hiddenAchievements.Count == 0) return;
+
+            var achievementObject = CreateAchievementObject(parent, hiddenAchievements[0]);
+            achievementObject.name = "AchievementHiddenContainer";
+
+            TextMeshProUGUI titleTmp = achievementObject.transform.Find("Text/Title").GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI descTmp = achievementObject.transform.Find("Text/Description").GetComponent<TextMeshProUGUI>();
+            titleTmp.text = string.Format("Скрытых достижений осталось: {0}", hiddenAchievements.Count()); // TODO: Localization
+            descTmp.text = "Тебе придётся пошевелить мозгами, чтобы открыть все из них!"; // TODO: Localization
+
+            Image frameImage = achievementObject.transform.Find("Frame").GetComponent<Image>();
+            frameImage.sprite = AssetLoader.GetCachedSprite("achievement_frame_normal");
+
+            Image iconImage = achievementObject.transform.Find("Icon").GetComponent<Image>();
+            iconImage.sprite = AssetLoader.GetCachedSprite("achievement_default_hidden");
+        }
+
+        private Sprite GetAchievementFrame(AchievementDifficulty rank)
+        {
+            switch (rank)
+            {
+                case AchievementDifficulty.Normal:
+                    return AssetLoader.GetCachedSprite("achievement_frame_normal");
+                case AchievementDifficulty.Difficult:
+                    return AssetLoader.GetCachedSprite("achievement_frame_difficult");
+                case AchievementDifficulty.Hard:
+                    return AssetLoader.GetCachedSprite("achievement_frame_hard");
+            }
+            return AssetLoader.GetCachedSprite("achievement_frame_normal");
         }
 
         private void OnDestroy()
