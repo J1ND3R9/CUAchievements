@@ -44,7 +44,7 @@ namespace CUAchievements.UI
         public static AchievementPopupManager Instance { get; private set; }
 
 
-        private static AudioClip achievementPopUpAudio;
+        //private static AudioClip achievementPopUpAudio;
         private RectTransform popupRoot;
         private Image iconImage;
         private TextMeshProUGUI titleText;
@@ -66,7 +66,6 @@ namespace CUAchievements.UI
 
         private static DisplayType displayType;
         private static PopupFrameType popupFrameType;
-
         public static void EnsureCreated()
         {
             if (Instance != null) return;
@@ -96,13 +95,22 @@ namespace CUAchievements.UI
                 Instance.RebuildUI();
             }
 
-            CUCoreUtils.PlaySoundAt(achievementPopUpAudio, null);
+            CUCoreUtils.PlaySoundAt(GetUnlockSound(), null);
 
             Instance.queue.Enqueue((achievementDef.Sprite, achievementDef.Title, achievementDef.Description));
             if (!Instance.isShowing)
             {
                 Instance.StartCoroutine(Instance.ProcessQueue());
             }
+        }
+
+        internal static AudioClip GetUnlockSound()
+        {
+            int playerPrefUnlockSoundIndex = PlayerPrefs.GetInt("Achievements_AchievementUnlockSound", 0);
+            AudioClip audio = AssetLoader.GetCachedAudioClip($"achievement_unlock_sound_{playerPrefUnlockSoundIndex}");
+            if (audio == null)
+                return AssetLoader.GetCachedAudioClip($"achievement_unlock_sound_0");
+            return audio;
         }
 
         internal static void DebugShow()
@@ -139,10 +147,10 @@ namespace CUAchievements.UI
         {
             AlertType alertType = (AlertType)PlayerPrefs.GetInt("Achievements_AlertType", 0);
 
-            if (achievementPopUpAudio == null)
-            {
-                achievementPopUpAudio = AssetLoader.GetCachedAudioClip("achievement_sound_unlocked");
-            }
+            //if (achievementPopUpAudio == null)
+            //{
+            //    achievementPopUpAudio = AssetLoader.GetCachedAudioClip("achievement_sound_unlock_1");
+            //}
 
             if (alertType == AlertType.Alert && !CUCoreUtils.TryGetCamera(out _))
             {
