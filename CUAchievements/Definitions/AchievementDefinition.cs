@@ -18,7 +18,7 @@ namespace CUAchievements.Definitions
         public Sprite CustomFrame { get; private set; }
         public bool IsHidden { get; private set; }
         public float MaxProgress { get; private set; }
-
+        public int ProgressDecimals { get; private set; }
         private AchievementDefinition() { }
 
         private static AchievementDefinition CreateBase(string id,
@@ -63,6 +63,7 @@ namespace CUAchievements.Definitions
         /// <param name="lockedIcon">The icon displayed for a locked achievement.</param>
         /// <param name="customFrame">Add a custom frame around the achievement. Make sure to use 9-slicing.</param>
         /// <param name="hidden">If true, the achievement's title, description, and sprite are hidden from the player until unlocked.</param>
+        /// <param name="progressDecimals">Number of decimal places. Displayed in the achievements list.</param>
         /// <remarks>
         /// If <paramref name="hidden"/> is true, <paramref name="lockedIcon"/> and <paramref name="customFrame"/> are ignored until the achievement is unlocked.
         /// </remarks>
@@ -74,12 +75,14 @@ namespace CUAchievements.Definitions
                                                     Sprite lockedIcon = null,
                                                     AchievementDifficulty difficulty = AchievementDifficulty.Normal,
                                                     Sprite customFrame = null,
-                                                    bool hidden = false)
+                                                    bool hidden = false,
+                                                    int progressDecimals = 0)
         {
             AchievementDefinition def = CreateBase(id, title, description, difficulty, icon, lockedIcon, customFrame, hidden);
 
             def.MaxProgress = maxProgress;
             def.Type = AchievementType.Counter;
+            def.ProgressDecimals = progressDecimals;
 
             return def;
         }
