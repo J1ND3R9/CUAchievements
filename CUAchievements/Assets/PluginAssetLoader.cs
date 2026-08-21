@@ -65,7 +65,7 @@ namespace CUAchievements.Assets
 
             foreach (var entry in spriteEntries)
             {
-                var sprite = AssetLoader.LoadEmbeddedSprite(entry.Path, entry.PixelsPerUnit);
+                Sprite sprite = AssetLoader.LoadEmbeddedSprite(entry.Path, entry.PixelsPerUnit);
                 if (entry.Border > 0f)
                     sprite = SpriteSlicer.MakeSliced(sprite, entry.Border);
                 LoadedSprites[entry.CacheKey] = sprite;
@@ -79,7 +79,7 @@ namespace CUAchievements.Assets
 
             foreach (var entry in audioEntries)
             {
-                var clip = AssetLoader.LoadEmbeddedAudio(entry.Path);
+                AudioClip clip = AssetLoader.LoadEmbeddedAudio(entry.Path);
                 LoadedAudioClips[entry.CacheKey] = clip;
             }
 
