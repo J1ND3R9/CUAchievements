@@ -79,7 +79,7 @@ namespace CUAchievements.Services
             achievement.Progress.Unlocked = true;
             achievement.Progress.UnlockedAt = DateTime.UtcNow;
 
-            AchievementPopupManager.Show(achievement.Definition);
+            AchievementPopupManager.Show(achievement);
             AchievementPersistence.Save(achievement.PluginGuid);
             AchievementEvents.RaiseAchievementsChanged();
 

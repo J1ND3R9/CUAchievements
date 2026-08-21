@@ -78,9 +78,9 @@ namespace CUAchievements
                PlayerPrefs.GetInt("Achievements_AchievementDisplay", 0),
                new[]
                {
-                   new ModDropdownChoice("bottom", "Bottom-side"),
-                   new ModDropdownChoice("left","Left-side"),
-                   new ModDropdownChoice("up", "Up-side")
+                   new ModDropdownChoice("bottom", "Down > Up"),
+                   new ModDropdownChoice("left","Right > Left"),
+                   new ModDropdownChoice("up", "Up > Down")
                },
                value =>
                {
@@ -90,46 +90,59 @@ namespace CUAchievements
                }
            ));
 
-            ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-              "cuachievements.achievementframe",
-              "Achievement frame",
-              "Achievement frame (only work on popup achievements)",
-              "Achievements",
-              PlayerPrefs.GetInt("Achievements_AchievementFrame", 0),
-              new[]
-              {
-                   new ModDropdownChoice("v1", "V1"),
-                   new ModDropdownChoice("v1alt", "V1 Alt BG"),
-                   new ModDropdownChoice("v2", "V2"),
-                   new ModDropdownChoice("v2alt", "V2 Alt BG"),
-                   new ModDropdownChoice("v3", "V3"),
-                   new ModDropdownChoice("v3alt", "V3 Alt BG"),
-              },
-              value =>
-              {
-                  PlayerPrefs.SetInt("Achievements_AchievementFrame", value);
-                  PlayerPrefs.Save();
-                  AchievementPopupManager.DebugShow();
-              }
-          ));
+            //  ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
+            //    "cuachievements.achievementpopupstyle",
+            //    "Achievement popup style",
+            //    "Achievement popup style",
+            //    "Achievements",
+            //    PlayerPrefs.GetInt("Achievements_AchievementPopupStyle", 0),
+            //    new[]
+            //    {
+            //         new ModDropdownChoice("v1", "V1"),
+            //         new ModDropdownChoice("v2", "V2"),
+            //         new ModDropdownChoice("v3", "V3")
+            //    },
+            //    value =>
+            //    {
+            //        PlayerPrefs.SetInt("Achievements_AchievementPopupStyle", value);
+            //        PlayerPrefs.Save();
+            //        AchievementPopupManager.DebugShow();
+            //    }
+            //));
 
-          //  ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-          //    "cuachievements.achievementsound",
-          //    "Achievement sound",
-          //    "Achievement sound (only work on popup achievements)",
-          //    "Achievements",
-          //    PlayerPrefs.GetInt("Achievements_AchievementUnlockSound", 0),
-          //    new[]
-          //    {
-          //         new ModDropdownChoice("lvlup", "Lvl-Up"),
-          //    },
-          //    value =>
-          //    {
-          //        PlayerPrefs.SetInt("Achievements_AchievementUnlockSound", value);
-          //        PlayerPrefs.Save();
-          //        CUCoreUtils.PlaySoundAt(AssetLoader.GetCachedAudioClip($"unlock{value}"), volume: 0.5f);
-          //    }
-          //));
+            //  ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
+            //    "cuachievements.achievementsound",
+            //    "Achievement sound",
+            //    "Achievement sound (only work on popup achievements)",
+            //    "Achievements",
+            //    PlayerPrefs.GetInt("Achievements_AchievementUnlockSound", 0),
+            //    new[]
+            //    {
+            //         new ModDropdownChoice("lvlup", "Lvl-Up"),
+            //    },
+            //    value =>
+            //    {
+            //        PlayerPrefs.SetInt("Achievements_AchievementUnlockSound", value);
+            //        PlayerPrefs.Save();
+            //        CUCoreUtils.PlaySoundAt(AssetLoader.GetCachedAudioClip($"unlock{value}"), volume: 0.5f);
+            //    }
+            //));
+
+            ModOptionsRegistry.Register(ModOptionDefinition.Float(
+                "cuachievements.achievementsoundvolume",
+                "Achievement unlock volume",
+                "Achievement unlock volume",
+                "Achievements",
+                PlayerPrefs.GetFloat("Achievements_UnlockVolume", 0.8f),
+                0f,
+                1f,
+                value =>
+                {
+                    PlayerPrefs.SetFloat("Achievements_UnlockVolume", value);
+                    PlayerPrefs.Save();
+                },
+                value => Mathf.RoundToInt(value * 100f) + "%"
+                ));
         }
 
         internal void RegisterDebugShit()
@@ -185,7 +198,7 @@ namespace CUAchievements
                         return;
 
                     if (achievements.TryGet(args[1], out var ach))
-                        AchievementPopupManager.Show(ach.Definition);
+                        AchievementPopupManager.Show(ach);
                 },
                 null,
                 ("id", "Achievement ID")
