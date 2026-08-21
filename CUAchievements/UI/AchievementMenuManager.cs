@@ -59,7 +59,7 @@ namespace CUAchievements.UI
                 modalCanvasGroup.interactable = show;
                 modalCanvasGroup.blocksRaycasts = show;
             }
-            if (vanillaPanel != null) vanillaPanel.SetActive(show);
+            vanillaPanel?.SetActive(show);
             if (show && needsRefresh)
             {
                 RefreshAchievementList();
@@ -108,9 +108,7 @@ namespace CUAchievements.UI
             buttonObject.name = name;
             buttonObject.SetActive(false);
 
-            Button button = buttonObject.GetComponent<Button>();
-
-            if (button == null) button = buttonObject.GetComponentInChildren<Button>(true);
+            Button button = buttonObject.GetComponent<Button>() ?? buttonObject.GetComponentInChildren<Button>(true);
             if (button == null)
             {
                 Destroy(buttonObject);
@@ -169,7 +167,7 @@ namespace CUAchievements.UI
             settingsDescriptionTextComponent.text = LocaleRegistry.Get("achievementsbutton", "Achievements");
 
             scrollRect = vanillaPanel.GetComponentInChildren<ScrollRect>(true);
-            content = scrollRect != null ? scrollRect.content : null;
+            content = scrollRect?.content;
 
             if (content != null)
             {
@@ -307,9 +305,7 @@ namespace CUAchievements.UI
             headerLayoutElement.preferredHeight = 60f;
             headerLayoutElement.minHeight = 60f;
 
-            Button headerButton = headerObject.GetComponent<Button>();
-            if (headerButton == null) headerButton = headerObject.GetComponentInChildren<Button>(true);
-
+            Button headerButton = headerObject.GetComponent<Button>() ?? headerObject.GetComponentInChildren<Button>(true);
             headerButton.onClick = new Button.ButtonClickedEvent();
             headerButton.interactable = false;
             TMP_Text headerTmpText = headerButton.GetComponentInChildren<TMP_Text>();
@@ -324,7 +320,7 @@ namespace CUAchievements.UI
             headerObject.SetActive(true);
         }
 
-        private GameObject CreateAchievementObject(Transform parent, RegisteredAchievement achievement)
+        private GameObject CreateAchievementObject(Transform parent, RegisteredAchievement achievement, bool isTemplate = false)
         {
             if (achievement == null) return null;
 
@@ -409,20 +405,20 @@ namespace CUAchievements.UI
             textVerticalLayout.childForceExpandWidth = true;
             textVerticalLayout.spacing = 4f;
 
-            GameObject headerObject = new GameObject("Header", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            GameObject headerObject = new GameObject("Header", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
             headerObject.transform.SetParent(textObject.transform, false);
 
             HorizontalLayoutGroup headerHorizontalLayout = headerObject.GetComponent<HorizontalLayoutGroup>();
             headerHorizontalLayout.childControlWidth = true;
             headerHorizontalLayout.childControlHeight = true;
             headerHorizontalLayout.childForceExpandWidth = false;
+            headerHorizontalLayout.childForceExpandHeight = true;
             headerHorizontalLayout.childAlignment = TextAnchor.MiddleLeft;
 
             GameObject titleObject = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
             titleObject.transform.SetParent(headerObject.transform, false);
 
             TextMeshProUGUI titleTmp = titleObject.GetComponent<TextMeshProUGUI>();
-            titleTmp.transform.SetParent(textObject.transform, false);
             titleTmp.text = achievement.Definition.Title;
             titleTmp.fontSize = 24;
             titleTmp.fontStyle = FontStyles.Bold;
@@ -431,6 +427,69 @@ namespace CUAchievements.UI
             titleTmp.enableWordWrapping = true;
             titleTmp.overflowMode = TextOverflowModes.Ellipsis;
             titleTmp.maxVisibleLines = 1;
+            titleTmp.alignment = TextAlignmentOptions.Center;
+
+            GameObject headerSpacerObject = new GameObject("HeaderSpacer", typeof(RectTransform), typeof(LayoutElement));
+            headerSpacerObject.transform.SetParent(headerObject.transform, false);
+
+            LayoutElement headerSpacerLayout = headerSpacerObject.GetComponent<LayoutElement>();
+            headerSpacerLayout.flexibleWidth = 1f;
+
+            if (achievement.Definition.Type == AchievementType.Counter && !isTemplate)
+            {
+                GameObject progressRowObject = new GameObject("ProgressRow", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+                progressRowObject.transform.SetParent(headerObject.transform, false);
+
+                HorizontalLayoutGroup progressRowHorizontalLayout = progressRowObject.GetComponent<HorizontalLayoutGroup>();
+                progressRowHorizontalLayout.childControlWidth = true;
+                progressRowHorizontalLayout.childControlHeight = true;
+                progressRowHorizontalLayout.childForceExpandWidth = false;
+                progressRowHorizontalLayout.childForceExpandHeight = false;
+                progressRowHorizontalLayout.spacing = 10f;
+                progressRowHorizontalLayout.childAlignment = TextAnchor.MiddleLeft;
+
+                LayoutElement progressRowLayout = progressRowObject.GetComponent<LayoutElement>();
+                progressRowLayout.preferredHeight = 24f;
+
+                GameObject progressNumberObject = new GameObject("ProgressNumber", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+                progressNumberObject.transform.SetParent(progressRowObject.transform, false);
+
+                TextMeshProUGUI progressNumberTmp = progressNumberObject.GetComponent<TextMeshProUGUI>();
+                string format = $"n{achievement.Definition.ProgressDecimals}";
+                progressNumberTmp.text = $"{achievement.Progress.Progress.ToString(format)}/{achievement.Definition.MaxProgress.ToString(format)}";
+                progressNumberTmp.fontSize = 18;
+                progressNumberTmp.color = Color.white;
+                progressNumberTmp.font = this.font;
+
+                GameObject squaresObject = new GameObject("ProgressSquares", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+                squaresObject.transform.SetParent(progressRowObject.transform, false);
+
+                HorizontalLayoutGroup squaresHorizontalLayout = squaresObject.GetComponent<HorizontalLayoutGroup>();
+                squaresHorizontalLayout.spacing = 4f;
+                squaresHorizontalLayout.childControlWidth = true;
+                squaresHorizontalLayout.childControlHeight = true;
+                squaresHorizontalLayout.childForceExpandWidth = false;
+                squaresHorizontalLayout.childForceExpandHeight = false;
+                squaresHorizontalLayout.childAlignment = TextAnchor.MiddleLeft;
+
+                LayoutElement squaresLayout = squaresObject.GetComponent<LayoutElement>();
+                squaresLayout.preferredHeight = 24f;
+
+                int filledSquares = Mathf.FloorToInt((achievement.Progress.Progress / achievement.Definition.MaxProgress) * 10);
+                for (int i = 0; i < 10; i++)
+                {
+                    GameObject squareObject = new GameObject($"Square{i}", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+                    squareObject.transform.SetParent(squaresObject.transform, false);
+
+                    LayoutElement squareLayout = squareObject.GetComponent<LayoutElement>();
+                    squareLayout.preferredWidth = 24f;
+                    squareLayout.preferredHeight = 24f;
+
+                    Image squareImage = squareObject.GetComponent<Image>();
+                    squareImage.color = i < filledSquares ? Color.white : new Color(1f, 1f, 1f, 0.1f);
+                }
+            }
+
 
             GameObject descObj = new GameObject("Description", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
             descObj.transform.SetParent(textObject.transform, false);
@@ -459,10 +518,10 @@ namespace CUAchievements.UI
         {
             if (hiddenAchievements == null || hiddenAchievements.Count == 0) return;
 
-            var achievementObject = CreateAchievementObject(parent, hiddenAchievements[0]);
+            var achievementObject = CreateAchievementObject(parent, hiddenAchievements[0], true);
             achievementObject.name = "AchievementHiddenContainer";
 
-            TextMeshProUGUI titleTmp = achievementObject.transform.Find("Text/Title").GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI titleTmp = achievementObject.transform.Find("Text/Header/Title").GetComponent<TextMeshProUGUI>();
             TextMeshProUGUI descTmp = achievementObject.transform.Find("Text/Description").GetComponent<TextMeshProUGUI>();
             titleTmp.text = string.Format("Скрытых достижений осталось: {0}", hiddenAchievements.Count()); // TODO: Localization
             descTmp.text = "Тебе придётся пошевелить мозгами, чтобы открыть все из них!"; // TODO: Localization
