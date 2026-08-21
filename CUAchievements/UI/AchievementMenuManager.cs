@@ -331,8 +331,8 @@ namespace CUAchievements.UI
             GameObject achievementObject = new GameObject("AchievementContainer", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup));
             achievementObject.transform.SetParent(parent, false);
 
-            LayoutElement layoutElement = achievementObject.GetComponent<LayoutElement>();
-            layoutElement.preferredHeight = 140f;
+            LayoutElement achievementLayout = achievementObject.GetComponent<LayoutElement>();
+            achievementLayout.preferredHeight = 140f;
 
             HorizontalLayoutGroup achievementHorizontalLayout = achievementObject.GetComponent<HorizontalLayoutGroup>();
             achievementHorizontalLayout.padding = new RectOffset(25, 25, 5, 5);
@@ -380,11 +380,12 @@ namespace CUAchievements.UI
             iconLayout.minHeight = 96f;
 
             Image iconImage = achievementIconObject.GetComponent<Image>();
-            iconImage.sprite = achievement.IsUnlocked ? achievement.Definition.Sprite : achievement.Definition.LockedSprite;
+            iconImage.sprite = achievement.IsUnlocked ? achievement.Definition.Icon : achievement.Definition.LockedIcon;
             iconImage.preserveAspect = true;
 
             GameObject iconFrameObject = new GameObject("IconFrame", typeof(RectTransform), typeof(Image));
             iconFrameObject.transform.SetParent(achievementIconObject.transform, false);
+
             RectTransform iconFrameRectTransform = iconFrameObject.GetComponent<RectTransform>();
             iconFrameRectTransform.anchorMin = Vector2.zero;
             iconFrameRectTransform.anchorMax = Vector2.one;
@@ -398,6 +399,7 @@ namespace CUAchievements.UI
 
             GameObject textObject = new GameObject("Text", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             textObject.transform.SetParent(achievementObject.transform, false);
+
             LayoutElement textLayout = textObject.GetComponent<LayoutElement>();
             textLayout.flexibleWidth = 1f;
 
@@ -407,7 +409,19 @@ namespace CUAchievements.UI
             textVerticalLayout.childForceExpandWidth = true;
             textVerticalLayout.spacing = 4f;
 
-            TextMeshProUGUI titleTmp = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
+            GameObject headerObject = new GameObject("Header", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            headerObject.transform.SetParent(textObject.transform, false);
+
+            HorizontalLayoutGroup headerHorizontalLayout = headerObject.GetComponent<HorizontalLayoutGroup>();
+            headerHorizontalLayout.childControlWidth = true;
+            headerHorizontalLayout.childControlHeight = true;
+            headerHorizontalLayout.childForceExpandWidth = false;
+            headerHorizontalLayout.childAlignment = TextAnchor.MiddleLeft;
+
+            GameObject titleObject = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            titleObject.transform.SetParent(headerObject.transform, false);
+
+            TextMeshProUGUI titleTmp = titleObject.GetComponent<TextMeshProUGUI>();
             titleTmp.transform.SetParent(textObject.transform, false);
             titleTmp.text = achievement.Definition.Title;
             titleTmp.fontSize = 24;
