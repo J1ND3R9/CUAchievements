@@ -13,9 +13,9 @@ namespace CUAchievements.Definitions
         public string Title { get; private set; }
         public string Description { get; private set; }
         public AchievementDifficulty Difficulty { get; private set; }
-        public Sprite Sprite { get; private set; }
-        public Sprite LockedSprite { get; private set; }
-        public Sprite FrameOverride { get; private set; }
+        public Sprite Icon { get; private set; }
+        public Sprite LockedIcon { get; private set; }
+        public Sprite CustomFrame { get; private set; }
         public bool IsHidden { get; private set; }
         public float MaxProgress { get; private set; }
 
@@ -45,9 +45,9 @@ namespace CUAchievements.Definitions
                 Title = title,
                 Description = description,
                 Difficulty = rank,
-                Sprite = sprite,
-                FrameOverride = frameOverride,
-                LockedSprite = lockedSprite,
+                Icon = sprite,
+                CustomFrame = frameOverride,
+                LockedIcon = lockedSprite,
                 IsHidden = hidden
             };
         }
@@ -57,26 +57,26 @@ namespace CUAchievements.Definitions
         /// <param name="id">Unique achievement identifier.</param>
         /// <param name="title">Displayed achievement title.</param>
         /// <param name="description">Displayed achievement description.</param>
-        /// <param name="sprite">Displayed achievement icon. If null, the default sprite will be used.</param>
+        /// <param name="icon">Displayed achievement icon. If null, the default sprite will be used.</param>
         /// <param name="difficulty">Achievement difficulty.Affects the border around the achievement in the list.</param>
         /// <param name="maxProgress">The progress required for the achievement to unlock.</param>
-        /// <param name="lockedSprite">The icon displayed for a locked achievement.</param>
-        /// <param name="frameOverride">Add a custom frame around the achievement. Make sure to use 9-slicing.</param>
+        /// <param name="lockedIcon">The icon displayed for a locked achievement.</param>
+        /// <param name="customFrame">Add a custom frame around the achievement. Make sure to use 9-slicing.</param>
         /// <param name="hidden">If true, the achievement's title, description, and sprite are hidden from the player until unlocked.</param>
         /// <remarks>
-        /// If <paramref name="hidden"/> is true, <paramref name="lockedSprite"/> and <paramref name="frameOverride"/> are ignored until the achievement is unlocked.
+        /// If <paramref name="hidden"/> is true, <paramref name="lockedIcon"/> and <paramref name="customFrame"/> are ignored until the achievement is unlocked.
         /// </remarks>
         public static AchievementDefinition Counter(string id,
                                                     string title,
                                                     string description,
                                                     float maxProgress,
-                                                    Sprite sprite,
-                                                    Sprite lockedSprite = null,
+                                                    Sprite icon,
+                                                    Sprite lockedIcon = null,
                                                     AchievementDifficulty difficulty = AchievementDifficulty.Normal,
-                                                    Sprite frameOverride = null,
+                                                    Sprite customFrame = null,
                                                     bool hidden = false)
         {
-            AchievementDefinition def = CreateBase(id, title, description, difficulty, sprite, lockedSprite, frameOverride, hidden);
+            AchievementDefinition def = CreateBase(id, title, description, difficulty, icon, lockedIcon, customFrame, hidden);
 
             def.MaxProgress = maxProgress;
             def.Type = AchievementType.Counter;
@@ -90,24 +90,24 @@ namespace CUAchievements.Definitions
         /// <param name="id">Unique achievement identifier.</param>
         /// <param name="title">Displayed achievement title.</param>
         /// <param name="description">Displayed achievement description.</param>
-        /// <param name="sprite">Displayed achievement icon.</param>
+        /// <param name="icon">Displayed achievement icon.</param>
         /// <param name="difficulty">Achievement difficulty.Affects the border around the achievement in the list.</param>
-        /// <param name="lockedSprite">The icon displayed for a locked achievement.</param>
-        /// <param name="frameOverride">Add a custom frame around the achievement. Make sure to use 9-slicing.</param>
+        /// <param name="lockedIcon">The icon displayed for a locked achievement.</param>
+        /// <param name="customFrame">Add a custom frame around the achievement. Make sure to use 9-slicing.</param>
         /// <param name="hidden">If true, the achievement's title, description, and sprite are hidden from the player until unlocked.</param>
         /// <remarks>
-        /// If <paramref name="hidden"/> is true, <paramref name="lockedSprite"/> and <paramref name="frameOverride"/> are ignored until the achievement is unlocked.
+        /// If <paramref name="hidden"/> is true, <paramref name="lockedIcon"/> and <paramref name="customFrame"/> are ignored until the achievement is unlocked.
         /// </remarks>
         public static AchievementDefinition Instant(string id,
                                                     string title,
                                                     string description,
-                                                    Sprite sprite,
-                                                    Sprite lockedSprite = null,
+                                                    Sprite icon,
+                                                    Sprite lockedIcon = null,
                                                     AchievementDifficulty difficulty = AchievementDifficulty.Normal,
-                                                    Sprite frameOverride = null,
+                                                    Sprite customFrame = null,
                                                     bool hidden = false)
         {
-            AchievementDefinition def = CreateBase(id, title, description, difficulty, sprite, lockedSprite, frameOverride, hidden);
+            AchievementDefinition def = CreateBase(id, title, description, difficulty, icon, lockedIcon, customFrame, hidden);
 
             def.Type = AchievementType.Instant;
             return def;
