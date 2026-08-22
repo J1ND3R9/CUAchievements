@@ -274,7 +274,7 @@ namespace CUAchievements.UI
             ContentSizeFitter fitter = achievementPluginContainer.GetComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            CreateAchievementRowHeader(achievementPluginContainer.transform, pluginName);
+            CreateAchievementRowHeader(achievementPluginContainer.transform, pluginName, pluginRegisteredAchievements);
 
             List<RegisteredAchievement> hiddenAchievements = new List<RegisteredAchievement>();
             foreach (var achievement in pluginRegisteredAchievements)
@@ -292,30 +292,144 @@ namespace CUAchievements.UI
             }
         }
 
-        private void CreateAchievementRowHeader(Transform parent, string pluginName)
+        private void CreateAchievementRowHeader(Transform parent, string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
         {
             GameObject buttonTemplate = this.buttonTemplate;
             if (buttonTemplate == null) return;
 
+            int totalAchievements = pluginRegisteredAchievements.Count;
+            int unlockedCount = pluginRegisteredAchievements.Where(a => a.IsUnlocked).Count();
+
             GameObject headerObject = Instantiate(buttonTemplate, parent, false);
             headerObject.SetActive(false);
-            headerObject.name = "PluginName";
+            headerObject.name = "PluginInfoHeader";
 
             LayoutElement headerLayoutElement = headerObject.AddComponent<LayoutElement>();
-            headerLayoutElement.preferredHeight = 60f;
-            headerLayoutElement.minHeight = 60f;
+            headerLayoutElement.preferredHeight = 75f;
+            headerLayoutElement.minHeight = 75f;
 
             Button headerButton = headerObject.GetComponent<Button>() ?? headerObject.GetComponentInChildren<Button>(true);
             headerButton.onClick = new Button.ButtonClickedEvent();
             headerButton.interactable = false;
+
             TMP_Text headerTmpText = headerButton.GetComponentInChildren<TMP_Text>();
             if (headerTmpText != null)
             {
-                headerTmpText.text = pluginName;
+                headerTmpText.text = $"{pluginName} [{unlockedCount}/{totalAchievements}]";
                 headerTmpText.fontSize = 12;
             }
 
             Destroy(headerButton);
+
+            VerticalLayoutGroup headerVerticalLayout = headerObject.AddComponent<VerticalLayoutGroup>();
+            headerVerticalLayout.childControlHeight = true;
+            headerVerticalLayout.childControlWidth = true;
+            headerVerticalLayout.childForceExpandHeight = true;
+            headerVerticalLayout.childForceExpandWidth = true;
+            headerVerticalLayout.spacing = 10f;
+            headerVerticalLayout.padding = new RectOffset(12, 12, 12, 12);
+
+            GameObject progressObject = new GameObject("Progress", typeof(RectTransform), typeof(LayoutElement), typeof(Image), typeof(Outline));
+            progressObject.transform.SetParent(headerObject.transform, false);
+
+            Outline progressOutline = progressObject.GetComponent<Outline>();
+            progressOutline.effectColor = Color.white;
+            progressOutline.effectDistance = new Vector2(3f, 3f);
+
+            Image progressImage = progressObject.GetComponent<Image>();
+            progressImage.color = Color.black;
+
+            LayoutElement progressLayout = progressObject.GetComponent<LayoutElement>();
+            progressLayout.preferredHeight = 24f;
+
+            GameObject divisionObject = new GameObject("DivisionGrid", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            divisionObject.transform.SetParent(progressObject.transform, false);
+
+            RectTransform divisionRect = divisionObject.GetComponent<RectTransform>();
+            divisionRect.anchorMin = Vector2.zero;
+            divisionRect.anchorMax = Vector2.one;
+            divisionRect.offsetMin = Vector2.zero;
+            divisionRect.offsetMax = Vector2.zero;
+
+            HorizontalLayoutGroup divisionHorizontalLayout = divisionObject.GetComponent<HorizontalLayoutGroup>();
+            divisionHorizontalLayout.childControlWidth = true;
+            divisionHorizontalLayout.childControlHeight = true;
+            divisionHorizontalLayout.childForceExpandWidth = true;
+            divisionHorizontalLayout.childForceExpandHeight = true;
+
+            int divisionsCount = 16;
+
+            for (int i = 0; i < divisionsCount; i++)
+            {
+                GameObject cell = new GameObject($"Cell{i}", typeof(RectTransform));
+                cell.transform.SetParent(divisionObject.transform, false);
+
+                if (i < divisionsCount - 1)
+                {
+                    GameObject line = new GameObject("Line", typeof(RectTransform), typeof(Image));
+                    line.transform.SetParent(cell.transform, false);
+
+                    RectTransform lineRect = line.GetComponent<RectTransform>();
+                    lineRect.anchorMin = new Vector2(1f, 0f);
+                    lineRect.anchorMax = new Vector2(1f, 1f);
+                    lineRect.pivot = new Vector2(1f, 0.5f);
+
+                    lineRect.sizeDelta = new Vector2(3f, 0f);
+                    lineRect.offsetMin = new Vector2(lineRect.offsetMin.x, 0f);
+                    lineRect.offsetMax = new Vector2(lineRect.offsetMax.x, 0f);
+
+                    Image lineImage = line.GetComponent<Image>();
+                    lineImage.color = Color.white;
+                    lineImage.raycastTarget = false;
+                }
+            }
+
+            int unlockPrecentage = totalAchievements > 0 ? (int)Math.Round((double)unlockedCount / totalAchievements * 100) : 0;
+
+            GameObject fillObject = new GameObject("Fill", typeof(RectTransform), typeof(Image));
+            fillObject.transform.SetParent(progressObject.transform, false);
+
+            RectTransform fillRect = fillObject.GetComponent<RectTransform>();
+            fillRect.anchorMin = Vector2.zero;
+            fillRect.anchorMax = new Vector2(unlockPrecentage / 100f, 1f);
+            fillRect.offsetMin = Vector2.zero;
+            fillRect.offsetMax = Vector2.zero;
+
+            Image fillImage = fillObject.GetComponent<Image>();
+            fillImage.color = Color.white;
+            fillImage.raycastTarget = false;
+
+            if (unlockPrecentage > 0)
+            {
+                GameObject textObj = new GameObject("PrecentageText", typeof(RectTransform), typeof(TextMeshProUGUI));
+
+                var textTmp = textObj.GetComponent<TextMeshProUGUI>();
+                textTmp.text = unlockPrecentage + "%";
+                textTmp.fontSize = 18;
+                textTmp.color = Color.black;
+                textTmp.font = this.font;
+
+                RectTransform textRect = textObj.GetComponent<RectTransform>();
+
+                if (unlockPrecentage < 50)
+                {
+                    textObj.transform.SetParent(fillObject.transform, false);
+                    textTmp.alignment = TextAlignmentOptions.MidlineRight;
+                    textRect.anchorMin = Vector2.zero;
+                    textRect.anchorMax = Vector2.one;
+                    textRect.offsetMin = Vector2.zero;
+                    textRect.offsetMax = new Vector2(-10f, 0f);
+                }
+                else
+                {
+                    textObj.transform.SetParent(progressObject.transform, false);
+                    textTmp.alignment = TextAlignmentOptions.Midline;
+                    textRect.anchorMin = Vector2.zero;
+                    textRect.anchorMax = Vector2.one;
+                    textRect.offsetMin = Vector2.zero;
+                    textRect.offsetMax = Vector2.zero;
+                }
+            }
 
             headerObject.SetActive(true);
         }
