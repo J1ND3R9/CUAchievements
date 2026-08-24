@@ -30,10 +30,10 @@ namespace CUAchievements.UI
         private TMP_FontAsset font;
         private bool visible;
         public static bool IsModalOpen { get; private set; }
-        private Button achievementListTab;
-        private Button settingsTab;
+        private TMP_InputField searchField; // bruh.
+        private Button statisticTab;
         private GameObject buttonTemplate;
-        private Dictionary<string, List<RegisteredAchievement>> registeredAchievements;
+        private Dictionary<string, List<RegisteredAchievement>> registeredAchievementsPerPlugin;
         private bool needsRefresh = true;
 
         internal void Initialize(TMP_FontAsset font)
@@ -44,6 +44,16 @@ namespace CUAchievements.UI
 
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
         }
+
+        internal void Update()
+        {
+            if (visible)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                    SetVisible(false);
+            }
+        }
+
         private void OnAchievementsChanged()
         {
             needsRefresh = true;
@@ -88,17 +98,151 @@ namespace CUAchievements.UI
             achievementTabObject.GetComponent<LayoutElement>().preferredHeight = 48f;
 
             HorizontalLayoutGroup horizontalLayoutGroup = achievementTabObject.GetComponent<HorizontalLayoutGroup>();
-            horizontalLayoutGroup.spacing = 8f;
+            //horizontalLayoutGroup.spacing = 8f;
             horizontalLayoutGroup.padding = new RectOffset(6, 6, 3, 3);
             horizontalLayoutGroup.childControlWidth = true;
             horizontalLayoutGroup.childControlHeight = true;
             horizontalLayoutGroup.childForceExpandHeight = true;
             horizontalLayoutGroup.childForceExpandWidth = true;
 
-            achievementListTab = BuildButton(horizontalLayoutGroup.transform, "AchievementListTab", "Achievements"); // TODO: Localization
-            settingsTab = BuildButton(horizontalLayoutGroup.transform, "AchievementSettingsTab", "Settings"); // TODO: Localization
+            searchField = BuildInputField(achievementTabObject.transform, "AchievementSearchField", "Search..."); // TODO: Localization
+            statisticTab = BuildButton(achievementTabObject.transform, "AchievementStatsButton", "Stats"); // TODO: Localization
+
+            searchField.onValueChanged.AddListener(OnSearchTextChanged);
+            statisticTab.onClick.AddListener(OnStatisticTabClick);
         }
 
+        private void OnSearchTextChanged(string newText)
+        {
+            RefreshAchievementList(newText);
+        }
+
+        private void OnStatisticTabClick()
+        {
+
+        }
+
+        //private void BuildGlobalProgress(Transform parent)
+        //{
+        //    GameObject globalProgressContainer = new GameObject("GlobalProgress", typeof(RectTransform), typeof(VerticalLayoutGroup));
+        //    globalProgressContainer.transform.SetParent(parent, false);
+
+        //    VerticalLayoutGroup globalProgressVerticalLayout = globalProgressContainer.GetComponent<VerticalLayoutGroup>();
+        //    globalProgressVerticalLayout.spacing = 6f;
+        //    globalProgressVerticalLayout.padding = new RectOffset(6, 6, 16, 0);
+
+        //    IReadOnlyDictionary<string, RegisteredAchievement> allRegisteredAchievements = AchievementRegistry.GetAll();
+        //    int totalAchievements = allRegisteredAchievements.Count;
+        //    int unlockedCount = allRegisteredAchievements.Where(a => a.Value.IsUnlocked).Count();
+
+        //    GameObject progress = BuildProgressObject(globalProgressContainer.transform, totalAchievements, unlockedCount, "GLOBAL:"); // TODO: Localization
+        //}
+
+        private GameObject BuildProgressObject(Transform parent, int totalAchievements, int unlockedCount, string additional = "")
+        {
+            GameObject progressObject = new GameObject("Progress", typeof(RectTransform), typeof(LayoutElement), typeof(Image), typeof(Outline));
+            progressObject.transform.SetParent(parent, false);
+
+            Outline progressOutline = progressObject.GetComponent<Outline>();
+            progressOutline.effectColor = Color.white;
+            progressOutline.effectDistance = new Vector2(3f, 3f);
+
+            Image progressImage = progressObject.GetComponent<Image>();
+            progressImage.color = Color.black;
+
+            LayoutElement progressLayout = progressObject.GetComponent<LayoutElement>();
+            progressLayout.preferredHeight = 24f;
+
+            GameObject divisionObject = new GameObject("DivisionGrid", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            divisionObject.transform.SetParent(progressObject.transform, false);
+
+            RectTransform divisionRect = divisionObject.GetComponent<RectTransform>();
+            divisionRect.anchorMin = Vector2.zero;
+            divisionRect.anchorMax = Vector2.one;
+            divisionRect.offsetMin = Vector2.zero;
+            divisionRect.offsetMax = Vector2.zero;
+
+            HorizontalLayoutGroup divisionHorizontalLayout = divisionObject.GetComponent<HorizontalLayoutGroup>();
+            divisionHorizontalLayout.childControlWidth = true;
+            divisionHorizontalLayout.childControlHeight = true;
+            divisionHorizontalLayout.childForceExpandWidth = true;
+            divisionHorizontalLayout.childForceExpandHeight = true;
+
+            int divisionsCount = 16;
+
+            for (int i = 0; i < divisionsCount; i++)
+            {
+                GameObject cell = new GameObject($"Cell{i}", typeof(RectTransform));
+                cell.transform.SetParent(divisionObject.transform, false);
+
+                if (i < divisionsCount - 1)
+                {
+                    GameObject line = new GameObject("Line", typeof(RectTransform), typeof(Image));
+                    line.transform.SetParent(cell.transform, false);
+
+                    RectTransform lineRect = line.GetComponent<RectTransform>();
+                    lineRect.anchorMin = new Vector2(1f, 0f);
+                    lineRect.anchorMax = new Vector2(1f, 1f);
+                    lineRect.pivot = new Vector2(1f, 0.5f);
+
+                    lineRect.sizeDelta = new Vector2(3f, 0f);
+                    lineRect.offsetMin = new Vector2(lineRect.offsetMin.x, 0f);
+                    lineRect.offsetMax = new Vector2(lineRect.offsetMax.x, 0f);
+
+                    Image lineImage = line.GetComponent<Image>();
+                    lineImage.color = Color.white;
+                    lineImage.raycastTarget = false;
+                }
+            }
+
+            int unlockPrecentage = totalAchievements > 0 ? (int)Math.Round((double)unlockedCount / totalAchievements * 100) : 0;
+
+            GameObject fillObject = new GameObject("Fill", typeof(RectTransform), typeof(Image));
+            fillObject.transform.SetParent(progressObject.transform, false);
+
+            RectTransform fillRect = fillObject.GetComponent<RectTransform>();
+            fillRect.anchorMin = Vector2.zero;
+            fillRect.anchorMax = new Vector2(unlockPrecentage / 100f, 1f);
+            fillRect.offsetMin = Vector2.zero;
+            fillRect.offsetMax = Vector2.zero;
+
+            Image fillImage = fillObject.GetComponent<Image>();
+            fillImage.color = Color.white;
+            fillImage.raycastTarget = false;
+
+            if (unlockPrecentage > 0)
+            {
+                GameObject textObj = new GameObject("PrecentageText", typeof(RectTransform), typeof(TextMeshProUGUI));
+
+                var textTmp = textObj.GetComponent<TextMeshProUGUI>();
+                textTmp.text = $"{additional} {unlockPrecentage}%";
+                textTmp.fontSize = 18;
+                textTmp.color = Color.black;
+                textTmp.font = this.font;
+
+                RectTransform textRect = textObj.GetComponent<RectTransform>();
+
+                if (unlockPrecentage < 50)
+                {
+                    textObj.transform.SetParent(fillObject.transform, false);
+                    textTmp.alignment = TextAlignmentOptions.MidlineRight;
+                    textRect.anchorMin = Vector2.zero;
+                    textRect.anchorMax = Vector2.one;
+                    textRect.offsetMin = Vector2.zero;
+                    textRect.offsetMax = new Vector2(-10f, 0f);
+                }
+                else
+                {
+                    textObj.transform.SetParent(progressObject.transform, false);
+                    textTmp.alignment = TextAlignmentOptions.Midline;
+                    textRect.anchorMin = Vector2.zero;
+                    textRect.anchorMax = Vector2.one;
+                    textRect.offsetMin = Vector2.zero;
+                    textRect.offsetMax = Vector2.zero;
+                }
+            }
+            return progressObject;
+        }
         private Button BuildButton(Transform parent, string name, string label)
         {
             GameObject buttonTemplate = this.buttonTemplate;
@@ -121,6 +265,72 @@ namespace CUAchievements.UI
 
             buttonObject.SetActive(true);
             return button;
+        }
+
+        private TMP_InputField BuildInputField(Transform parent, string name, string placeholderText)
+        {
+            GameObject inputObject = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(TMP_InputField));
+            inputObject.transform.SetParent(parent.transform, false);
+
+            Image inputImage = inputObject.GetComponent<Image>();
+            inputImage.color = Color.black;
+
+            Outline outline = inputObject.AddComponent<Outline>();
+            outline.effectColor = Color.white;
+            outline.effectDistance = new Vector2(3f, 3f);
+
+            GameObject viewportObject = new GameObject("TextViewport", typeof(RectTransform), typeof(RectMask2D));
+            viewportObject.transform.SetParent(inputObject.transform, false);
+
+            RectTransform viewportRect = viewportObject.GetComponent<RectTransform>();
+            viewportRect.anchorMin = Vector2.zero;
+            viewportRect.anchorMax = Vector2.one;
+            viewportRect.offsetMin = new Vector2(8f, 4f);
+            viewportRect.offsetMax = new Vector2(-8f, -4f);
+
+            GameObject textObject = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+            textObject.transform.SetParent(viewportObject.transform, false);
+
+            RectTransform textRect = textObject.GetComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
+
+            TextMeshProUGUI textTmp = textObject.GetComponent<TextMeshProUGUI>();
+            textTmp.fontSize = 16;
+            textTmp.color = Color.white;
+            textTmp.font = this.font;
+            textTmp.alignment = TextAlignmentOptions.MidlineLeft;
+            textTmp.enableWordWrapping = false;
+            textTmp.raycastTarget = false;
+
+            GameObject placeholderObject = new GameObject("Placeholder", typeof(RectTransform), typeof(TextMeshProUGUI));
+            placeholderObject.transform.SetParent(viewportObject.transform, false);
+
+            RectTransform placeholderRect = placeholderObject.GetComponent<RectTransform>();
+            placeholderRect.anchorMin = Vector2.zero;
+            placeholderRect.anchorMax = Vector2.one;
+            placeholderRect.offsetMin = Vector2.zero;
+            placeholderRect.offsetMax = Vector2.zero;
+
+            TextMeshProUGUI placeholderTmp = placeholderObject.GetComponent<TextMeshProUGUI>();
+            placeholderTmp.text = placeholderText;
+            placeholderTmp.fontSize = 16;
+            placeholderTmp.color = new Color(1f, 1f, 1f, 0.5f);
+            placeholderTmp.font = this.font;
+            placeholderTmp.alignment = TextAlignmentOptions.MidlineLeft;
+            placeholderTmp.fontStyle = FontStyles.Italic;
+            placeholderTmp.raycastTarget = false;
+
+            TMP_InputField inputField = inputObject.GetComponent<TMP_InputField>();
+            inputField.textViewport = viewportRect;
+            inputField.textComponent = textTmp;
+            inputField.placeholder = placeholderTmp;
+            inputField.fontAsset = this.font;
+            inputField.pointSize = 16;
+
+            return inputField;
         }
 
         private void BuildModal()
@@ -206,7 +416,7 @@ namespace CUAchievements.UI
             BuildTabs();
         }
 
-        private void RefreshAchievementList()
+        private void RefreshAchievementList(string searchFilter = "")
         {
             for (int i = content.childCount - 1; i >= 0; i--)
             {
@@ -214,9 +424,9 @@ namespace CUAchievements.UI
                     Destroy(content.GetChild(i).gameObject);
             }
 
-            if (registeredAchievements == null) registeredAchievements = AchievementRegistry.GetAchievementsPerPlugin(true);
+            registeredAchievementsPerPlugin = AchievementRegistry.GetAchievementsPerPlugin(true, searchFilter);
 
-            foreach (var pluginAchievement in registeredAchievements)
+            foreach (var pluginAchievement in registeredAchievementsPerPlugin)
             {
                 var achievements = pluginAchievement.Value;
 
@@ -329,107 +539,7 @@ namespace CUAchievements.UI
             headerVerticalLayout.spacing = 10f;
             headerVerticalLayout.padding = new RectOffset(12, 12, 12, 12);
 
-            GameObject progressObject = new GameObject("Progress", typeof(RectTransform), typeof(LayoutElement), typeof(Image), typeof(Outline));
-            progressObject.transform.SetParent(headerObject.transform, false);
-
-            Outline progressOutline = progressObject.GetComponent<Outline>();
-            progressOutline.effectColor = Color.white;
-            progressOutline.effectDistance = new Vector2(3f, 3f);
-
-            Image progressImage = progressObject.GetComponent<Image>();
-            progressImage.color = Color.black;
-
-            LayoutElement progressLayout = progressObject.GetComponent<LayoutElement>();
-            progressLayout.preferredHeight = 24f;
-
-            GameObject divisionObject = new GameObject("DivisionGrid", typeof(RectTransform), typeof(HorizontalLayoutGroup));
-            divisionObject.transform.SetParent(progressObject.transform, false);
-
-            RectTransform divisionRect = divisionObject.GetComponent<RectTransform>();
-            divisionRect.anchorMin = Vector2.zero;
-            divisionRect.anchorMax = Vector2.one;
-            divisionRect.offsetMin = Vector2.zero;
-            divisionRect.offsetMax = Vector2.zero;
-
-            HorizontalLayoutGroup divisionHorizontalLayout = divisionObject.GetComponent<HorizontalLayoutGroup>();
-            divisionHorizontalLayout.childControlWidth = true;
-            divisionHorizontalLayout.childControlHeight = true;
-            divisionHorizontalLayout.childForceExpandWidth = true;
-            divisionHorizontalLayout.childForceExpandHeight = true;
-
-            int divisionsCount = 16;
-
-            for (int i = 0; i < divisionsCount; i++)
-            {
-                GameObject cell = new GameObject($"Cell{i}", typeof(RectTransform));
-                cell.transform.SetParent(divisionObject.transform, false);
-
-                if (i < divisionsCount - 1)
-                {
-                    GameObject line = new GameObject("Line", typeof(RectTransform), typeof(Image));
-                    line.transform.SetParent(cell.transform, false);
-
-                    RectTransform lineRect = line.GetComponent<RectTransform>();
-                    lineRect.anchorMin = new Vector2(1f, 0f);
-                    lineRect.anchorMax = new Vector2(1f, 1f);
-                    lineRect.pivot = new Vector2(1f, 0.5f);
-
-                    lineRect.sizeDelta = new Vector2(3f, 0f);
-                    lineRect.offsetMin = new Vector2(lineRect.offsetMin.x, 0f);
-                    lineRect.offsetMax = new Vector2(lineRect.offsetMax.x, 0f);
-
-                    Image lineImage = line.GetComponent<Image>();
-                    lineImage.color = Color.white;
-                    lineImage.raycastTarget = false;
-                }
-            }
-
-            int unlockPrecentage = totalAchievements > 0 ? (int)Math.Round((double)unlockedCount / totalAchievements * 100) : 0;
-
-            GameObject fillObject = new GameObject("Fill", typeof(RectTransform), typeof(Image));
-            fillObject.transform.SetParent(progressObject.transform, false);
-
-            RectTransform fillRect = fillObject.GetComponent<RectTransform>();
-            fillRect.anchorMin = Vector2.zero;
-            fillRect.anchorMax = new Vector2(unlockPrecentage / 100f, 1f);
-            fillRect.offsetMin = Vector2.zero;
-            fillRect.offsetMax = Vector2.zero;
-
-            Image fillImage = fillObject.GetComponent<Image>();
-            fillImage.color = Color.white;
-            fillImage.raycastTarget = false;
-
-            if (unlockPrecentage > 0)
-            {
-                GameObject textObj = new GameObject("PrecentageText", typeof(RectTransform), typeof(TextMeshProUGUI));
-
-                var textTmp = textObj.GetComponent<TextMeshProUGUI>();
-                textTmp.text = unlockPrecentage + "%";
-                textTmp.fontSize = 18;
-                textTmp.color = Color.black;
-                textTmp.font = this.font;
-
-                RectTransform textRect = textObj.GetComponent<RectTransform>();
-
-                if (unlockPrecentage < 50)
-                {
-                    textObj.transform.SetParent(fillObject.transform, false);
-                    textTmp.alignment = TextAlignmentOptions.MidlineRight;
-                    textRect.anchorMin = Vector2.zero;
-                    textRect.anchorMax = Vector2.one;
-                    textRect.offsetMin = Vector2.zero;
-                    textRect.offsetMax = new Vector2(-10f, 0f);
-                }
-                else
-                {
-                    textObj.transform.SetParent(progressObject.transform, false);
-                    textTmp.alignment = TextAlignmentOptions.Midline;
-                    textRect.anchorMin = Vector2.zero;
-                    textRect.anchorMax = Vector2.one;
-                    textRect.offsetMin = Vector2.zero;
-                    textRect.offsetMax = Vector2.zero;
-                }
-            }
+            BuildProgressObject(headerObject.transform, totalAchievements, unlockedCount);
 
             headerObject.SetActive(true);
         }

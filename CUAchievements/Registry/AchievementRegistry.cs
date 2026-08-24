@@ -89,10 +89,18 @@ namespace CUAchievements.Registry
             return RegisteredAchievements;
         }
 
-        internal static Dictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid)
+        internal static Dictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid, string search = "")
         {
             Dictionary<string, List<RegisteredAchievement>> pluginAchievements = new Dictionary<string, List<RegisteredAchievement>>();
-            foreach (var achievement in RegisteredAchievements.Values)
+
+            var registeredAchievements = RegisteredAchievements.Values.ToList();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                registeredAchievements = registeredAchievements.Where(a => a.Definition.Title.ToLower().Contains(search.ToLower()) || a.Definition.Description.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            foreach (var achievement in registeredAchievements)
             {
                 string plugin = achievement.PluginGuid;
                 if (nameInsteadGuid)
