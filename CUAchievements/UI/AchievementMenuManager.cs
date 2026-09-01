@@ -30,10 +30,11 @@ namespace CUAchievements.UI
         private TMP_FontAsset font;
         private bool visible;
         public static bool IsModalOpen { get; private set; }
-        private TMP_InputField searchField; // bruh.
+        private TMP_InputField searchField;
         private Button statisticTab;
         private GameObject buttonTemplate;
         private Dictionary<string, List<RegisteredAchievement>> registeredAchievementsPerPlugin;
+        private AchievementStatsPanel statsPanel;
         private bool needsRefresh = true;
 
         internal void Initialize(TMP_FontAsset font)
@@ -119,24 +120,9 @@ namespace CUAchievements.UI
 
         private void OnStatisticTabClick()
         {
-
+            statsPanel.Refresh();
+            statsPanel.SetVisible();
         }
-
-        //private void BuildGlobalProgress(Transform parent)
-        //{
-        //    GameObject globalProgressContainer = new GameObject("GlobalProgress", typeof(RectTransform), typeof(VerticalLayoutGroup));
-        //    globalProgressContainer.transform.SetParent(parent, false);
-
-        //    VerticalLayoutGroup globalProgressVerticalLayout = globalProgressContainer.GetComponent<VerticalLayoutGroup>();
-        //    globalProgressVerticalLayout.spacing = 6f;
-        //    globalProgressVerticalLayout.padding = new RectOffset(6, 6, 16, 0);
-
-        //    IReadOnlyDictionary<string, RegisteredAchievement> allRegisteredAchievements = AchievementRegistry.GetAll();
-        //    int totalAchievements = allRegisteredAchievements.Count;
-        //    int unlockedCount = allRegisteredAchievements.Where(a => a.Value.IsUnlocked).Count();
-
-        //    GameObject progress = BuildProgressObject(globalProgressContainer.transform, totalAchievements, unlockedCount, "GLOBAL:"); // TODO: Localization
-        //}
 
         private GameObject BuildProgressObject(Transform parent, int totalAchievements, int unlockedCount, string additional = "")
         {
@@ -414,6 +400,47 @@ namespace CUAchievements.UI
             }
 
             BuildTabs();
+            statsPanel = AchievementStatsPanel.Create(vanillaPanel.transform, font);
+            BuildInfoPanel();
+        }
+
+        private void BuildInfoPanel()
+        {
+            Transform panelTransform = vanillaPanel.transform.Find("Panel");
+            if (panelTransform == null) return;
+
+            GameObject infoPanel = Instantiate(panelTransform, vanillaPanel.transform).gameObject;
+            infoPanel.name = "InfoPanel";
+
+            foreach (Transform child in infoPanel.transform)
+            {
+                if (child.name == "Scroll")
+                {
+                    var content = child.Find("Content");
+                    if (content != null)
+                    {
+                        foreach (Transform child2 in content.transform)
+                            Destroy(child2.gameObject);
+                    }
+                    continue;
+                }
+                if (child.name != "Description")
+                    Destroy(child.gameObject);
+            }
+
+            GameObject infoScroll = infoPanel.transform.Find("Scroll").gameObject;
+            RectTransform infoScrollRect = infoScroll.GetComponent<RectTransform>();
+            infoScrollRect.sizeDelta = new Vector2(370f, 700f);
+
+            TextMeshProUGUI description = infoPanel.GetComponentInChildren<TextMeshProUGUI>();
+            description.text = "achievementName"; // TODO: Localization
+
+            RectTransform infoRect = infoPanel.GetComponent<RectTransform>();
+            infoRect.anchorMax = new Vector2(0f, 0.5f);
+            infoRect.anchorMin = new Vector2(0f, 0.5f);
+            infoRect.pivot = new Vector2(0f, 0.5f);
+            infoRect.sizeDelta = new Vector2(380f, 800f);
+            infoRect.anchoredPosition = new Vector2(20f, 0f);
         }
 
         private void RefreshAchievementList(string searchFilter = "")

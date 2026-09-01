@@ -112,6 +112,8 @@
     <Compile Include="UI\AchievementMenuManager.cs" />
     <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
+    <Compile Include="UI\AchievementStatsPanel.cs" />
+    <Compile Include="UI\AnimationHelper.cs" />
     <Compile Include="UI\LayoutIgnorer.cs" />
     <Compile Include="UI\SpriteSlicer.cs" />
   </ItemGroup>
