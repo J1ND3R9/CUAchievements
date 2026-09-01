@@ -30,12 +30,6 @@ namespace CUAchievements.UI
         Up = 2
     }
 
-    //internal enum PopupStyle
-    //{
-    //    V1 = 0,
-    //    V2 = 1,
-    //    V3 = 2,
-    //}
     internal class AchievementPopupManager : MonoBehaviour
     {
         public static AchievementPopupManager Instance { get; private set; }
@@ -249,29 +243,12 @@ namespace CUAchievements.UI
             iconImage.sprite = icon;
             titleTmp.text = title;
             descTmp.text = desc;
-            yield return SlideTo(shownPos);
+            yield return AnimationHelper.SlideTo(shownPos, popupRoot);
             yield return new WaitForSeconds(ShowDuration);
-            yield return SlideTo(hiddenPos);
+            yield return AnimationHelper.SlideTo(hiddenPos, popupRoot);
         }
 
-        private IEnumerator SlideTo(Vector2 target)
-        {
-            Vector2 start = popupRoot.anchoredPosition;
-            float duration = 0.5f;
-            float elapsed = 0f;
-
-            while (elapsed < duration)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(elapsed / duration);
-                float eased = Mathf.SmoothStep(0f, 1f, t);
-
-                popupRoot.anchoredPosition = Vector2.Lerp(start, target, eased);
-                yield return null;
-            }
-
-            popupRoot.anchoredPosition = target;
-        }
+        
 
         private static bool NeedPopup(AlertType type, RegisteredAchievement achievement)
         {
