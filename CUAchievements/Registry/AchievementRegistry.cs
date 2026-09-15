@@ -89,7 +89,7 @@ namespace CUAchievements.Registry
             return RegisteredAchievements;
         }
 
-        internal static Dictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid, string search = "")
+        internal static IReadOnlyDictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid, string search = "")
         {
             Dictionary<string, List<RegisteredAchievement>> pluginAchievements = new Dictionary<string, List<RegisteredAchievement>>();
 
