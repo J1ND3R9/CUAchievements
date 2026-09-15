@@ -84,10 +84,9 @@ namespace CUAchievements.Registry
             return false;
         }
 
-        internal static IReadOnlyDictionary<string, RegisteredAchievement> GetAll()
-        {
-            return RegisteredAchievements;
-        }
+        internal static IReadOnlyDictionary<string, RegisteredAchievement> GetAll() => RegisteredAchievements;
+
+        internal static (int, int) GetTotalProgress() => (RegisteredAchievements.Values.Count(a => a.IsUnlocked), RegisteredAchievements.Count());
 
         internal static IReadOnlyDictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid, string search = "")
         {
