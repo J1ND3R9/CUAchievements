@@ -116,6 +116,7 @@
     <Compile Include="UI\AnimationHelper.cs" />
     <Compile Include="UI\LayoutIgnorer.cs" />
     <Compile Include="UI\SpriteSlicer.cs" />
+    <Compile Include="UI\Utility\UIUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />

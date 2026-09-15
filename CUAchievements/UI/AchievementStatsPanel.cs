@@ -1,6 +1,11 @@
-﻿using System.Collections;
+﻿using CUAchievements.Registry;
+using CUAchievements.UI.Utility;
+using System;
+using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CUAchievements.UI
 {
@@ -8,11 +13,13 @@ namespace CUAchievements.UI
     {
         private RectTransform statsPanelRect;
         private TextMeshProUGUI totalUnlockedText;
+        private TextMeshProUGUI unlockedText;
+        private TextMeshProUGUI lockedText;
         private bool isVisible = false;
         private Vector2 hiddenPos = new Vector2(600f, 0f);
         private Vector2 shownPos = new Vector2(-20f, 0f);
 
-        public static AchievementStatsPanel Create(Transform parent, TMP_FontAsset font)   
+        public static AchievementStatsPanel Create(Transform parent, TMP_FontAsset font)
         {
             Transform panelTransform = parent.Find("Panel");
             if (panelTransform == null) return null;
@@ -23,6 +30,9 @@ namespace CUAchievements.UI
             AchievementStatsPanel panelComponent = statsPanel.AddComponent<AchievementStatsPanel>();
 
             panelComponent.Initialize(font);
+
+            AchievementEvents.AchievementsChanged += panelComponent.OnAchievementsChanged;
+
             return panelComponent;
         }
 
@@ -59,11 +69,153 @@ namespace CUAchievements.UI
             statsRect.anchoredPosition = hiddenPos;
 
             statsPanelRect = statsRect;
+
+            Transform contentTransform = statsScroll.transform.Find("Viewport/Content");
+
+            GameObject statisticGameObject = new GameObject("Statistic", typeof(RectTransform), typeof(VerticalLayoutGroup));
+            statisticGameObject.transform.SetParent(contentTransform, false);
+
+            VerticalLayoutGroup statisticVerticalLayout = statisticGameObject.GetComponent<VerticalLayoutGroup>();
+            statisticVerticalLayout.spacing = 16f;
+            statisticVerticalLayout.childAlignment = TextAnchor.MiddleCenter;
+
+            (int, int) achievementsProgress = AchievementRegistry.GetTotalProgress();
+
+            GameObject progressGameObject = new GameObject("GlobalProgress", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            progressGameObject.transform.SetParent(statisticGameObject.transform, false);
+            CreateProgressBar(font, progressGameObject, achievementsProgress);
+
+            GameObject achievedGameObject = new GameObject("AchievedTextContainer", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            achievedGameObject.transform.SetParent(statisticGameObject.transform, false);
+
+            UIUtility.CreateText(achievedGameObject.transform, "AchievedText", "ПОЛУЧЕНО ДОСТИЖЕНИЙ", font, 16f, TextAlignmentOptions.Center); // TODO: Localization
+            totalUnlockedText = UIUtility.CreateText(achievedGameObject.transform, "AchievedTotal", $"{achievementsProgress.Item1}/{achievementsProgress.Item2}", font, 20f, TextAlignmentOptions.Center);
+
+            UIUtility.CreateSeparator(statisticGameObject.transform);
+
+            GameObject globalStatisticGameObject = new GameObject("StatisticObject", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            globalStatisticGameObject.transform.SetParent(statisticGameObject.transform, false);
+
+            CreateStatisticRow(globalStatisticGameObject.transform, "Total", "ВСЕГО:", $"{achievementsProgress.Item1 + achievementsProgress.Item2}", font);
+            CreateStatisticRow(globalStatisticGameObject.transform, "Unlocked", "РАЗБЛОКИРОВАНО:", $"{achievementsProgress.Item1}", font);
+            CreateStatisticRow(globalStatisticGameObject.transform, "Locked", "ЗАБЛОКИРОВАНО:", $"{achievementsProgress.Item2 - achievementsProgress.Item1}", font);
+
+            UIUtility.CreateSeparator(statisticGameObject.transform);
+
+            GameObject byModGameObject = new GameObject("ByModObject", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            byModGameObject.transform.SetParent(statisticGameObject.transform, false);
+
+            VerticalLayoutGroup byModVerticalLayout = byModGameObject.GetComponent<VerticalLayoutGroup>();
+            byModVerticalLayout.spacing = 24f;
+
+            UIUtility.CreateText(byModGameObject.transform, "ByModText", "По модификациям", font, 18f);
+
+            GameObject byModModificationsContainer = new GameObject("ModificationList", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            byModModificationsContainer.transform.SetParent(byModGameObject.transform, false);
+
+            var achievementsPerPlugin = AchievementRegistry.GetAchievementsPerPlugin(true);
+            foreach (var plugin in achievementsPerPlugin)
+            {
+                int totalAchievements = plugin.Value.Count;
+                int unlockedCount = plugin.Value.Count(a => a.IsUnlocked);
+                (Transform _, TextMeshProUGUI labelText, TextMeshProUGUI _) = CreateStatisticRow(byModModificationsContainer.transform, plugin.Key, $"{plugin.Key}:", $"{unlockedCount}/{totalAchievements}", font);
+                labelText.enableWordWrapping = true;
+                labelText.overflowMode = TextOverflowModes.Ellipsis;
+                labelText.maxVisibleLines = 1;
+            }
+        }
+
+        private (Transform, TextMeshProUGUI, TextMeshProUGUI) CreateStatisticRow(Transform parent, string name, string label, string value, TMP_FontAsset font)
+        {
+            GameObject row = new GameObject(name, typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            row.transform.SetParent(parent, false);
+
+            HorizontalLayoutGroup layout = row.GetComponent<HorizontalLayoutGroup>();
+            layout.childControlHeight = true;
+            layout.childControlWidth = true;
+            layout.childForceExpandHeight = true;
+            layout.childForceExpandWidth = false;
+
+            var tmpLabel = UIUtility.CreateText(row.transform, "Label", label, font, 18f);
+
+            GameObject spacer = new GameObject("Spacer", typeof(RectTransform), typeof(LayoutElement));
+            spacer.transform.SetParent(row.transform, false);
+
+            LayoutElement spacerLayout = spacer.GetComponent<LayoutElement>();
+            spacerLayout.flexibleWidth = 1f;
+
+            var tmpValue = UIUtility.CreateText(row.transform, "Value", value, font, 18f);
+
+            return (row.transform, tmpLabel, tmpValue);
+        }
+
+        private void OnAchievementsChanged()
+        {
+            Refresh();
+        }
+
+        private static void CreateProgressBar(TMP_FontAsset font, GameObject parent, (int, int) achievementsProgress)
+        {
+            GameObject progressRowObject = new GameObject("ProgressRow", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            progressRowObject.transform.SetParent(parent.transform, false);
+
+            VerticalLayoutGroup progressRowHorizontalLayout = progressRowObject.GetComponent<VerticalLayoutGroup>();
+            progressRowHorizontalLayout.childControlWidth = true;
+            progressRowHorizontalLayout.childControlHeight = true;
+            progressRowHorizontalLayout.childForceExpandWidth = false;
+            progressRowHorizontalLayout.childForceExpandHeight = false;
+            progressRowHorizontalLayout.spacing = 26f;
+            progressRowHorizontalLayout.childAlignment = TextAnchor.MiddleCenter;
+
+            LayoutElement progressRowLayout = progressRowObject.GetComponent<LayoutElement>();
+            progressRowLayout.preferredHeight = 24f;
+
+            GameObject progressNumberObject = new GameObject("ProgressNumber", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            progressNumberObject.transform.SetParent(progressRowObject.transform, false);
+
+            int unlockPrecentage = (int)Math.Round((double)achievementsProgress.Item1 / achievementsProgress.Item2 * 100);
+
+            TextMeshProUGUI progressNumberTmp = progressNumberObject.GetComponent<TextMeshProUGUI>();
+            progressNumberTmp.text = $"{unlockPrecentage}%";
+            progressNumberTmp.fontSize = 18;
+            progressNumberTmp.color = Color.white;
+            progressNumberTmp.font = font;
+
+            GameObject squaresObject = new GameObject("ProgressSquares", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+            squaresObject.transform.SetParent(progressRowObject.transform, false);
+
+            HorizontalLayoutGroup squaresHorizontalLayout = squaresObject.GetComponent<HorizontalLayoutGroup>();
+            squaresHorizontalLayout.spacing = 4f;
+            squaresHorizontalLayout.childControlWidth = true;
+            squaresHorizontalLayout.childControlHeight = true;
+            squaresHorizontalLayout.childForceExpandWidth = false;
+            squaresHorizontalLayout.childForceExpandHeight = false;
+            squaresHorizontalLayout.childAlignment = TextAnchor.MiddleLeft;
+
+            LayoutElement squaresLayout = squaresObject.GetComponent<LayoutElement>();
+            squaresLayout.preferredHeight = 24f;
+            squaresLayout.minHeight = 24f;
+
+            int filledSquares = Mathf.FloorToInt((achievementsProgress.Item1 / achievementsProgress.Item2) * 10);
+            for (int i = 0; i < 10; i++)
+            {
+                GameObject squareObject = new GameObject($"Square{i}", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+                squareObject.transform.SetParent(squaresObject.transform, false);
+
+                LayoutElement squareLayout = squareObject.GetComponent<LayoutElement>();
+                squareLayout.preferredWidth = 24f;
+                squareLayout.preferredHeight = 24f;
+                squareLayout.minWidth = 24f;
+                squareLayout.minHeight = 24f;
+
+                Image squareImage = squareObject.GetComponent<Image>();
+                squareImage.color = i < filledSquares ? Color.white : new Color(1f, 1f, 1f, 0.1f);
+            }
         }
 
         public void Refresh()
         {
-            
+
         }
 
         public void SetVisible()
