@@ -33,7 +33,7 @@ namespace CUAchievements.UI
         private TMP_InputField searchField;
         private Button statisticTab;
         private GameObject buttonTemplate;
-        private Dictionary<string, List<RegisteredAchievement>> registeredAchievementsPerPlugin;
+        private IReadOnlyDictionary<string, List<RegisteredAchievement>> registeredAchievementsPerPlugin;
         private AchievementStatsPanel statsPanel;
         private bool needsRefresh = true;
 
@@ -106,8 +106,8 @@ namespace CUAchievements.UI
             horizontalLayoutGroup.childForceExpandHeight = true;
             horizontalLayoutGroup.childForceExpandWidth = true;
 
-            searchField = BuildInputField(achievementTabObject.transform, "AchievementSearchField", "Search..."); // TODO: Localization
-            statisticTab = BuildButton(achievementTabObject.transform, "AchievementStatsButton", "Stats"); // TODO: Localization
+            searchField = BuildInputField(achievementTabObject.transform, "AchievementSearchField", "Поиск..."); // TODO: Localization
+            statisticTab = BuildButton(achievementTabObject.transform, "AchievementStatsButton", "Статистика"); // TODO: Localization
 
             searchField.onValueChanged.AddListener(OnSearchTextChanged);
             statisticTab.onClick.AddListener(OnStatisticTabClick);
@@ -120,7 +120,6 @@ namespace CUAchievements.UI
 
         private void OnStatisticTabClick()
         {
-            statsPanel.Refresh();
             statsPanel.SetVisible();
         }
 
