@@ -35,6 +35,7 @@ namespace CUAchievements.UI
         private GameObject buttonTemplate;
         private IReadOnlyDictionary<string, List<RegisteredAchievement>> registeredAchievementsPerPlugin;
         private AchievementStatsPanel statsPanel;
+        private AchievementDetailsPanel detailsPanel;
         private bool needsRefresh = true;
 
         internal void Initialize(TMP_FontAsset font)
@@ -400,7 +401,8 @@ namespace CUAchievements.UI
 
             BuildTabs();
             statsPanel = AchievementStatsPanel.Create(vanillaPanel.transform, font);
-            BuildInfoPanel();
+            detailsPanel = AchievementDetailsPanel.Create(vanillaPanel.transform, font);
+            //BuildInfoPanel();
         }
 
         private void BuildInfoPanel()
@@ -577,6 +579,16 @@ namespace CUAchievements.UI
             GameObject achievementObject = new GameObject("AchievementContainer", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup));
             achievementObject.transform.SetParent(parent, false);
 
+            if (!isTemplate)
+            {
+                Image hitImage = achievementObject.AddComponent<Image>();
+                hitImage.color = new Color(0f, 0f, 0f, 0f);
+                hitImage.raycastTarget = true;
+
+                AchievementItemUI itemUI = achievementObject.AddComponent<AchievementItemUI>();
+                itemUI.Initialize(achievement, ShowAchievementDetails);
+            }
+
             LayoutElement achievementLayout = achievementObject.GetComponent<LayoutElement>();
             achievementLayout.preferredHeight = 140f;
 
@@ -740,7 +752,6 @@ namespace CUAchievements.UI
                 }
             }
 
-
             GameObject descObj = new GameObject("Description", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
             descObj.transform.SetParent(textObject.transform, false);
 
@@ -762,6 +773,11 @@ namespace CUAchievements.UI
             canvasGroup.alpha = achievement.Progress.Unlocked ? 1f : 0.35f;
 
             return achievementObject;
+        }
+
+        private void ShowAchievementDetails(RegisteredAchievement achievement)
+        {
+            detailsPanel.Refresh(achievement, GetAchievementFrame(achievement.Definition.Difficulty));
         }
 
         private void CreateHiddenAchievementObject(Transform parent, List<RegisteredAchievement> hiddenAchievements)

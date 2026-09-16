@@ -108,14 +108,16 @@
     <Compile Include="Registry\RegisteredAchievement.cs" />
     <Compile Include="UI\AchievementButtonBuilder.cs" />
     <Compile Include="UI\AchievementButtonHoverVisual.cs" />
+    <Compile Include="UI\AchievementDetailsPanel.cs" />
     <Compile Include="UI\AchievementEvents.cs" />
+    <Compile Include="UI\AchievementItemUI.cs" />
     <Compile Include="UI\AchievementMenuManager.cs" />
     <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
     <Compile Include="UI\AchievementStatsPanel.cs" />
-    <Compile Include="UI\AnimationHelper.cs" />
-    <Compile Include="UI\LayoutIgnorer.cs" />
-    <Compile Include="UI\SpriteSlicer.cs" />
+    <Compile Include="UI\Utility\AnimationUtility.cs" />
+    <Compile Include="UI\Utility\LayoutIgnorer.cs" />
+    <Compile Include="UI\Utility\SpriteSlicer.cs" />
     <Compile Include="UI\Utility\UIUtility.cs" />
   </ItemGroup>
   <ItemGroup>
