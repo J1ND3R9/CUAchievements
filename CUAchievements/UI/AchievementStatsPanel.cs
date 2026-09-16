@@ -2,6 +2,7 @@
 using CUAchievements.UI.Utility;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace CUAchievements.UI
         private TextMeshProUGUI totalUnlockedText;
         private TextMeshProUGUI unlockedText;
         private TextMeshProUGUI lockedText;
+        private GameObject pluginContainer;
+        private TMP_FontAsset fontAsset;
         private bool isVisible = false;
         private Vector2 hiddenPos = new Vector2(600f, 0f);
         private Vector2 shownPos = new Vector2(-20f, 0f);
@@ -28,15 +31,15 @@ namespace CUAchievements.UI
             statsPanel.name = "StatsPanel";
 
             AchievementStatsPanel panelComponent = statsPanel.AddComponent<AchievementStatsPanel>();
-
-            panelComponent.Initialize(font);
+            panelComponent.fontAsset = font;
+            panelComponent.Initialize();
 
             AchievementEvents.AchievementsChanged += panelComponent.OnAchievementsChanged;
 
             return panelComponent;
         }
 
-        private void Initialize(TMP_FontAsset font)
+        private void Initialize()
         {
             foreach (Transform child in transform)
             {
@@ -59,7 +62,7 @@ namespace CUAchievements.UI
             statsScrollRect.sizeDelta = new Vector2(370f, 700f);
 
             TextMeshProUGUI description = GetComponentInChildren<TextMeshProUGUI>();
-            if (description != null) description.text = "Statistic"; // TODO: Localization
+            if (description != null) description.text = "Статистика"; // TODO: Localization
 
             RectTransform statsRect = GetComponent<RectTransform>();
             statsRect.anchorMax = new Vector2(1f, 0.5f);
@@ -77,28 +80,30 @@ namespace CUAchievements.UI
 
             VerticalLayoutGroup statisticVerticalLayout = statisticGameObject.GetComponent<VerticalLayoutGroup>();
             statisticVerticalLayout.spacing = 16f;
-            statisticVerticalLayout.childAlignment = TextAnchor.MiddleCenter;
 
             (int, int) achievementsProgress = AchievementRegistry.GetTotalProgress();
 
             GameObject progressGameObject = new GameObject("GlobalProgress", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             progressGameObject.transform.SetParent(statisticGameObject.transform, false);
-            CreateProgressBar(font, progressGameObject, achievementsProgress);
+            CreateProgressBar(fontAsset, progressGameObject, achievementsProgress);
 
             GameObject achievedGameObject = new GameObject("AchievedTextContainer", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             achievedGameObject.transform.SetParent(statisticGameObject.transform, false);
 
-            UIUtility.CreateText(achievedGameObject.transform, "AchievedText", "ПОЛУЧЕНО ДОСТИЖЕНИЙ", font, 16f, TextAlignmentOptions.Center); // TODO: Localization
-            totalUnlockedText = UIUtility.CreateText(achievedGameObject.transform, "AchievedTotal", $"{achievementsProgress.Item1}/{achievementsProgress.Item2}", font, 20f, TextAlignmentOptions.Center);
+            UIUtility.CreateText(achievedGameObject.transform, "AchievedText", "ПОЛУЧЕНО ДОСТИЖЕНИЙ", fontAsset, 16f, TextAlignmentOptions.Center); // TODO: Localization
+            totalUnlockedText = UIUtility.CreateText(achievedGameObject.transform, "AchievedTotal", $"{achievementsProgress.Item1}/{achievementsProgress.Item2}", fontAsset, 20f, TextAlignmentOptions.Center);
 
             UIUtility.CreateSeparator(statisticGameObject.transform);
 
             GameObject globalStatisticGameObject = new GameObject("StatisticObject", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             globalStatisticGameObject.transform.SetParent(statisticGameObject.transform, false);
 
-            CreateStatisticRow(globalStatisticGameObject.transform, "Total", "ВСЕГО:", $"{achievementsProgress.Item1 + achievementsProgress.Item2}", font);
-            CreateStatisticRow(globalStatisticGameObject.transform, "Unlocked", "РАЗБЛОКИРОВАНО:", $"{achievementsProgress.Item1}", font);
-            CreateStatisticRow(globalStatisticGameObject.transform, "Locked", "ЗАБЛОКИРОВАНО:", $"{achievementsProgress.Item2 - achievementsProgress.Item1}", font);
+            CreateStatisticRow(globalStatisticGameObject.transform, "Total", "ВСЕГО:", $"{achievementsProgress.Item1 + achievementsProgress.Item2}", fontAsset);
+            (Transform _, TextMeshProUGUI _, TextMeshProUGUI value1) = CreateStatisticRow(globalStatisticGameObject.transform, "Unlocked", "РАЗБЛОКИРОВАНО:", $"{achievementsProgress.Item1}", fontAsset);
+            (Transform _, TextMeshProUGUI _, TextMeshProUGUI value2) = CreateStatisticRow(globalStatisticGameObject.transform, "Locked", "ЗАБЛОКИРОВАНО:", $"{achievementsProgress.Item2 - achievementsProgress.Item1}", fontAsset);
+
+            unlockedText = value1;
+            lockedText = value2;
 
             UIUtility.CreateSeparator(statisticGameObject.transform);
 
@@ -108,17 +113,35 @@ namespace CUAchievements.UI
             VerticalLayoutGroup byModVerticalLayout = byModGameObject.GetComponent<VerticalLayoutGroup>();
             byModVerticalLayout.spacing = 24f;
 
-            UIUtility.CreateText(byModGameObject.transform, "ByModText", "По модификациям", font, 18f);
+            UIUtility.CreateText(byModGameObject.transform, "ByModText", "По модификациям", fontAsset, 18f);
 
             GameObject byModModificationsContainer = new GameObject("ModificationList", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             byModModificationsContainer.transform.SetParent(byModGameObject.transform, false);
 
+            pluginContainer = byModModificationsContainer;
+
             var achievementsPerPlugin = AchievementRegistry.GetAchievementsPerPlugin(true);
+            CreatePluginContainer(byModModificationsContainer.transform, fontAsset, achievementsPerPlugin);
+        }
+
+        private void RefreshPluginContainer(Transform parent, TMP_FontAsset font)
+        {
+            var achievementsPerPlugin = AchievementRegistry.GetAchievementsPerPlugin(true);
+            foreach (Transform child in parent)
+            {
+                if (achievementsPerPlugin.ContainsKey(child.name))
+                    Destroy(child.gameObject);
+            }
+            CreatePluginContainer(parent, font, achievementsPerPlugin);
+        }
+
+        private void CreatePluginContainer(Transform parent, TMP_FontAsset font, IReadOnlyDictionary<string, List<RegisteredAchievement>> achievementsPerPlugin)
+        {
             foreach (var plugin in achievementsPerPlugin)
             {
                 int totalAchievements = plugin.Value.Count;
                 int unlockedCount = plugin.Value.Count(a => a.IsUnlocked);
-                (Transform _, TextMeshProUGUI labelText, TextMeshProUGUI _) = CreateStatisticRow(byModModificationsContainer.transform, plugin.Key, $"{plugin.Key}:", $"{unlockedCount}/{totalAchievements}", font);
+                (Transform _, TextMeshProUGUI labelText, TextMeshProUGUI _) = CreateStatisticRow(parent, plugin.Key, $"{plugin.Key}:", $"{unlockedCount}/{totalAchievements}", font);
                 labelText.enableWordWrapping = true;
                 labelText.overflowMode = TextOverflowModes.Ellipsis;
                 labelText.maxVisibleLines = 1;
@@ -213,9 +236,19 @@ namespace CUAchievements.UI
             }
         }
 
+        private void RefreshText()
+        {
+            (int, int) achievementsProgress = AchievementRegistry.GetTotalProgress();
+
+            totalUnlockedText.text = $"{achievementsProgress.Item1}/{achievementsProgress.Item2}";
+            unlockedText.text = $"{achievementsProgress.Item1}";
+            lockedText.text = $"{achievementsProgress.Item2 - achievementsProgress.Item1}";
+        }
+
         public void Refresh()
         {
-
+            RefreshPluginContainer(pluginContainer.transform, fontAsset);
+            RefreshText();
         }
 
         public void SetVisible()
@@ -228,7 +261,7 @@ namespace CUAchievements.UI
 
         private IEnumerator Animate(Vector2 target)
         {
-            yield return AnimationHelper.SlideTo(target, statsPanelRect);
+            yield return AnimationUtility.SlideTo(target, statsPanelRect);
         }
     }
 }
