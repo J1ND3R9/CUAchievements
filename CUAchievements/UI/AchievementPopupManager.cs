@@ -243,9 +243,9 @@ namespace CUAchievements.UI
             iconImage.sprite = icon;
             titleTmp.text = title;
             descTmp.text = desc;
-            yield return AnimationHelper.SlideTo(shownPos, popupRoot);
+            yield return AnimationUtility.SlideTo(shownPos, popupRoot);
             yield return new WaitForSeconds(ShowDuration);
-            yield return AnimationHelper.SlideTo(hiddenPos, popupRoot);
+            yield return AnimationUtility.SlideTo(hiddenPos, popupRoot);
         }
 
         
