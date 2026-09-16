@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CUAchievements.UI
 {
-    internal static class AnimationHelper
+    internal static class AnimationUtility
     {
         public static IEnumerator SlideTo(Vector2 target, RectTransform rect)
         {
