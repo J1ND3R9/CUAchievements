@@ -86,6 +86,17 @@ namespace CUAchievements.Registry
 
         internal static IReadOnlyDictionary<string, RegisteredAchievement> GetAll() => RegisteredAchievements;
 
+        internal static bool TryGetPluginName(string pluginGuid, out string pluginName)
+        {
+            pluginName = null;
+            if (Chainloader.PluginInfos.TryGetValue(pluginGuid, out PluginInfo info))
+            {
+                pluginName = info.Metadata.Name;
+                return true;
+            }
+            return false;
+        }
+
         internal static (int, int) GetTotalProgress() => (RegisteredAchievements.Values.Count(a => a.IsUnlocked), RegisteredAchievements.Count());
 
         internal static IReadOnlyDictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid, string search = "")
