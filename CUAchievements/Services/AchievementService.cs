@@ -58,8 +58,6 @@ namespace CUAchievements.Services
 
             progress.Progress += amount;
 
-            CUAchievementsPlugin.Logger.LogInfo($"\"{achievement.Definition.Id}\" {progress.Progress}/{achievement.Definition.MaxProgress}"); // TODO: If debug mode is on
-
             if (progress.Progress >= achievement.Definition.MaxProgress)
             {
                 progress.Progress = achievement.Definition.MaxProgress;
