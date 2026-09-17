@@ -96,6 +96,7 @@
     <Compile Include="Definitions\AchievementDifficulty.cs" />
     <Compile Include="Definitions\AchievementType.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />
+    <Compile Include="Persistence\SaveCompression.cs" />
     <Compile Include="Services\ConditionalAchievementTracker.cs" />
     <Compile Include="Services\CUAchievements.cs" />
     <Compile Include="UI\AchievementButtonPatch.cs" />

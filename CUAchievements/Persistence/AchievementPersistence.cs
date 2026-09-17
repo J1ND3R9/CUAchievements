@@ -5,98 +5,226 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace CUAchievements.Persistence
 {
     internal sealed class AchievementPersistence
     {
-        internal static bool Load(string modGuid)
+        private static readonly Dictionary<string, AchievementSaveFile> Saves = new Dictionary<string, AchievementSaveFile>();
+
+        private static readonly HashSet<string> DirtyPlugins = new HashSet<string>();
+
+        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            string saveFile = GetSaveFilePath(modGuid);
-            string json = File.ReadAllText(saveFile);
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            Formatting = Formatting.None
+        };
 
-            if (string.IsNullOrWhiteSpace(json))
-                return true;
-
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Formatting = Formatting.Indented
-            };
-            AchievementSaveFile achievementSaveFile = JsonConvert.DeserializeObject<AchievementSaveFile>(json, settings);
-
-            if (achievementSaveFile == null)
-                return false;
-
-            foreach (KeyValuePair<string, AchievementProgressData> achievementProgress in achievementSaveFile.Achievements)
-            {
-                if (!AchievementRegistry.TryGet(achievementSaveFile.PluginGuid, achievementProgress.Key, out RegisteredAchievement achievement))
-                    continue;
-                achievement.Progress.Progress = achievementProgress.Value.Progress;
-                achievement.Progress.Unlocked = achievementProgress.Value.Unlocked;
-                achievement.Progress.UnlockedAt = achievementProgress.Value.UnlockedAt;
-            }
-
-            return true;
+        public static void MarkDirty(string modGuid)
+        {
+            DirtyPlugins.Add(modGuid);
         }
-        internal static bool Save(string modGuid)
+
+        public static void EnsureLoaded(string modGuid)
         {
+            if (Saves.ContainsKey(modGuid))
+                return;
+
+            AchievementSaveFile save = null;
             string saveFile = GetSaveFilePath(modGuid);
-            AchievementSaveFile save;
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Formatting = Formatting.Indented
-            };
 
             if (File.Exists(saveFile))
             {
-                string existingJson = File.ReadAllText(saveFile);
-                if (!string.IsNullOrWhiteSpace(existingJson))
-                    save = JsonConvert.DeserializeObject<AchievementSaveFile>(existingJson, settings);
-                else
-                    save = CreateSave(modGuid, 1);
+                save = TryLoadSaveFile(saveFile, modGuid);
             }
-            else
+
+            string backupFile = $"{saveFile}.backup";
+
+            if (save == null && File.Exists(backupFile))
+            {
+                CUAchievementsPlugin.Logger.LogWarning($"Main save for {modGuid} is corrupted or missing. Trying to load from backup...");
+                save = TryLoadSaveFile(backupFile, modGuid);
+
+                if (save != null)
+                {
+                    try
+                    {
+                        File.Copy(backupFile, saveFile, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        CUAchievementsPlugin.Logger.LogWarning($"Failed to restore backup for {modGuid}: {ex.Message}");
+                    }
+                }
+            }
+
+            if (save == null)
             {
                 save = CreateSave(modGuid, 1);
             }
 
-            foreach (KeyValuePair<string, RegisteredAchievement> achievement in AchievementRegistry.GetAll())
+            Saves[modGuid] = save;
+        }
+
+        private static AchievementSaveFile TryLoadSaveFile(string path, string modGuid)
+        {
+            try
             {
-                if (achievement.Value.PluginGuid != modGuid)
-                    continue;
-                save.Achievements[achievement.Value.Definition.Id] = achievement.Value.Progress;
+                byte[] compressed = File.ReadAllBytes(path);
+
+                if (compressed.Length == 0)
+                    return null;
+
+                string json = SaveCompression.Decompress(compressed);
+
+                if (string.IsNullOrWhiteSpace(json))
+                    return null;
+
+                AchievementSaveFile loaded = JsonConvert.DeserializeObject<AchievementSaveFile>(json, Settings);
+
+                if (loaded.PluginGuid != modGuid)
+                    return null;
+
+                if (loaded != null)
+                {
+                    if (loaded.Achievements == null)
+                        loaded.Achievements = new Dictionary<string, AchievementProgressData>();
+
+                    return loaded;
+                }
+            }
+            catch (Exception ex)
+            {
+                CUAchievementsPlugin.Logger.LogError($"Failed to load achievements for plugin {modGuid}: {ex}");
             }
 
-            string newJson = JsonConvert.SerializeObject(save, settings);
-            File.WriteAllText(saveFile, newJson);
+            return null;
+        }
 
-            return true;
+        public static void Restore(RegisteredAchievement achievement)
+        {
+            EnsureLoaded(achievement.PluginGuid);
+
+            AchievementSaveFile save = Saves[achievement.PluginGuid];
+
+            if (!save.Achievements.TryGetValue(achievement.Definition.Id, out AchievementProgressData progress))
+            {
+                return;
+            }
+
+            achievement.Progress.Progress = progress.Progress;
+            achievement.Progress.Unlocked = progress.Unlocked;
+            achievement.Progress.UnlockedAt = progress.UnlockedAt;
+        }
+
+        private static bool Save(string modGuid)
+        {
+            try
+            {
+                EnsureLoaded(modGuid);
+
+                AchievementSaveFile save = Saves[modGuid];
+
+                foreach (KeyValuePair<string, RegisteredAchievement> pair in AchievementRegistry.GetAll())
+                {
+                    RegisteredAchievement achievement = pair.Value;
+
+                    if (achievement.PluginGuid != modGuid)
+                        continue;
+
+                    save.Achievements[achievement.Definition.Id] = achievement.Progress;
+                }
+
+                string json = JsonConvert.SerializeObject(save, Settings);
+                byte[] compressed = SaveCompression.Compress(json);
+
+                string saveFile = GetSaveFilePath(modGuid);
+
+                if (!SaveFile(compressed, saveFile))
+                    return false;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                CUAchievementsPlugin.Logger.LogError($"Failed to save achievements for plugin {modGuid}: {ex}");
+
+                return false;
+            }
+        }
+        public static void SaveNow(string modGuid)
+        {
+            Save(modGuid);
+        }
+        public static void SaveDirty()
+        {
+            foreach (string modGuid in DirtyPlugins.ToArray())
+            {
+                if (Save(modGuid))
+                    DirtyPlugins.Remove(modGuid);
+            }
+        }
+
+        private static bool SaveFile(byte[] compressed, string saveFilePath)
+        {
+            try
+            {
+                string tempPath = $"{saveFilePath}.tmp";
+                string backupPath = $"{saveFilePath}.backup";
+
+                using (FileStream fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
+                {
+                    fs.Write(compressed, 0, compressed.Length);
+                    fs.Flush(flushToDisk: true);
+                }
+
+                if (File.Exists(saveFilePath))
+                {
+                    try
+                    {
+                        File.Replace(tempPath, saveFilePath, backupPath);
+                    }
+                    catch (IOException)
+                    {
+                        File.Copy(tempPath, saveFilePath, true);
+                        File.Delete(tempPath);
+                    }
+                }
+                else
+                {
+                    File.Move(tempPath, saveFilePath);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                CUAchievementsPlugin.Logger.LogError($"Failed to write save file {saveFilePath}: {ex}");
+                return false;
+            }
         }
 
         private static string GetDirectory()
         {
             string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string directoryPath = Path.Combine(Directory.GetParent(localAppData).FullName, "LocalLow", "Orsoniks", "CasualtiesUnknown", "CUAchievements", "Data");
+
+            string directoryPath = Path.Combine(
+                Directory.GetParent(localAppData).FullName,
+                "LocalLow",
+                "Orsoniks",
+                "CasualtiesUnknown",
+                "CUAchievements",
+                "Data");
+
             if (!Directory.Exists(directoryPath))
-            {
-                CUAchievementsPlugin.Logger.LogInfo("Directory with achievements not exists. Creating...");
                 Directory.CreateDirectory(directoryPath);
-            }
+
             return directoryPath;
         }
 
         private static string GetSaveFilePath(string modGuid)
         {
-            string directoryPath = GetDirectory();
-            string filePath = Path.Combine(directoryPath, $"{modGuid}.json");
-            if (!File.Exists(filePath))
-            {
-                CUAchievementsPlugin.Logger.LogInfo($"File with achievements for plugin {modGuid} not exists. Creating...");
-                File.WriteAllText(filePath, "");
-            }
-            return filePath;
+            return Path.Combine(GetDirectory(), $"{modGuid}.sv");
         }
 
         private static AchievementSaveFile CreateSave(string modGuid, int version)
@@ -108,5 +236,6 @@ namespace CUAchievements.Persistence
                 Achievements = new Dictionary<string, AchievementProgressData>()
             };
         }
+        
     }
 }

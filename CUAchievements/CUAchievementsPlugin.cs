@@ -2,16 +2,12 @@
 using BepInEx.Logging;
 using CUAchievements.Assets;
 using CUAchievements.Definitions;
-using CUAchievements.Registry;
-using CUAchievements.Services;
+using CUAchievements.Persistence;
 using CUAchievements.UI;
 using CUCoreLib.Data;
-using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using TMPro;
+using System.Collections;
 using UnityEngine;
 
 namespace CUAchievements
@@ -27,6 +23,8 @@ namespace CUAchievements
         internal static new ManualLogSource Logger;
         private readonly Harmony _harmony = new Harmony(ModGUID);
         public static CUAchievementsPlugin Instance { get; private set; } = null;
+
+        private const float AutoSaveInterval = 10f;
         private void Awake()
         {
             Logger = base.Logger;
@@ -36,6 +34,27 @@ namespace CUAchievements
             RegisterModOptions();
             RegisterDebugShit();
             Logger.LogInfo("Plugin loaded!");
+        }
+
+        private void Start()
+        {
+            StartCoroutine(AutoSaveCoroutine());
+        }
+
+        private void OnApplicationQuit()
+        {
+            AchievementPersistence.SaveDirty();
+        }
+
+        private IEnumerator AutoSaveCoroutine()
+        {
+            WaitForSecondsRealtime wait = new WaitForSecondsRealtime(AutoSaveInterval);
+
+            while (true)
+            {
+                yield return wait;
+                AchievementPersistence.SaveDirty();
+            }
         }
         private void RegisterModOptions()
         {

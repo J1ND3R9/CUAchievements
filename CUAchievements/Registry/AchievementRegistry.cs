@@ -51,10 +51,7 @@ namespace CUAchievements.Registry
             RegisteredAchievement registeredAchievement = new RegisteredAchievement(_pluginGuid, achievement, progress);
             RegisteredAchievements[fullId] = registeredAchievement;
 
-            CUAchievementsPlugin.Logger.LogInfo($"Ачивка \"{achievement.Title}\" зарегистрирована!");
-
-            AchievementPersistence.Load(_pluginGuid);
-            AchievementPersistence.Save(_pluginGuid);
+            AchievementPersistence.Restore(registeredAchievement);
 
             return registeredAchievement;
         }

@@ -66,7 +66,11 @@ namespace CUAchievements.Services
                 UnlockInternal(achievement);
             }
 
-            AchievementPersistence.Save(achievement.PluginGuid);
+            else
+            {
+                AchievementPersistence.MarkDirty(achievement.PluginGuid);
+            }
+
             AchievementEvents.RaiseAchievementsChanged();
 
             return true;
@@ -80,7 +84,7 @@ namespace CUAchievements.Services
             achievement.Progress.UnlockedAt = DateTime.UtcNow;
 
             AchievementPopupManager.Show(achievement);
-            AchievementPersistence.Save(achievement.PluginGuid);
+            AchievementPersistence.SaveNow(achievement.PluginGuid);
             AchievementEvents.RaiseAchievementsChanged();
 
             return true;
