@@ -66,8 +66,8 @@ namespace CUAchievements.UI
             RectTransform detailsScrollRect = detailsScroll.GetComponent<RectTransform>();
             detailsScrollRect.sizeDelta = new Vector2(370f, 700f);
 
-            TextMeshProUGUI descriptionTmp = GetComponentInChildren<TextMeshProUGUI>();
-            if (descriptionTmp != null) descriptionTmp.text = "Детали достижения"; // TODO: Localization
+            TextMeshProUGUI descriptionTemplateTmp = GetComponentInChildren<TextMeshProUGUI>();
+            if (descriptionTemplateTmp != null) descriptionTemplateTmp.text = "Детали достижения"; // TODO: Localization
 
             RectTransform detailsRect = GetComponent<RectTransform>();
             detailsRect.anchorMax = new Vector2(0f, 0.5f);
@@ -93,20 +93,18 @@ namespace CUAchievements.UI
             VerticalLayoutGroup headerVerticalLayout = headerSectionObject.GetComponent<VerticalLayoutGroup>();
             headerVerticalLayout.spacing = 8f;
             headerVerticalLayout.childAlignment = TextAnchor.MiddleCenter;
-
-            //headerVerticalLayout.childControlWidth = false;
-            //headerVerticalLayout.childControlHeight = false;
-
             headerVerticalLayout.childForceExpandWidth = false;
-            //headerVerticalLayout.childForceExpandHeight = false;
 
             CreateIconObject(headerSectionObject.transform);
 
-            detailTitle = UIUtility.CreateText(headerSectionObject.transform, "Label", "Label", fontAsset, 20f, TextAlignmentOptions.Center);
-            detailTitle.font = fontAsset;
+            (GameObject labelObject, TextMeshProUGUI labelTmp) = UIUtility.CreateText(headerSectionObject.transform, "Label", "Label", fontAsset, 20f, TextAlignmentOptions.Center);
+            detailTitle = labelTmp;
 
-            detailSource = UIUtility.CreateText(headerSectionObject.transform, "Source", "Source", fontAsset, 16f, TextAlignmentOptions.Center);
-            detailSource.font = fontAsset;
+            var labelLayout = labelObject.AddComponent<LayoutElement>();
+            labelLayout.minHeight = 32f;
+
+            (GameObject _, TextMeshProUGUI sourceTmp) = UIUtility.CreateText(headerSectionObject.transform, "Source", "Source", fontAsset, 16f, TextAlignmentOptions.Center);
+            detailSource = sourceTmp;
             detailSource.alpha = 0.75f;
 
             UIUtility.CreateSeparator(detailsObject.transform);
@@ -114,7 +112,8 @@ namespace CUAchievements.UI
             GameObject descriptionSectionObject = new GameObject("DescriptionSection", typeof(RectTransform), typeof(VerticalLayoutGroup));
             descriptionSectionObject.transform.SetParent(detailsObject.transform, false);
 
-            detailDescription = UIUtility.CreateText(descriptionSectionObject.transform, "Description", "Description", fontAsset, 16f); // TODO: Localization
+            (GameObject _, TextMeshProUGUI descriptionTmp) = UIUtility.CreateText(descriptionSectionObject.transform, "Description", "Description", fontAsset, 16f); // TODO: Localization
+            detailDescription = descriptionTmp;
             detailDescription.font = fontAsset;
 
             UIUtility.CreateSeparator(detailsObject.transform);
@@ -122,7 +121,8 @@ namespace CUAchievements.UI
             GameObject bottomSectionObject = new GameObject("BottomSection", typeof(RectTransform), typeof(VerticalLayoutGroup));
             bottomSectionObject.transform.SetParent(detailsObject.transform, false);
 
-            detailUnlocked = UIUtility.CreateText(bottomSectionObject.transform, "Unlocked", "Unlocked", fontAsset, 18f);
+            (GameObject _,  TextMeshProUGUI unlockedTmp) = UIUtility.CreateText(bottomSectionObject.transform, "Unlocked", "Unlocked", fontAsset, 18f);
+            detailUnlocked = unlockedTmp;
             detailUnlocked.font = fontAsset;
 
             (Transform _, TextMeshProUGUI unlockedDate, TextMeshProUGUI unlockedTime) = CreateStatisticRow(bottomSectionObject.transform, "UnlockedAt", "-", "-", fontAsset);
@@ -219,7 +219,7 @@ namespace CUAchievements.UI
             layout.childForceExpandHeight = true;
             layout.childForceExpandWidth = false;
 
-            var tmpLabel = UIUtility.CreateText(row.transform, "Label", label, font, 18f);
+            (GameObject _, TextMeshProUGUI tmpLabel) = UIUtility.CreateText(row.transform, "Label", label, font, 18f);
 
             GameObject spacer = new GameObject("Spacer", typeof(RectTransform), typeof(LayoutElement));
             spacer.transform.SetParent(row.transform, false);
@@ -227,7 +227,7 @@ namespace CUAchievements.UI
             LayoutElement spacerLayout = spacer.GetComponent<LayoutElement>();
             spacerLayout.flexibleWidth = 1f;
 
-            var tmpValue = UIUtility.CreateText(row.transform, "Value", value, font, 18f);
+            (GameObject _, TextMeshProUGUI tmpValue) = UIUtility.CreateText(row.transform, "Value", value, font, 18f);
 
             return (row.transform, tmpLabel, tmpValue);
         }
