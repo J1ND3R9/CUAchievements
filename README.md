@@ -14,40 +14,7 @@ A simple, extensible and mod-friendly achievement framework for Casualties: Unkn
 ## Quick Example
 
 ```csharp
-var registry = AchievementRegistry.Create(ModGUID);
-registry.Register(AchievementDefinition.Counter(
-    "eat_100000_food",
-    "Hungry",
-    "Eat 100.000 food!",
-    "TODO ICON",
-    100000
-    ));
-registry.Register(AchievementDefinition.Instant(
-    "first_jump",
-    "Yupieee!",
-    "Do your first jump.",
-    "TODO ICON"
-    ));
-```
-
-```csharp
-[HarmonyPatch(typeof(Body))]
-internal class BodyPatch
-{
-    [HarmonyPatch(nameof(Body.Eat))]
-    [HarmonyPostfix]
-    private static void EatPostfix()
-    {
-        AchievementService.AddProgress("eat_100000_food");
-    }
-
-    [HarmonyPatch(nameof(Body.Jump))]
-    [HarmonyPostfix]
-    private static void JumpPostfix()
-    {
-        AchievementService.Unlock("first_jump");
-    }
-}
+It will be there at release!
 ```
 
 ## Roadmap
@@ -55,11 +22,11 @@ internal class BodyPatch
 - [x] Achievement registration
 - [x] Progress tracking
 - [x] Save/Load
-- [ ] Achievement UI
-- [ ] Notifications
-- [ ] Hidden achievements
+- [x] Achievement UI
+- [x] Notifications
+- [x] Hidden achievements
 - [ ] Localization helpers
-- [ ] Achievement ranks
+- [x] Achievement ranks
 - [ ] Anticheat system
 
 ## Contributing
