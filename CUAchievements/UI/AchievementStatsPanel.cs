@@ -91,7 +91,8 @@ namespace CUAchievements.UI
             achievedGameObject.transform.SetParent(statisticGameObject.transform, false);
 
             UIUtility.CreateText(achievedGameObject.transform, "AchievedText", "ПОЛУЧЕНО ДОСТИЖЕНИЙ", fontAsset, 16f, TextAlignmentOptions.Center); // TODO: Localization
-            totalUnlockedText = UIUtility.CreateText(achievedGameObject.transform, "AchievedTotal", $"{achievementsProgress.Item1}/{achievementsProgress.Item2}", fontAsset, 20f, TextAlignmentOptions.Center);
+            (GameObject _, TextMeshProUGUI achievedTotalTmp) = UIUtility.CreateText(achievedGameObject.transform, "AchievedTotal", $"{achievementsProgress.Item1}/{achievementsProgress.Item2}", fontAsset, 20f, TextAlignmentOptions.Center);
+            totalUnlockedText = achievedTotalTmp;
 
             UIUtility.CreateSeparator(statisticGameObject.transform);
 
@@ -159,7 +160,7 @@ namespace CUAchievements.UI
             layout.childForceExpandHeight = true;
             layout.childForceExpandWidth = false;
 
-            var tmpLabel = UIUtility.CreateText(row.transform, "Label", label, font, 18f);
+            (GameObject _, TextMeshProUGUI tmpLabel) = UIUtility.CreateText(row.transform, "Label", label, font, 18f);
 
             GameObject spacer = new GameObject("Spacer", typeof(RectTransform), typeof(LayoutElement));
             spacer.transform.SetParent(row.transform, false);
@@ -167,7 +168,7 @@ namespace CUAchievements.UI
             LayoutElement spacerLayout = spacer.GetComponent<LayoutElement>();
             spacerLayout.flexibleWidth = 1f;
 
-            var tmpValue = UIUtility.CreateText(row.transform, "Value", value, font, 18f);
+            (GameObject _, TextMeshProUGUI tmpValue) = UIUtility.CreateText(row.transform, "Value", value, font, 18f);
 
             return (row.transform, tmpLabel, tmpValue);
         }

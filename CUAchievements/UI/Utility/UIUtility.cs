@@ -11,7 +11,7 @@ namespace CUAchievements.UI.Utility
 {
     internal static class UIUtility
     {
-        public static TextMeshProUGUI CreateText(Transform parent,
+        public static (GameObject, TextMeshProUGUI) CreateText(Transform parent,
                                                  string name,
                                                  string text,
                                                  TMP_FontAsset font,
@@ -19,7 +19,6 @@ namespace CUAchievements.UI.Utility
                                                  TextAlignmentOptions alignment = TextAlignmentOptions.Left)
         {
             GameObject gameObject = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
-
             gameObject.transform.SetParent(parent, false);
 
             TextMeshProUGUI tmp = gameObject.GetComponent<TextMeshProUGUI>();
@@ -28,7 +27,7 @@ namespace CUAchievements.UI.Utility
             tmp.fontSize = fontSize;
             tmp.alignment = alignment;
 
-            return tmp;
+            return (gameObject, tmp);
         }
 
         public static GameObject CreateSeparator(Transform parent, float height = 2f)
