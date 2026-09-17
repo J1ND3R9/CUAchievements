@@ -197,7 +197,7 @@ namespace CUAchievements.UI
             GameObject progressNumberObject = new GameObject("ProgressNumber", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
             progressNumberObject.transform.SetParent(progressRowObject.transform, false);
 
-            int unlockPrecentage = (int)Math.Round((double)achievementsProgress.Item1 / achievementsProgress.Item2 * 100);
+            int unlockPrecentage =  achievementsProgress.Item2 > 0 ? (int)Math.Round((double)achievementsProgress.Item1 / achievementsProgress.Item2 * 100) : 0;
 
             TextMeshProUGUI progressNumberTmp = progressNumberObject.GetComponent<TextMeshProUGUI>();
             progressNumberTmp.text = $"{unlockPrecentage}%";
@@ -220,7 +220,7 @@ namespace CUAchievements.UI
             squaresLayout.preferredHeight = 24f;
             squaresLayout.minHeight = 24f;
 
-            int filledSquares = Mathf.FloorToInt((achievementsProgress.Item1 / achievementsProgress.Item2) * 10);
+            int filledSquares = achievementsProgress.Item2 > 0 ? Mathf.FloorToInt(((float)achievementsProgress.Item1 / achievementsProgress.Item2) * 10) : 0;
             for (int i = 0; i < 10; i++)
             {
                 GameObject squareObject = new GameObject($"Square{i}", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
