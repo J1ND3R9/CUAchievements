@@ -99,7 +99,7 @@ namespace CUAchievements.UI
             GameObject globalStatisticGameObject = new GameObject("StatisticObject", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             globalStatisticGameObject.transform.SetParent(statisticGameObject.transform, false);
 
-            CreateStatisticRow(globalStatisticGameObject.transform, "Total", "ВСЕГО:", $"{achievementsProgress.Item1 + achievementsProgress.Item2}", fontAsset);
+            CreateStatisticRow(globalStatisticGameObject.transform, "Total", "ВСЕГО:", $"{achievementsProgress.Item2}", fontAsset);
             (Transform _, TextMeshProUGUI _, TextMeshProUGUI value1) = CreateStatisticRow(globalStatisticGameObject.transform, "Unlocked", "РАЗБЛОКИРОВАНО:", $"{achievementsProgress.Item1}", fontAsset);
             (Transform _, TextMeshProUGUI _, TextMeshProUGUI value2) = CreateStatisticRow(globalStatisticGameObject.transform, "Locked", "ЗАБЛОКИРОВАНО:", $"{achievementsProgress.Item2 - achievementsProgress.Item1}", fontAsset);
 
