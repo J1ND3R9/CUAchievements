@@ -107,8 +107,10 @@ namespace CUAchievements.UI
             horizontalLayoutGroup.childForceExpandHeight = true;
             horizontalLayoutGroup.childForceExpandWidth = true;
 
-            searchField = BuildInputField(achievementTabObject.transform, "AchievementSearchField", "Поиск..."); // TODO: Localization
-            statisticTab = BuildButton(achievementTabObject.transform, "AchievementStatsButton", "Статистика"); // TODO: Localization
+            string searchLocale = LocaleRegistry.Get("achievementspanel_search", "Search...");
+            string statsLocale = LocaleRegistry.Get("achievementspanel_stats_button", "Stats");
+            searchField = BuildInputField(achievementTabObject.transform, "AchievementSearchField", searchLocale);
+            statisticTab = BuildButton(achievementTabObject.transform, "AchievementStatsButton", statsLocale);
 
             searchField.onValueChanged.AddListener(OnSearchTextChanged);
             statisticTab.onClick.AddListener(OnStatisticTabClick);
@@ -402,46 +404,6 @@ namespace CUAchievements.UI
             BuildTabs();
             statsPanel = AchievementStatsPanel.Create(vanillaPanel.transform, font);
             detailsPanel = AchievementDetailsPanel.Create(vanillaPanel.transform, font);
-            //BuildInfoPanel();
-        }
-
-        private void BuildInfoPanel()
-        {
-            Transform panelTransform = vanillaPanel.transform.Find("Panel");
-            if (panelTransform == null) return;
-
-            GameObject infoPanel = Instantiate(panelTransform, vanillaPanel.transform).gameObject;
-            infoPanel.name = "InfoPanel";
-
-            foreach (Transform child in infoPanel.transform)
-            {
-                if (child.name == "Scroll")
-                {
-                    var content = child.Find("Content");
-                    if (content != null)
-                    {
-                        foreach (Transform child2 in content.transform)
-                            Destroy(child2.gameObject);
-                    }
-                    continue;
-                }
-                if (child.name != "Description")
-                    Destroy(child.gameObject);
-            }
-
-            GameObject infoScroll = infoPanel.transform.Find("Scroll").gameObject;
-            RectTransform infoScrollRect = infoScroll.GetComponent<RectTransform>();
-            infoScrollRect.sizeDelta = new Vector2(370f, 700f);
-
-            TextMeshProUGUI description = infoPanel.GetComponentInChildren<TextMeshProUGUI>();
-            description.text = "achievementName"; // TODO: Localization
-
-            RectTransform infoRect = infoPanel.GetComponent<RectTransform>();
-            infoRect.anchorMax = new Vector2(0f, 0.5f);
-            infoRect.anchorMin = new Vector2(0f, 0.5f);
-            infoRect.pivot = new Vector2(0f, 0.5f);
-            infoRect.sizeDelta = new Vector2(380f, 800f);
-            infoRect.anchoredPosition = new Vector2(20f, 0f);
         }
 
         private void RefreshAchievementList(string searchFilter = "")
@@ -789,8 +751,11 @@ namespace CUAchievements.UI
 
             TextMeshProUGUI titleTmp = achievementObject.transform.Find("Text/Header/Title").GetComponent<TextMeshProUGUI>();
             TextMeshProUGUI descTmp = achievementObject.transform.Find("Text/Description").GetComponent<TextMeshProUGUI>();
-            titleTmp.text = string.Format("Скрытых достижений осталось: {0}", hiddenAchievements.Count()); // TODO: Localization
-            descTmp.text = "Тебе придётся пошевелить мозгами, чтобы открыть все из них!"; // TODO: Localization
+
+            string hiddenTitleLocale = LocaleRegistry.Get("achievementspanel_hidden_achievements_title", "Hidden achievements remaining: {0}");
+            string hiddenDescriptionLocale = LocaleRegistry.Get("achievementspanel_hidden_achievements_description", "Information about each achievement will be available after it is obtained");
+            titleTmp.text = string.Format(hiddenTitleLocale, hiddenAchievements.Count());
+            descTmp.text = hiddenDescriptionLocale;
 
             Image frameImage = achievementObject.transform.Find("Frame").GetComponent<Image>();
             frameImage.sprite = AssetLoader.GetCachedSprite("achievement_frame_normal");

@@ -1,5 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
+using CUCoreLib.Registries;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -62,7 +63,11 @@ namespace CUAchievements.UI
             statsScrollRect.sizeDelta = new Vector2(370f, 700f);
 
             TextMeshProUGUI description = GetComponentInChildren<TextMeshProUGUI>();
-            if (description != null) description.text = "Статистика"; // TODO: Localization
+            if (description != null)
+            {
+                string descriptionLocale = LocaleRegistry.Get("statspanel_statistic", "Statistic");
+                description.text = descriptionLocale;
+            }
 
             RectTransform statsRect = GetComponent<RectTransform>();
             statsRect.anchorMax = new Vector2(1f, 0.5f);
@@ -90,7 +95,8 @@ namespace CUAchievements.UI
             GameObject achievedGameObject = new GameObject("AchievedTextContainer", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             achievedGameObject.transform.SetParent(statisticGameObject.transform, false);
 
-            UIUtility.CreateText(achievedGameObject.transform, "AchievedText", "ПОЛУЧЕНО ДОСТИЖЕНИЙ", fontAsset, 16f, TextAlignmentOptions.Center); // TODO: Localization
+            string achievedLocale = LocaleRegistry.Get("statspanel_total_achieved", "ACHIEVED");
+            UIUtility.CreateText(achievedGameObject.transform, "AchievedText", achievedLocale, fontAsset, 16f, TextAlignmentOptions.Center);
             (GameObject _, TextMeshProUGUI achievedTotalTmp) = UIUtility.CreateText(achievedGameObject.transform, "AchievedTotal", $"{achievementsProgress.Item1}/{achievementsProgress.Item2}", fontAsset, 20f, TextAlignmentOptions.Center);
             totalUnlockedText = achievedTotalTmp;
 
@@ -99,9 +105,12 @@ namespace CUAchievements.UI
             GameObject globalStatisticGameObject = new GameObject("StatisticObject", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             globalStatisticGameObject.transform.SetParent(statisticGameObject.transform, false);
 
-            CreateStatisticRow(globalStatisticGameObject.transform, "Total", "ВСЕГО:", $"{achievementsProgress.Item2}", fontAsset);
-            (Transform _, TextMeshProUGUI _, TextMeshProUGUI value1) = CreateStatisticRow(globalStatisticGameObject.transform, "Unlocked", "РАЗБЛОКИРОВАНО:", $"{achievementsProgress.Item1}", fontAsset);
-            (Transform _, TextMeshProUGUI _, TextMeshProUGUI value2) = CreateStatisticRow(globalStatisticGameObject.transform, "Locked", "ЗАБЛОКИРОВАНО:", $"{achievementsProgress.Item2 - achievementsProgress.Item1}", fontAsset);
+            string totalLocale = LocaleRegistry.Get("statspanel_total", "TOTAL");
+            string unlockedLocale = LocaleRegistry.Get("statspanel_unlocked", "UNLOCKED");
+            string lockedLocale = LocaleRegistry.Get("statspanel_locked", "LOCKED");
+            CreateStatisticRow(globalStatisticGameObject.transform, "Total", $"{totalLocale}:", $"{achievementsProgress.Item2}", fontAsset);
+            (Transform _, TextMeshProUGUI _, TextMeshProUGUI value1) = CreateStatisticRow(globalStatisticGameObject.transform, "Unlocked", $"{unlockedLocale}:", $"{achievementsProgress.Item1}", fontAsset);
+            (Transform _, TextMeshProUGUI _, TextMeshProUGUI value2) = CreateStatisticRow(globalStatisticGameObject.transform, "Locked", $"{lockedLocale}:", $"{achievementsProgress.Item2 - achievementsProgress.Item1}", fontAsset);
 
             unlockedText = value1;
             lockedText = value2;
@@ -114,7 +123,8 @@ namespace CUAchievements.UI
             VerticalLayoutGroup byModVerticalLayout = byModGameObject.GetComponent<VerticalLayoutGroup>();
             byModVerticalLayout.spacing = 24f;
 
-            UIUtility.CreateText(byModGameObject.transform, "ByModText", "По модификациям", fontAsset, 18f);
+            string byModLocale = LocaleRegistry.Get("statspanel_by_mod", "BY MOD");
+            UIUtility.CreateText(byModGameObject.transform, "ByModText", byModLocale, fontAsset, 18f);
 
             GameObject byModModificationsContainer = new GameObject("ModificationList", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             byModModificationsContainer.transform.SetParent(byModGameObject.transform, false);

@@ -1,6 +1,7 @@
 ﻿using CUAchievements.Definitions;
 using CUAchievements.Registry;
 using CUCoreLib.Helpers;
+using CUCoreLib.Registries;
 using System;
 using System.CodeDom;
 using System.Collections;
@@ -276,11 +277,9 @@ namespace CUAchievements.UI
         private static void BuildOnPlayerPrefs()
         {
             DisplayType playerPrefDisplayType = (DisplayType)PlayerPrefs.GetInt("Achievements_AchievementDisplay");
-            //PopupStyle playerPrefPopupStyle = (PopupStyle)PlayerPrefs.GetInt("Achievements_AchievementPopupStyle");
 
             bool needsRebuild = Instance != null && (displayType != playerPrefDisplayType);
             displayType = playerPrefDisplayType;
-            //popupStyle = playerPrefPopupStyle;
 
             EnsureCreated();
 
@@ -290,7 +289,8 @@ namespace CUAchievements.UI
 
         private static void AlertShow(RegisteredAchievement achievement)
         {
-            string alertMessage = string.Format("Достижение \"{0}\" разблокировано!", achievement.Definition.Title); // TODO: Localization
+            string alertLocale = LocaleRegistry.Get("alert_achievement_unlocked", "Achievement \"{0}\" unlocked!");
+            string alertMessage = string.Format(alertLocale, achievement.Definition.Title);
             CUCoreUtils.ShowAlert(alertMessage);
         }
 

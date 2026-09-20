@@ -2,6 +2,7 @@
 using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
+using CUCoreLib.Registries;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -67,7 +68,11 @@ namespace CUAchievements.UI
             detailsScrollRect.sizeDelta = new Vector2(370f, 700f);
 
             TextMeshProUGUI descriptionTemplateTmp = GetComponentInChildren<TextMeshProUGUI>();
-            if (descriptionTemplateTmp != null) descriptionTemplateTmp.text = "Детали достижения"; // TODO: Localization
+            if (descriptionTemplateTmp != null)
+            {
+                string detailsLocale = LocaleRegistry.Get("detailspanel_details", "Achievement details");
+                descriptionTemplateTmp.text = detailsLocale;
+            }
 
             RectTransform detailsRect = GetComponent<RectTransform>();
             detailsRect.anchorMax = new Vector2(0f, 0.5f);
@@ -112,7 +117,7 @@ namespace CUAchievements.UI
             GameObject descriptionSectionObject = new GameObject("DescriptionSection", typeof(RectTransform), typeof(VerticalLayoutGroup));
             descriptionSectionObject.transform.SetParent(detailsObject.transform, false);
 
-            (GameObject _, TextMeshProUGUI descriptionTmp) = UIUtility.CreateText(descriptionSectionObject.transform, "Description", "Description", fontAsset, 16f); // TODO: Localization
+            (GameObject _, TextMeshProUGUI descriptionTmp) = UIUtility.CreateText(descriptionSectionObject.transform, "Description", "Description", fontAsset, 16f);
             detailDescription = descriptionTmp;
             detailDescription.font = fontAsset;
 
@@ -186,7 +191,8 @@ namespace CUAchievements.UI
 
             if (achievement.IsUnlocked)
             {
-                detailUnlocked.text = "ПОЛУЧЕНО"; // TODO: Localization
+                string unlockedLocale = LocaleRegistry.Get("deatilspanel_earned", "EARNED");
+                detailUnlocked.text = unlockedLocale;
                 detailUnlocked.color = Color.green;
 
                 detailUnlockedAtDate.text = achievement.UnlockedAt?.ToShortDateString();
@@ -194,7 +200,8 @@ namespace CUAchievements.UI
             }
             else
             {
-                detailUnlocked.text = "ЗАБЛОКИРОВАНО"; // TODO: Localization
+                string lockedLocale = LocaleRegistry.Get("deatilspanel_locked", "LOCKED");
+                detailUnlocked.text = lockedLocale;
                 detailUnlocked.color = Color.red;
 
                 detailUnlockedAtDate.text = "-";
