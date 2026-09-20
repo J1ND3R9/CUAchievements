@@ -5,6 +5,7 @@ using CUAchievements.Debug;
 using CUAchievements.Definitions;
 using CUAchievements.Options;
 using CUAchievements.Persistence;
+using CUAchievements.Services;
 using CUAchievements.UI;
 using CUCoreLib.Data;
 using CUCoreLib.Registries;
@@ -18,7 +19,7 @@ namespace CUAchievements
     [BepInDependency("net.cucorelib", BepInDependency.DependencyFlags.HardDependency)]
     public class CUAchievementsPlugin : BaseUnityPlugin
     {
-        public const string ModGUID = "com.github.j1nd3r9.cuachievements";
+        public const string ModGUID = "com.cuachievements";
         public const string ModName = "CUAchievements";
         public const string ModVersion = "1.0.0.0";
 
@@ -51,6 +52,7 @@ namespace CUAchievements
 
         private void OnApplicationQuit()
         {
+            AchievementService.EndRun();
             AchievementPersistence.SaveDirty();
         }
 

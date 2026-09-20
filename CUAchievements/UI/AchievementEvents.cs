@@ -2,7 +2,7 @@
 
 namespace CUAchievements.UI
 {
-    public static class AchievementEvents
+    internal static class AchievementEvents
     {
         public static event Action AchievementsChanged;
 

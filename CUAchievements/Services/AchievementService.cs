@@ -1,7 +1,9 @@
-﻿using CUAchievements.Persistence;
+﻿using CUAchievements.Definitions;
+using CUAchievements.Persistence;
 using CUAchievements.Registry;
 using CUAchievements.UI;
 using System;
+using System.Collections.Generic;
 using UnityEngine.Windows.Speech;
 
 namespace CUAchievements.Services
@@ -9,7 +11,6 @@ namespace CUAchievements.Services
     internal sealed class AchievementService
     {
         internal readonly string _pluginGuid;
-        internal readonly ConditionalAchievementTracker _conditions = new ConditionalAchievementTracker();
 
         internal AchievementService(string pluginGuid)
         {
@@ -86,6 +87,21 @@ namespace CUAchievements.Services
             AchievementEvents.RaiseAchievementsChanged();
 
             return true;
+        }
+
+        internal static void EndRun()
+        {
+            foreach (RegisteredAchievement achievement in AchievementRegistry.GetAll().Values)
+            {
+                if (achievement.IsUnlocked)
+                    continue;
+
+                if (achievement.Definition.Scope != AchievementScope.Run)
+                    continue;
+
+                achievement.Progress.Progress = 0;
+                achievement.ConditionalTracker?.Clear();
+            }
         }
     }
 }

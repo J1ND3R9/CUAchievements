@@ -17,6 +17,7 @@ namespace CUAchievements.Registry
         public bool IsUnlocked => Progress.Unlocked;
         public float CurrentProgress => Progress.Progress;
         public DateTime? UnlockedAt => Progress.UnlockedAt;
+        public ConditionalAchievementTracker ConditionalTracker = new ConditionalAchievementTracker();
 
         internal RegisteredAchievement(string pluginGuid, AchievementDefinition definition, AchievementProgressData progress)
         {

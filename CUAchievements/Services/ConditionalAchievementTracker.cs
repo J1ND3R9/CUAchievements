@@ -9,5 +9,9 @@ namespace CUAchievements.Services
         public void SetFlag(string flagName, bool value) => flags[flagName] = value;
         public bool GetFlag(string flagName) => flags.TryGetValue(flagName, out var v) && v;
         public void ClearFlag(string flagName) => flags.Remove(flagName);
+        public void Clear()
+        {
+            flags.Clear();
+        }
     }
 }

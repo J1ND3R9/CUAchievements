@@ -9,10 +9,17 @@ namespace CUAchievements.Definitions
     public sealed class AchievementDefinition
     {
         public AchievementType Type { get; private set; }
+        /// <summary>
+        /// Unique achievement identifier
+        /// </summary>
         public string Id { get; private set; }
-        public string Title { get; private set; }
+        /// <summary>
+        /// Achievement name
+        /// </summary>
+        public string Name { get; private set; }
         public string Description { get; private set; }
         public AchievementDifficulty Difficulty { get; private set; }
+        public AchievementScope Scope { get; private set; }
         public Sprite Icon { get; private set; }
         public Sprite LockedIcon { get; private set; }
         public Sprite CustomFrame { get; private set; }
@@ -42,7 +49,7 @@ namespace CUAchievements.Definitions
             return new AchievementDefinition
             {
                 Id = id,
-                Title = title,
+                Name = title,
                 Description = description,
                 Difficulty = rank,
                 Icon = sprite,
@@ -55,33 +62,35 @@ namespace CUAchievements.Definitions
         /// Create the <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Counter"/>.
         /// </summary>
         /// <param name="id">Unique achievement identifier.</param>
-        /// <param name="title">Displayed achievement title.</param>
+        /// <param name="name">Displayed achievement name.</param>
         /// <param name="description">Displayed achievement description.</param>
         /// <param name="icon">Displayed achievement icon. If null, the default sprite will be used.</param>
         /// <param name="difficulty">Achievement difficulty.Affects the border around the achievement in the list.</param>
         /// <param name="maxProgress">The progress required for the achievement to unlock.</param>
-        /// <param name="lockedIcon">The icon displayed for a locked achievement.</param>
+        /// <param name="lockedIcon">Overrides the locked achievement icon.</param>
         /// <param name="customFrame">Add a custom frame around the achievement. Make sure to use 9-slicing.</param>
-        /// <param name="hidden">If true, the achievement's title, description, and sprite are hidden from the player until unlocked.</param>
+        /// <param name="hidden">If true, the achievement's name, description, and icon will be hidden from the player until the achievement is unlocked.</param>
         /// <param name="progressDecimals">Number of decimal places. Displayed in the achievements list.</param>
         /// <remarks>
         /// If <paramref name="hidden"/> is true, <paramref name="lockedIcon"/> and <paramref name="customFrame"/> are ignored until the achievement is unlocked.
         /// </remarks>
         public static AchievementDefinition Counter(string id,
-                                                    string title,
+                                                    string name,
                                                     string description,
                                                     float maxProgress,
                                                     Sprite icon,
                                                     Sprite lockedIcon = null,
                                                     AchievementDifficulty difficulty = AchievementDifficulty.Normal,
+                                                    AchievementScope scope = AchievementScope.Lifetime,
                                                     Sprite customFrame = null,
                                                     bool hidden = false,
                                                     int progressDecimals = 0)
         {
-            AchievementDefinition def = CreateBase(id, title, description, difficulty, icon, lockedIcon, customFrame, hidden);
+            AchievementDefinition def = CreateBase(id, name, description, difficulty, icon, lockedIcon, customFrame, hidden);
 
             def.MaxProgress = maxProgress;
             def.Type = AchievementType.Counter;
+            def.Scope = scope;
             def.ProgressDecimals = progressDecimals;
 
             return def;
@@ -91,7 +100,7 @@ namespace CUAchievements.Definitions
         /// Create the <see cref="AchievementDefinition"/> with type <see cref="AchievementType.Instant"/>.
         /// </summary>
         /// <param name="id">Unique achievement identifier.</param>
-        /// <param name="title">Displayed achievement title.</param>
+        /// <param name="name">Displayed achievement name.</param>
         /// <param name="description">Displayed achievement description.</param>
         /// <param name="icon">Displayed achievement icon.</param>
         /// <param name="difficulty">Achievement difficulty.Affects the border around the achievement in the list.</param>
@@ -102,7 +111,7 @@ namespace CUAchievements.Definitions
         /// If <paramref name="hidden"/> is true, <paramref name="lockedIcon"/> and <paramref name="customFrame"/> are ignored until the achievement is unlocked.
         /// </remarks>
         public static AchievementDefinition Instant(string id,
-                                                    string title,
+                                                    string name,
                                                     string description,
                                                     Sprite icon,
                                                     Sprite lockedIcon = null,
@@ -110,7 +119,7 @@ namespace CUAchievements.Definitions
                                                     Sprite customFrame = null,
                                                     bool hidden = false)
         {
-            AchievementDefinition def = CreateBase(id, title, description, difficulty, icon, lockedIcon, customFrame, hidden);
+            AchievementDefinition def = CreateBase(id, name, description, difficulty, icon, lockedIcon, customFrame, hidden);
 
             def.Type = AchievementType.Instant;
             return def;

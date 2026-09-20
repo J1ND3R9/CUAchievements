@@ -429,13 +429,13 @@ namespace CUAchievements.UI
                 var lockedVisible = achievements
                     .Where(a => !a.Progress.Unlocked && !a.Definition.IsHidden)
                     .OrderBy(a => (int)a.Definition.Difficulty)
-                    .ThenBy(a => a.Definition.Title)
+                    .ThenBy(a => a.Definition.Name)
                     .ToList();
 
                 var hidden = achievements
                     .Where(a => !a.Progress.Unlocked && a.Definition.IsHidden)
                     .OrderBy(a => (int)a.Definition.Difficulty)
-                    .ThenBy(a => a.Definition.Title)
+                    .ThenBy(a => a.Definition.Name)
                     .ToList();
 
                 var sortedAchievements = unlocked
@@ -643,7 +643,7 @@ namespace CUAchievements.UI
             titleObject.transform.SetParent(headerObject.transform, false);
 
             TextMeshProUGUI titleTmp = titleObject.GetComponent<TextMeshProUGUI>();
-            titleTmp.text = achievement.Definition.Title;
+            titleTmp.text = achievement.Definition.Name;
             titleTmp.fontSize = 24;
             titleTmp.fontStyle = FontStyles.Bold;
             titleTmp.color = Color.white;

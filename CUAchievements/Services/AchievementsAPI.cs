@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace CUAchievements.Services
 {
-    public sealed class CUAchievements
+    public sealed class AchievementsAPI
     {
         private AchievementRegistry Registry { get; }
         private AchievementService Service { get; }
         private string PluginGUID { get; }
 
-        private CUAchievements(string pluginGuid)
+        private AchievementsAPI(string pluginGuid)
         {
             Registry = AchievementRegistry.Create(pluginGuid);
             Service = AchievementService.Create(pluginGuid);
@@ -22,14 +22,14 @@ namespace CUAchievements.Services
         }
 
         /// <summary>
-        /// Create a new <see cref="CUAchievements"/>. Combines <see cref="AchievementRegistry"/> and <see cref="AchievementService"/> for API convenience.
+        /// Create a new <see cref="AchievementsAPI"/>. Combines <see cref="AchievementRegistry"/> and <see cref="AchievementService"/> for API convenience.
         /// </summary>
         /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
         /// <returns>
         /// </returns>
-        public static CUAchievements Create(string pluginGuid)
+        public static AchievementsAPI Create(string pluginGuid)
         {
-            return new CUAchievements(pluginGuid);
+            return new AchievementsAPI(pluginGuid);
         }
 
         /// <summary>
@@ -68,11 +68,6 @@ namespace CUAchievements.Services
         /// True if the unlock was successfully; otherwise false.
         /// </returns>
         public bool Unlock(string id) => Service.Unlock(id);
-
-        /// <summary>
-        /// Tracks the fulfillment of conditions across different layers of code, scoped to this plugin.
-        /// </summary>
-        public ConditionalAchievementTracker Conditions => Service._conditions;
 
         /// <summary>
         /// Retrieves a IReadOnlyList of all achievements registered by your plugin.

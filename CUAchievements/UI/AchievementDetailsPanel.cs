@@ -185,7 +185,7 @@ namespace CUAchievements.UI
             }
             detailIcon.sprite =  achievement.IsUnlocked ? achievement.Definition.Icon : achievement.Definition.LockedIcon;
             detailIconFrame.sprite = frameSprite;
-            detailTitle.text = achievement.Definition.Title;
+            detailTitle.text = achievement.Definition.Name;
             detailSource.text = AchievementRegistry.TryGetPluginName(achievement.PluginGuid, out var pluginName) ? pluginName : achievement.PluginGuid;
             detailDescription.text = achievement.Definition.Description;
 

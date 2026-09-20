@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\CUAchievements.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectName>CUAchievements</ProjectName>
@@ -95,11 +96,13 @@
     <Compile Include="Debug\AchievementDebug.cs" />
     <Compile Include="Definitions\AchievementDefinition.cs" />
     <Compile Include="Definitions\AchievementDifficulty.cs" />
+    <Compile Include="Definitions\AchievementScope.cs" />
     <Compile Include="Definitions\AchievementType.cs" />
+    <Compile Include="GamePatches\EndSequencePatch.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />
     <Compile Include="Persistence\SaveCompression.cs" />
     <Compile Include="Services\ConditionalAchievementTracker.cs" />
-    <Compile Include="Services\CUAchievements.cs" />
+    <Compile Include="Services\AchievementsAPI.cs" />
     <Compile Include="UI\AchievementButtonPatch.cs" />
     <Compile Include="Registry\AchievementRegistry.cs" />
     <Compile Include="Persistence\AchievementSaveFile.cs" />
@@ -155,6 +158,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_default_locked.png" />
   </ItemGroup>
+  <ItemGroup />
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />

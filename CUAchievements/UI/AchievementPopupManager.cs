@@ -77,7 +77,7 @@ namespace CUAchievements.UI
             BuildOnPlayerPrefs();
 
             AchievementDefinition achievementDef = achievement.Definition;
-            Instance.queue.Enqueue((achievementDef.Difficulty, achievementDef.Icon, achievementDef.Title, achievementDef.Description));
+            Instance.queue.Enqueue((achievementDef.Difficulty, achievementDef.Icon, achievementDef.Name, achievementDef.Description));
 
             float playerPrefVolume = PlayerPrefs.GetFloat("Achievements_UnlockVolume", 0.5f);
             AudioClip unlockSound = GetUnlockSound();
@@ -235,7 +235,7 @@ namespace CUAchievements.UI
 
         private IEnumerator DebugShowCoroutine(AchievementDefinition achievement)
         {
-            yield return AnimatePopup(achievement.Difficulty, achievement.Icon, achievement.Title, achievement.Description);
+            yield return AnimatePopup(achievement.Difficulty, achievement.Icon, achievement.Name, achievement.Description);
         }
 
         private IEnumerator AnimatePopup(AchievementDifficulty difficulty, Sprite icon, string title, string desc)
@@ -290,7 +290,7 @@ namespace CUAchievements.UI
         private static void AlertShow(RegisteredAchievement achievement)
         {
             string alertLocale = LocaleRegistry.Get("alert_achievement_unlocked", "Achievement \"{0}\" unlocked!");
-            string alertMessage = string.Format(alertLocale, achievement.Definition.Title);
+            string alertMessage = string.Format(alertLocale, achievement.Definition.Name);
             CUCoreUtils.ShowAlert(alertMessage);
         }
 

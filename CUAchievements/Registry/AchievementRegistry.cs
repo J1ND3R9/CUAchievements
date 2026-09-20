@@ -17,7 +17,7 @@ namespace CUAchievements.Registry
             _pluginGuid = pluginGuid;
         }
         /// <summary>
-        /// Create a new <see cref="AchievementRegistry"/>. Not recommended. Use <see cref="Services.CUAchievements"/>.
+        /// Create a new <see cref="AchievementRegistry"/>. Not recommended. Use <see cref="Services.AchievementsAPI"/>.
         /// </summary>
         /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
         /// <returns>
@@ -104,7 +104,7 @@ namespace CUAchievements.Registry
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                registeredAchievements = registeredAchievements.Where(a => a.Definition.Title.ToLower().Contains(search.ToLower()) || a.Definition.Description.ToLower().Contains(search.ToLower())).ToList();
+                registeredAchievements = registeredAchievements.Where(a => a.Definition.Name.ToLower().Contains(search.ToLower()) || a.Definition.Description.ToLower().Contains(search.ToLower())).ToList();
             }
 
             foreach (var achievement in registeredAchievements)
@@ -126,7 +126,6 @@ namespace CUAchievements.Registry
             }
             return pluginAchievements;
         }
-
         private string Validate(AchievementDefinition achievement)
         {
             if (achievement == null)
@@ -141,7 +140,7 @@ namespace CUAchievements.Registry
             {
                 return "achievement type is counter, but MaxProgress is or below zero.";
             }
-            if (string.IsNullOrEmpty(achievement.Title))
+            if (string.IsNullOrEmpty(achievement.Name))
             {
                 return "achievement name was null or empty.";
             }

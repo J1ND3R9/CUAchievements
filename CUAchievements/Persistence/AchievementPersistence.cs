@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using CUAchievements.Definitions;
 using CUAchievements.Registry;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -113,7 +114,10 @@ namespace CUAchievements.Persistence
                 return;
             }
 
-            achievement.Progress.Progress = progress.Progress;
+            if (achievement.Definition.Scope == AchievementScope.Lifetime)
+            {
+                achievement.Progress.Progress = progress.Progress;
+            }
             achievement.Progress.Unlocked = progress.Unlocked;
             achievement.Progress.UnlockedAt = progress.UnlockedAt;
         }
@@ -236,6 +240,6 @@ namespace CUAchievements.Persistence
                 Achievements = new Dictionary<string, AchievementProgressData>()
             };
         }
-        
+
     }
 }
