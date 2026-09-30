@@ -16,12 +16,6 @@ namespace CUAchievements.Registry
         {
             _pluginGuid = pluginGuid;
         }
-        /// <summary>
-        /// Create a new <see cref="AchievementRegistry"/>. Not recommended. Use <see cref="Services.AchievementsAPI"/>.
-        /// </summary>
-        /// <param name="pluginGuid">Unique plugin id. Use your actual GUID.</param>
-        /// <returns>
-        /// </returns>
         internal static AchievementRegistry Create(string pluginGuid)
         {
             return new AchievementRegistry(pluginGuid);
