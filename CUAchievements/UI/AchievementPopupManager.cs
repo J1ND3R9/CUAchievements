@@ -240,7 +240,7 @@ namespace CUAchievements.UI
 
         private IEnumerator AnimatePopup(AchievementDifficulty difficulty, Sprite icon, string title, string desc)
         {
-            frameImage.sprite = GetAchievementFrame(difficulty);
+            frameImage.sprite = GetAchievementFrame(difficulty) ?? AssetLoader.GetCachedSprite("achievement_frame_normal");
             iconImage.sprite = icon;
             titleTmp.text = title;
             descTmp.text = desc;
@@ -248,8 +248,6 @@ namespace CUAchievements.UI
             yield return new WaitForSeconds(ShowDuration);
             yield return AnimationUtility.SlideTo(hiddenPos, popupRoot);
         }
-
-        
 
         private static bool NeedPopup(AlertType type, RegisteredAchievement achievement)
         {

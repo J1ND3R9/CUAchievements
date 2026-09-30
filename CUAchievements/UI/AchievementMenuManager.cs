@@ -586,7 +586,7 @@ namespace CUAchievements.UI
             frameRectTransform.offsetMax = Vector2.zero;
 
             Image frameImage = frameObject.GetComponent<Image>();
-            frameImage.sprite = GetAchievementFrame(achievement.Definition.Difficulty);
+            frameImage.sprite = GetAchievementFrame(achievement.Definition.Difficulty) ?? AssetLoader.GetCachedSprite("achievement_frame_normal");
             frameImage.type = Image.Type.Sliced;
             frameImage.color = Color.white;
             frameImage.raycastTarget = false;
@@ -687,7 +687,7 @@ namespace CUAchievements.UI
                 }
                 else
                 {
-                progressNumberTmp.text = $"{achievement.Progress.Progress.ToString(format)}/{achievement.Definition.MaxProgress.ToString(format)}";
+                    progressNumberTmp.text = $"{achievement.Progress.Progress.ToString(format)}/{achievement.Definition.MaxProgress.ToString(format)}";
                 }
 
                 progressNumberTmp.fontSize = 18;
@@ -748,7 +748,7 @@ namespace CUAchievements.UI
 
         private void ShowAchievementDetails(RegisteredAchievement achievement)
         {
-            detailsPanel.Refresh(achievement, GetAchievementFrame(achievement.Definition.Difficulty));
+            detailsPanel.Refresh(achievement, GetAchievementFrame(achievement.Definition.Difficulty) ?? AssetLoader.GetCachedSprite("achievement_frame_normal"));
         }
 
         private void CreateHiddenAchievementObject(Transform parent, List<RegisteredAchievement> hiddenAchievements)
