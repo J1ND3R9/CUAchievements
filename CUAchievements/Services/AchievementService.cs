@@ -1,4 +1,5 @@
-﻿using CUAchievements.Definitions;
+﻿using CUAchievements.Anticheat;
+using CUAchievements.Definitions;
 using CUAchievements.Persistence;
 using CUAchievements.Registry;
 using CUAchievements.UI;
@@ -30,6 +31,8 @@ namespace CUAchievements.Services
                 return false;
             }
 
+            
+
             return AddProgressInternal(achievement, amount);
         }
 
@@ -56,6 +59,9 @@ namespace CUAchievements.Services
             {
                 if (IsInTutorial()) return true;
             }
+
+            if (RunIntegrity.Cheated)
+                return true;
 
             var progress = achievement.Progress;
 
@@ -88,6 +94,9 @@ namespace CUAchievements.Services
             {
                 if (IsInTutorial()) return true;
             }
+
+            if (RunIntegrity.Cheated)
+                return true;
 
             achievement.Progress.Unlocked = true;
             achievement.Progress.UnlockedAt = DateTime.UtcNow;

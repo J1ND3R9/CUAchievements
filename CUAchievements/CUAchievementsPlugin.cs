@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using CUAchievements.Anticheat;
 using CUAchievements.Assets;
 using CUAchievements.Debug;
 using CUAchievements.Definitions;
@@ -32,14 +33,14 @@ namespace CUAchievements
         {
             Logger = base.Logger;
 
+            SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunIntegritySaveProvider());
             PluginAssetLoader.LoadAssets();
-            _harmony.PatchAll();
-
+            ConsoleCommands.RegisterVanillaCommands();
             AchievementOptions.Register();
-
 #if DEBUG
             AchievementDebug.Register();
 #endif
+            _harmony.PatchAll();
             Logger.LogInfo("Plugin loaded!");
         }
 

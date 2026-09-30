@@ -92,15 +92,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Anticheat\CommandSafety.cs" />
+    <Compile Include="Anticheat\RunIntegritySaveProvider.cs" />
     <Compile Include="Assets\PluginAssetLoader.cs" />
     <Compile Include="Debug\AchievementDebug.cs" />
     <Compile Include="Definitions\AchievementDefinition.cs" />
     <Compile Include="Definitions\AchievementDifficulty.cs" />
     <Compile Include="Definitions\AchievementScope.cs" />
     <Compile Include="Definitions\AchievementType.cs" />
-    <Compile Include="GamePatches\EndSequencePatch.cs" />
+    <Compile Include="Anticheat\AnticheatPatches.cs" />
+    <Compile Include="Persistence\EndSequencePatch.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />
     <Compile Include="Persistence\SaveCompression.cs" />
+    <Compile Include="Anticheat\ConsoleCommands.cs" />
     <Compile Include="Services\ConditionalAchievementTracker.cs" />
     <Compile Include="Services\AchievementsAPI.cs" />
     <Compile Include="UI\AchievementMenuButtonPatch.cs" />
