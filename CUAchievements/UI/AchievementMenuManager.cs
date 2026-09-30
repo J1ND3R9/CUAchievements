@@ -680,7 +680,16 @@ namespace CUAchievements.UI
 
                 TextMeshProUGUI progressNumberTmp = progressNumberObject.GetComponent<TextMeshProUGUI>();
                 string format = $"n{achievement.Definition.ProgressDecimals}";
+
+                if (achievement.Definition.Scope == AchievementScope.Run && !achievement.IsUnlocked)
+                {
+                    progressNumberTmp.text = $"{achievement.Progress.LastRunProgress.ToString(format)}/{achievement.Definition.MaxProgress.ToString(format)}";
+                }
+                else
+                {
                 progressNumberTmp.text = $"{achievement.Progress.Progress.ToString(format)}/{achievement.Definition.MaxProgress.ToString(format)}";
+                }
+
                 progressNumberTmp.fontSize = 18;
                 progressNumberTmp.color = Color.white;
                 progressNumberTmp.font = this.font;
@@ -719,7 +728,7 @@ namespace CUAchievements.UI
 
             var descTmp = descObj.GetComponent<TextMeshProUGUI>();
             descTmp.transform.SetParent(textObject.transform, false);
-            descTmp.text = achievement.Definition.Description;
+            descTmp.text = achievement.Definition.ShortDescription;
             descTmp.fontSize = 18;
             descTmp.color = new Color(1f, 1f, 1f, 0.7f);
             descTmp.font = this.font;

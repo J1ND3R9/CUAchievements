@@ -98,8 +98,17 @@ namespace CUAchievements.Services
 
                 if (achievement.Definition.Scope != AchievementScope.Run)
                     continue;
+                
+                if (achievement.Definition.Type == AchievementType.Counter)
+                {
+                    if (achievement.Progress.Progress != 0)
+                    {
+                        achievement.Progress.LastRunProgress = achievement.Progress.Progress;
+                    }
 
-                achievement.Progress.Progress = 0;
+                    achievement.Progress.Progress = 0;
+                }
+                
                 achievement.ConditionalTracker?.Clear();
             }
         }

@@ -9,6 +9,7 @@ namespace CUAchievements.Persistence
     {
         public string Id { get; set; }
         public float Progress { get; set; }
+        internal float LastRunProgress { get; set; }
         public bool Unlocked { get; set; }
         public DateTime? UnlockedAt { get; set; }
 

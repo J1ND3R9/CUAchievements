@@ -77,7 +77,7 @@ namespace CUAchievements.UI
             BuildOnPlayerPrefs();
 
             AchievementDefinition achievementDef = achievement.Definition;
-            Instance.queue.Enqueue((achievementDef.Difficulty, achievementDef.Icon, achievementDef.Name, achievementDef.Description));
+            Instance.queue.Enqueue((achievementDef.Difficulty, achievementDef.Icon, achievementDef.Name, achievementDef.ShortDescription));
 
             float playerPrefVolume = PlayerPrefs.GetFloat("Achievements_UnlockVolume", 0.5f);
             AudioClip unlockSound = GetUnlockSound();
