@@ -59,7 +59,7 @@ namespace CUAchievements.UI
             MenuParallax.ParallaxLayerInfo layer = new MenuParallax.ParallaxLayerInfo
             {
                 reference = gameObject.GetComponent<RectTransform>(),
-                mouseMoveScale = 0.25f,
+                mouseMoveScale = 0.20f,
                 originalPos = gameObject.GetComponent<RectTransform>().anchoredPosition
             };
             MenuParallax.instance.parallax.layers.Add(layer);
@@ -112,7 +112,6 @@ namespace CUAchievements.UI
 
             RectTransform rect = gameObject.GetComponent<RectTransform>();
 
-            // TODO: Подсчитать нужные anchor
             rect.anchorMin = new Vector2(0.7f, 0.75f);
             rect.anchorMax = new Vector2(0.85f, 0.9f);
             rect.pivot = new Vector2(0.5f, 0.5f);
