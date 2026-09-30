@@ -17,14 +17,13 @@ namespace CUAchievements
 {
     [BepInPlugin(ModGUID, ModName, ModVersion)]
     [BepInDependency("net.cucorelib", BepInDependency.DependencyFlags.HardDependency)]
-    public class CUAchievementsPlugin : BaseUnityPlugin
+    internal class CUAchievementsPlugin : BaseUnityPlugin
     {
         public const string ModGUID = "com.cuachievements";
         public const string ModName = "CUAchievements";
-        public const string ModVersion = "1.0.0.0";
+        public const string ModVersion = "0.1.0.0";
 
         internal static new ManualLogSource Logger;
-        public static CUAchievementsPlugin Instance { get; private set; } = null;
 
         private readonly Harmony _harmony = new Harmony(ModGUID);
 
@@ -32,7 +31,6 @@ namespace CUAchievements
         private void Awake()
         {
             Logger = base.Logger;
-            Instance = this;
 
             PluginAssetLoader.LoadAssets();
             _harmony.PatchAll();
@@ -65,10 +63,6 @@ namespace CUAchievements
                 yield return wait;
                 AchievementPersistence.SaveDirty();
             }
-        }
-        private void RegisterModOptions()
-        {
-
         }
     }
 }
