@@ -72,7 +72,7 @@ namespace CUAchievements.Services
         /// <summary>
         /// Retrieves a IReadOnlyList of all achievements registered by your plugin.
         /// </summary>
-        public IReadOnlyList<RegisteredAchievement> GeyMyAchievements()
+        public IReadOnlyList<RegisteredAchievement> GetMyAchievements()
         {
             return AchievementRegistry.GetAll()
                 .Where(kv => kv.Value.PluginGuid == PluginGUID)
