@@ -362,7 +362,7 @@ namespace CUAchievements.UI
             vanillaPanelRect.offsetMax = Vector2.zero;
 
             var settingsDescriptionTextComponent = vanillaPanelRect.GetComponentInChildren<TextMeshProUGUI>();
-            settingsDescriptionTextComponent.text = LocaleRegistry.Get("achievementsbutton", "Achievements");
+            settingsDescriptionTextComponent.text = LocaleRegistry.Get("achievements_button", "Achievements");
 
             scrollRect = vanillaPanel.GetComponentInChildren<ScrollRect>(true);
             content = scrollRect?.content;
