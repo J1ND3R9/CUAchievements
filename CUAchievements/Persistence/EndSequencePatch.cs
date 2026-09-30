@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CUAchievements.GamePatches
+namespace CUAchievements.Persistence
 {
     [HarmonyPatch(typeof(PlayerCamera), nameof(PlayerCamera.EndSequence))]
     internal static class EndSequencePatch
