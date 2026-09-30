@@ -245,7 +245,7 @@ namespace CUAchievements.UI
             titleTmp.text = title;
             descTmp.text = desc;
             yield return AnimationUtility.SlideTo(shownPos, popupRoot);
-            yield return new WaitForSeconds(ShowDuration);
+            yield return new WaitForSecondsRealtime(ShowDuration);
             yield return AnimationUtility.SlideTo(hiddenPos, popupRoot);
         }
 
