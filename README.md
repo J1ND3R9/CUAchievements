@@ -47,7 +47,7 @@ You can view a more detailed example in the open source code of my mod, which us
 - [x] Localization helpers
 - [x] Achievement ranks
 - [ ] Anticheat system
-- [ ] Disable achievement unlocking in the tutorial/sandbox
+- [x] Disable achievement unlocking in the tutorial/sandbox
 
 ## To be added later
 

@@ -52,6 +52,11 @@ namespace CUAchievements.Services
                 return false;
             }
 
+            if (!achievement.Definition.CanGetInTutorial)
+            {
+                if (IsInTutorial()) return true;
+            }
+
             var progress = achievement.Progress;
 
             if (progress.Unlocked)
@@ -79,6 +84,11 @@ namespace CUAchievements.Services
         {
             if (achievement.Progress.Unlocked) return true;
 
+            if (!achievement.Definition.CanGetInTutorial)
+            {
+                if (IsInTutorial()) return true;
+            }
+
             achievement.Progress.Unlocked = true;
             achievement.Progress.UnlockedAt = DateTime.UtcNow;
 
@@ -98,7 +108,7 @@ namespace CUAchievements.Services
 
                 if (achievement.Definition.Scope != AchievementScope.Run)
                     continue;
-                
+
                 if (achievement.Definition.Type == AchievementType.Counter)
                 {
                     if (achievement.Progress.Progress != 0)
@@ -108,9 +118,21 @@ namespace CUAchievements.Services
 
                     achievement.Progress.Progress = 0;
                 }
-                
+
                 achievement.ConditionalTracker?.Clear();
             }
+        }
+
+        internal static bool IsInTutorial()
+        {
+            if (WorldGeneration.world != null)
+            {
+                if (WorldGeneration.world.biomeOverride == WorldGeneration.OverrideSceneType.Tutorial)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
