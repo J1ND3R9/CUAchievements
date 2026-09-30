@@ -33,6 +33,7 @@ namespace CUAchievements.UI
 
             AchievementStatsPanel panelComponent = statsPanel.AddComponent<AchievementStatsPanel>();
             panelComponent.fontAsset = font;
+
             panelComponent.Initialize();
 
             AchievementEvents.AchievementsChanged += panelComponent.OnAchievementsChanged;
@@ -129,10 +130,10 @@ namespace CUAchievements.UI
             GameObject byModModificationsContainer = new GameObject("ModificationList", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement));
             byModModificationsContainer.transform.SetParent(byModGameObject.transform, false);
 
-            pluginContainer = byModModificationsContainer;
-
             var achievementsPerPlugin = AchievementRegistry.GetAchievementsPerPlugin(true);
             CreatePluginContainer(byModModificationsContainer.transform, fontAsset, achievementsPerPlugin);
+
+            pluginContainer = byModModificationsContainer;
         }
 
         private void RefreshPluginContainer(Transform parent, TMP_FontAsset font)
@@ -258,6 +259,7 @@ namespace CUAchievements.UI
 
         public void Refresh()
         {
+           
             RefreshPluginContainer(pluginContainer.transform, fontAsset);
             RefreshText();
         }
@@ -273,6 +275,11 @@ namespace CUAchievements.UI
         private IEnumerator Animate(Vector2 target)
         {
             yield return AnimationUtility.SlideTo(target, statsPanelRect);
+        }
+
+        private void OnDestroy()
+        {
+            AchievementEvents.AchievementsChanged -= OnAchievementsChanged;
         }
     }
 }
