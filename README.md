@@ -14,10 +14,29 @@ A simple, extensible and mod-friendly achievement framework for Casualties: Unkn
 ## Quick Example
 
 ```csharp
-It will be there at release!
+AchievementsAPI achievements = AchievementsAPI.Create("my mod guid!");
+Achievements = achievements;
+
+string firstBloodName = LocaleRegistry.Get("achievement_first_blood_name", "First blood");
+string firstBloodDesc = LocaleRegistry.Get("achievement_first_blood_description", "Lose the first drop of blood");
+Sprite firstBloodIcon = AssetLoader.GetCachedSprite("achievement_first_blood_icon");
+Achievements.Register(AchievementDefinition.Instant(
+	id: "first_blood",
+	name: firstBloodName,
+	description: firstBloodDesc,
+	icon: firstBloodIcon
+	));
+
+// Somewhere in the code
+if (Plugin.Achievements.TryGet("first_blood", out RegisteredAchievement achievement))
+{
+	achievement.Unlock();
+}
 ```
 
-## Roadmap
+You can view a more detailed example in the open source code of my mod, which uses this same framework! (paste url here, u dumbass)
+
+## Release map
 
 - [x] Achievement registration
 - [x] Progress tracking
@@ -25,9 +44,15 @@ It will be there at release!
 - [x] Achievement UI
 - [x] Notifications
 - [x] Hidden achievements
-- [ ] Localization helpers
+- [x] Localization helpers
 - [x] Achievement ranks
 - [ ] Anticheat system
+- [ ] Disable achievement unlocking in the tutorial/sandbox
+
+## To be added later
+
+- [ ] Ability to upload custom achievement unlock sounds
+- [ ] Debug commands
 
 ## Contributing
 
