@@ -31,8 +31,6 @@ namespace CUAchievements.Services
                 return false;
             }
 
-            
-
             return AddProgressInternal(achievement, amount);
         }
 
@@ -55,10 +53,12 @@ namespace CUAchievements.Services
                 return false;
             }
 
+#if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
                 if (IsInTutorial()) return true;
             }
+#endif
 
             if (RunIntegrity.Cheated)
                 return true;
@@ -90,10 +90,12 @@ namespace CUAchievements.Services
         {
             if (achievement.Progress.Unlocked) return true;
 
+#if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
                 if (IsInTutorial()) return true;
             }
+#endif
 
             if (RunIntegrity.Cheated)
                 return true;

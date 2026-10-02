@@ -16,7 +16,7 @@ namespace CUAchievements.Anticheat
         /// </summary>
         public static IReadOnlyDictionary<string, CommandSafety> Commands => RegisteredCommands;
         private static readonly Dictionary<string, CommandSafety> RegisteredCommands = new Dictionary<string, CommandSafety>();
-        internal static void RegisterVanillaCommands()
+        internal static void RegisterCUCommands()
         {
             List<string> cheatCommands = new List<string>()
             {
@@ -30,6 +30,10 @@ namespace CUAchievements.Anticheat
                 "clear", "loglocale", "nukeplayerprefs", "openfolder", "music", "bind", "echo", "ui", "errorlogging", "modlist", "bug-report", "reloadcontent", 
                 "autohotreload", "debugwatch"
             };
+
+#if DEBUG
+            safeCommands.AddRange( new[] { "progress_achievement", "toggle_anticheat", "reset_cheat_flag", "unlock_achievement", "popup_achievement" });
+#endif
 
             RegisterSafe(safeCommands);
             RegisterCheat(cheatCommands);
@@ -92,20 +96,6 @@ namespace CUAchievements.Anticheat
                 }
                 RegisteredCommands[commandName] = CommandSafety.Unsafe;
             }
-        }
-        /// <summary>
-        /// Registers a console command with an arbitrary <see cref="CommandSafety"/>.
-        /// </summary>
-        /// <param name="commandName">Console command name</param>
-        /// <param name="safety">Console command safety type</param>
-        public static void Register(string commandName, CommandSafety safety)
-        {
-            if (RegisteredCommands.ContainsKey(commandName))
-            {
-                CUAchievementsPlugin.Logger.LogWarning($"Command \"{commandName}\" already registered. Ignored duplicate.");
-                return;
-            }
-            RegisteredCommands[commandName] = safety;
         }
     }
 }

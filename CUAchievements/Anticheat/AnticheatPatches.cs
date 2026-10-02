@@ -13,6 +13,9 @@ namespace CUAchievements.Anticheat
     [HarmonyPatch]
     internal static class AnticheatPatches
     {
+#if DEBUG
+        public static bool anticheatDisabled = false;
+#endif
         [HarmonyPatch(typeof(Command), MethodType.Constructor, new Type[]
         {
             typeof(string),
@@ -35,6 +38,9 @@ namespace CUAchievements.Anticheat
         [HarmonyPrefix]
         static void TryExecutePrefix(string[] args)
         {
+#if DEBUG
+            if (anticheatDisabled) return;
+#endif
             if (WorldGeneration.world != null)
             {
                 if (WorldGeneration.world.biomeOverride == WorldGeneration.OverrideSceneType.Tutorial)

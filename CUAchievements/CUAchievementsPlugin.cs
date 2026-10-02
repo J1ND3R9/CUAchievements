@@ -29,13 +29,13 @@ namespace CUAchievements
         private readonly Harmony _harmony = new Harmony(ModGUID);
 
         private const float AutoSaveInterval = 10f;
-        private void Awake()
+        void Awake()
         {
             Logger = base.Logger;
 
             SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunIntegritySaveProvider());
             PluginAssetLoader.LoadAssets();
-            ConsoleCommands.RegisterVanillaCommands();
+            ConsoleCommands.RegisterCUCommands();
             AchievementOptions.Register();
 #if DEBUG
             AchievementDebug.Register();
@@ -44,12 +44,12 @@ namespace CUAchievements
             Logger.LogInfo("Plugin loaded!");
         }
 
-        private void Start()
+        void Start()
         {
             StartCoroutine(AutoSaveCoroutine());
         }
 
-        private void OnApplicationQuit()
+        void OnApplicationQuit()
         {
             AchievementService.EndRun();
             AchievementPersistence.SaveDirty();
