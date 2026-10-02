@@ -1,62 +1,111 @@
 # CUAchievements
+An achievement framework for **Casualties Unknown**: provides mods with a unified way to add achievements featuring pop-up notifications and a shared menu.
 
-A simple, extensible and mod-friendly achievement framework for Casualties: Unknown.
+<img width="1888" height="811" alt="Achievements menu" src="https://github.com/user-attachments/assets/729f661f-dd9c-4e03-b6bf-9971547f1366" />
 
 ## Features
+- Pop-up notification upon earning an achievement.
+- Achievements menu with search and statistics.
+- Three difficulty levels for achievements.
+- Hidden achievements displayed as a single "X hidden achievements" card.
+- The achievements for each mod are grouped separately.
 
-- Achievement registration
-- Counter and instant achievements
-- Automatic progress tracking
-- Persistent save data
-- Lightweight API
-- Built for mod interoperability
+## For players
 
-## Quick Example
+### Installation
+1. Install [BepInEx](https://github.com/bepinex/bepinex) if you haven't already.
+2. Download and install [CUCoreLib](https://www.nexusmods.com/scavprototype/mods/341).
+3. Download the latest release from the [Releases](https://github.com/J1ND3R9/CUAchievements/releases) page.
+4. Place the CUAchievements folder into the BepInEx/plugins folder.
+5. Launch the game. The framework will notify you in-game that it has been successfully installed.
+
+
+### Something doesn't work?
+Check `BepInEx/LogOutput.log` for errors and ask on [Discord](https://discord.gg/AJDjmyeEFe) or open an issue, attaching the log.
+
+## For developers
+
+### Quick start
+1. Add a reference to `CUAchievements.dll` in your project.
+2. Declare it as a dependency of your plugin (see below), so BepInEx loads it first.
 
 ```csharp
-AchievementsAPI achievements = AchievementsAPI.Create("my mod guid!");
-Achievements = achievements;
+using BepInEx;
+using CUAchievements.Definitions;
+using CUAchievements.Services;
+using CUCoreLib.Registries;
 
-string firstBloodName = LocaleRegistry.Get("achievement_first_blood_name", "First blood");
-string firstBloodDesc = LocaleRegistry.Get("achievement_first_blood_description", "Lose the first drop of blood");
-Sprite firstBloodIcon = AssetLoader.GetCachedSprite("achievement_first_blood_icon");
-Achievements.Register(AchievementDefinition.Instant(
-	id: "first_blood",
-	name: firstBloodName,
-	description: firstBloodDesc,
-	icon: firstBloodIcon
-	));
-
-// Somewhere in the code
-if (Plugin.Achievements.TryGet("first_blood", out RegisteredAchievement achievement))
+[BepInPlugin(ModGUID, ModName, ModVersion)]
+// HardDependency: your mod will not load if CUAchievements is missing.
+[BepInDependency("com.cuachievements", BepInDependency.DependencyFlags.HardDependency)]
+public class Plugin : BaseUnityPlugin
 {
-	achievement.Unlock();
+	 public const string ModGUID = "com.myachievementmod";
+	 public const string ModName = "My achievement mod!";
+	 public const string ModVersion = "1.0.0.0";
+
+    // Keep the API instance in a static field to reach it from anywhere in your mod.
+	internal static AchievementsAPI Achievements;
+
+	public void Awake()
+	{
+        // Create the API for your mod. The GUID ties achievements to your plugin, so IDs never conflict with other mods.
+		Achievements = AchievementsAPI.Create(ModGUID);
+
+		// Try to use LocaleRegistry from CUCoreLib for the name and description.
+		string luminaryOfScienceName = LocaleRegistry.Get("achievement_luminary_of_science_name", "Luminary of science");
+		string luminaryOfScienceDesc = LocaleRegistry.Get("achievement_luminary_of_science_desc", "Keeping a light bulb in mouth was probably a bad idea.");
+
+        // --- Instant achievement: earned with a single call ---
+		Achievements.Register(AchievementDefinition.Instant(
+		    id: "luminary_of_science",		// unique within your mod
+		    name: luminaryOfScienceName,
+		    description: luminaryOfScienceDesc,
+		    icon: null,						// null = default icon
+		    hidden: true					// shown only as part of "X hidden achievements"
+		    ));
+	
+		string paintItYellowName = LocaleRegistry.Get("achievement_paint_it_yellow_name", "Paint It, Yellow");
+		string paintItYellowDesc = LocaleRegistry.Get("achievement_paint_it_yellow_desc", "Lose 15 liters of blood in a single run.");
+
+        // --- Counter achievement: earned after reaching maxProgress ---
+		Achievements.Register(AchievementDefinition.Counter(
+		    id: "paint_it_yellow",
+		    name: paintItYellowName,
+		    description: paintItYellowDesc,
+		    maxProgress: 15f,				// value needed to unlock
+		    icon: null,
+		    scope: AchievementScope.Run,	// progress is counted per run, not for the whole game
+		    progressDecimals: 2				// digits after the decimal point shown in the menu
+		    ));
+	}
+
+	// Call these from your gameplay code (e.g. a Harmony patch).
+    internal static void OnLightBulbEaten()
+    {
+        // TryGet returns false if the achievement isn't registered, so no exceptions.
+        if (Achievements.TryGet("luminary_of_science", out RegisteredAchievement lightBulb))
+            lightBulb.Unlock();
+    }
+
+	internal static void OnBloodLost(float liters)
+    {
+        if (Achievements.TryGet("paint_it_yellow", out RegisteredAchievement blood))
+            blood.AddProgress(liters);                // unlocks automatically at maxProgress
+    }
 }
 ```
 
-You can view a more detailed example in the open source code of my mod, which uses this same framework! (paste url here, u dumbass)
+Achievements are tied to your plugin's GUID, so there will be no ID conflicts between mods.
+Read more: (a link to the documentation and a mod example will be here)
 
-## Release map
-
-- [x] Achievement registration
-- [x] Progress tracking
-- [x] Save/Load
-- [x] Achievement UI
-- [x] Notifications
-- [x] Hidden achievements
-- [x] Localization helpers
-- [x] Achievement ranks
-- [ ] Anticheat system
-- [x] Disable achievement unlocking in the tutorial/sandbox
-
-## To be added later
-
-- [ ] Ability to upload custom achievement unlock sounds
-- [ ] Debug commands
+## A small roadmap
 - [ ] Multiplayer support
+- [ ] Ability to add custom achievement unlock sounds
+
+## Discord and Support
+If any problems or questions arise, feel free to write on the Discord server! Don't hesitate to ask even the "dumbest" questions. :)
+https://discord.gg/AJDjmyeEFe
 
 ## Contributing
-
-Contributions are welcome.
-
-Please keep the public API backwards compatible whenever possible and follow the existing code style.
+Any contribution is welcome! Please adhere to C# coding styles and patterns. Extending existing components is preferable to adding new ones.
