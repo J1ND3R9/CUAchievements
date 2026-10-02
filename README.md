@@ -53,6 +53,7 @@ You can view a more detailed example in the open source code of my mod, which us
 
 - [ ] Ability to upload custom achievement unlock sounds
 - [ ] Debug commands
+- [ ] Multiplayer support
 
 ## Contributing
 
