@@ -4,10 +4,13 @@ using UnityEngine;
 namespace CUAchievements.Definitions
 {
     /// <summary>
-    /// Represents an achievement definition registered by a plugin.
+    /// Represents an achievement definition registered by a plugin
     /// </summary>
     public sealed class AchievementDefinition
     {
+        /// <summary>
+        /// Achievement type
+        /// </summary>
         public AchievementType Type { get; private set; }
         /// <summary>
         /// Unique achievement identifier
@@ -17,16 +20,49 @@ namespace CUAchievements.Definitions
         /// Achievement name
         /// </summary>
         public string Name { get; private set; }
+        /// <summary>
+        /// Achievement description
+        /// </summary>
         public string Description { get; private set; }
+        /// <summary>
+        /// Short description of the achievement
+        /// </summary>
         public string ShortDescription { get; private set; }
+        /// <summary>
+        /// Achievement "difficulty". Changes the frame around the achievement in the list
+        /// </summary>
         public AchievementDifficulty Difficulty { get; private set; }
+        /// <summary>
+        /// Specifies the scope in which the achievement must be completed: during a single run or over the entire duration
+        /// </summary>
         public AchievementScope Scope { get; private set; }
+        /// <summary>
+        /// Unlocked achievement icon. Displayed in the pop-up window and the list of achievements
+        /// </summary>
         public Sprite Icon { get; private set; }
+        /// <summary>
+        /// Locked icon. Overrides the standard locked icon
+        /// </summary>
         public Sprite LockedIcon { get; private set; }
+        /// <summary>
+        /// Overrides the standard achievement frame
+        /// </summary>
         public Sprite CustomFrame { get; private set; }
+        /// <summary>
+        /// Returns the state of the achievement: whether it is hidden or not
+        /// </summary>
         public bool IsHidden { get; private set; }
+        /// <summary>
+        /// Required achievement progress to unlock it
+        /// </summary>
         public float MaxProgress { get; private set; }
+        /// <summary>
+        /// Number of decimal places
+        /// </summary>
         public int ProgressDecimals { get; private set; }
+        /// <summary>
+        /// Can this achievement be obtained in training or the sandbox?
+        /// </summary>
         public bool CanGetInTutorial { get; private set; }
         private AchievementDefinition() { }
 

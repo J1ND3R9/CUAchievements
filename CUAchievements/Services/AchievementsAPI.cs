@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CUAchievements.Services
 {
+    /// <summary>
+    /// Combines <see cref="AchievementRegistry"/> and <see cref="AchievementService"/> for API convenience.
+    /// </summary>
     public sealed class AchievementsAPI
     {
         private AchievementRegistry Registry { get; }

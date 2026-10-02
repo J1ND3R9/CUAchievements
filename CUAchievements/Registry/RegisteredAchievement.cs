@@ -11,12 +11,26 @@ namespace CUAchievements.Registry
     public sealed class RegisteredAchievement
     {
         internal string PluginGuid { get; }
+        /// <summary>
+        /// Returns <see cref="AchievementDefinition"/>
+        /// </summary>
         public AchievementDefinition Definition { get; }
         internal AchievementProgressData Progress { get; }
-
+        /// <summary>
+        /// Returns true if the achievement has already been unlocked.
+        /// </summary>
         public bool IsUnlocked => Progress.Unlocked;
+        /// <summary>
+        /// Returns the current progress of the achievement.
+        /// </summary>
         public float CurrentProgress => Progress.Progress;
+        /// <summary>
+        /// Returns the date the achievement was unlocked.
+        /// </summary>
         public DateTime? UnlockedAt => Progress.UnlockedAt;
+        /// <summary>
+        /// Returns/creates a <see cref="ConditionalAchievementTracker"/> instance.
+        /// </summary>
         public ConditionalAchievementTracker ConditionalTracker = new ConditionalAchievementTracker();
 
         internal RegisteredAchievement(string pluginGuid, AchievementDefinition definition, AchievementProgressData progress)
