@@ -15,7 +15,7 @@ namespace CUAchievements.Anticheat
         /// Returns a read-only dictionary containing all registered commands.
         /// </summary>
         public static IReadOnlyDictionary<string, CommandSafety> Commands => RegisteredCommands;
-        private static Dictionary<string, CommandSafety> RegisteredCommands = new Dictionary<string, CommandSafety>();
+        private static readonly Dictionary<string, CommandSafety> RegisteredCommands = new Dictionary<string, CommandSafety>();
         internal static void RegisterVanillaCommands()
         {
             List<string> cheatCommands = new List<string>()
