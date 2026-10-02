@@ -43,7 +43,7 @@ namespace CUAchievements.UI
 
             MenuButtonHoverVisual hover = achievementsButtonObject.GetComponent<MenuButtonHoverVisual>() ?? achievementsButtonObject.AddComponent<MenuButtonHoverVisual>();
 
-            hover.Initialize(achievementsButtonRect, achievementsButtonImage, overlayImage, label, OnClicked);
+            hover.Initialize(achievementsButtonRect, overlayImage, label, OnClicked);
 
             var canvas = preRun.mainCanvas;
             GameObject modalMenu = new GameObject("AchievementModal", typeof(RectTransform));
@@ -60,12 +60,10 @@ namespace CUAchievements.UI
             overlayObject.transform.SetParent(achievementsButtonRect, false);
 
             RectTransform overlayRect = overlayObject.GetComponent<RectTransform>();
-            overlayRect.anchorMax = Vector2.zero;
-            overlayRect.anchorMin = Vector2.one;
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
             overlayRect.offsetMin = Vector2.zero;
             overlayRect.offsetMax = Vector2.zero;
-            overlayRect.localScale = Vector3.one;
-            overlayRect.SetAsLastSibling();
 
             Image overlayImage = overlayObject.GetComponent<Image>();
             overlayImage.sprite = overlaySprite;
@@ -73,6 +71,7 @@ namespace CUAchievements.UI
             overlayImage.preserveAspect = false;
             overlayImage.raycastTarget = false;
             overlayImage.color = new Color(1f, 1f, 1f, 0f);
+
             return overlayImage;
         }
 

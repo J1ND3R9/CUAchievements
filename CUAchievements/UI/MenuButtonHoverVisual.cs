@@ -10,7 +10,6 @@ namespace CUAchievements.UI
     internal class MenuButtonHoverVisual : MonoBehaviour
     {
         private RectTransform clickRect;
-        private Image original;
         private Image overlay;
         private TextMeshProUGUI label;
         private Action onClicked;
@@ -19,10 +18,9 @@ namespace CUAchievements.UI
 
         private static readonly List<RaycastResult> raycastResultsBuffer = new List<RaycastResult>();
 
-        public void Initialize(RectTransform clickRect, Image original, Image overlay, TextMeshProUGUI label, Action onClicked)
+        public void Initialize(RectTransform clickRect, Image overlay, TextMeshProUGUI label, Action onClicked)
         {
             this.clickRect = clickRect;
-            this.original = original;
             this.overlay = overlay;
             this.label = label;
             this.onClicked = onClicked;
@@ -37,13 +35,13 @@ namespace CUAchievements.UI
             float target = hovering ? 1f : 0f;
             float step = FadeSpeed * Time.unscaledDeltaTime;
 
-            var origc = original.color;
-            origc.a = Mathf.MoveTowards(origc.r, hovering ? 0f : 1f, step);
-            original.color = origc;
-
             var oc = overlay.color;
             oc.a = Mathf.MoveTowards(oc.a, target, step);
             overlay.color = oc;
+
+            //var origc = original.color;
+            //origc.a = Mathf.MoveTowards(origc.a, hovering ? 0f : 1f, step);
+            //original.color = origc;
 
             var lc = label.color;
             lc.a = Mathf.MoveTowards(lc.a, target, step);
