@@ -83,15 +83,7 @@ namespace CUAchievements.UI
             Transform panelTransform = vanillaPanel.transform.Find("Panel");
             if (panelTransform == null) return;
 
-            GameObject headerGameObject = new GameObject("AchievementHeader", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
-            headerGameObject.transform.SetParent(panelTransform, false);
-
-            RectTransform headerRect = headerGameObject.GetComponent<RectTransform>();
-            headerRect.anchorMin = new Vector2(0f, 1f);
-            headerRect.anchorMax = new Vector2(1f, 1f);
-            headerRect.pivot = new Vector2(0.5f, 1f);
-            headerRect.sizeDelta = new Vector2(0f, 48f);
-            headerRect.anchoredPosition = Vector2.zero;
+            GameObject headerGameObject = BuildHeader(panelTransform);
 
             GameObject achievementTabObject = new GameObject("AchievementTabs", typeof(RectTransform), typeof(LayoutElement), typeof(HorizontalLayoutGroup));
 
@@ -114,6 +106,20 @@ namespace CUAchievements.UI
 
             searchField.onValueChanged.AddListener(OnSearchTextChanged);
             statisticTab.onClick.AddListener(OnStatisticTabClick);
+        }
+
+        private static GameObject BuildHeader(Transform panelTransform)
+        {
+            GameObject headerGameObject = new GameObject("AchievementHeader", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+            headerGameObject.transform.SetParent(panelTransform, false);
+
+            RectTransform headerRect = headerGameObject.GetComponent<RectTransform>();
+            headerRect.anchorMin = new Vector2(0f, 1f);
+            headerRect.anchorMax = new Vector2(1f, 1f);
+            headerRect.pivot = new Vector2(0.5f, 1f);
+            headerRect.sizeDelta = new Vector2(0f, 48f);
+            headerRect.anchoredPosition = Vector2.zero;
+            return headerGameObject;
         }
 
         private void OnSearchTextChanged(string newText)
@@ -158,30 +164,7 @@ namespace CUAchievements.UI
 
             int divisionsCount = 16;
 
-            for (int i = 0; i < divisionsCount; i++)
-            {
-                GameObject cell = new GameObject($"Cell{i}", typeof(RectTransform));
-                cell.transform.SetParent(divisionObject.transform, false);
-
-                if (i < divisionsCount - 1)
-                {
-                    GameObject line = new GameObject("Line", typeof(RectTransform), typeof(Image));
-                    line.transform.SetParent(cell.transform, false);
-
-                    RectTransform lineRect = line.GetComponent<RectTransform>();
-                    lineRect.anchorMin = new Vector2(1f, 0f);
-                    lineRect.anchorMax = new Vector2(1f, 1f);
-                    lineRect.pivot = new Vector2(1f, 0.5f);
-
-                    lineRect.sizeDelta = new Vector2(3f, 0f);
-                    lineRect.offsetMin = new Vector2(lineRect.offsetMin.x, 0f);
-                    lineRect.offsetMax = new Vector2(lineRect.offsetMax.x, 0f);
-
-                    Image lineImage = line.GetComponent<Image>();
-                    lineImage.color = Color.white;
-                    lineImage.raycastTarget = false;
-                }
-            }
+            BuildSquareProgress(divisionObject, divisionsCount);
 
             int unlockPrecentage = totalAchievements > 0 ? (int)Math.Round((double)unlockedCount / totalAchievements * 100) : 0;
 
@@ -231,6 +214,35 @@ namespace CUAchievements.UI
             }
             return progressObject;
         }
+
+        private static void BuildSquareProgress(GameObject divisionObject, int divisionsCount)
+        {
+            for (int i = 0; i < divisionsCount; i++)
+            {
+                GameObject cell = new GameObject($"Cell{i}", typeof(RectTransform));
+                cell.transform.SetParent(divisionObject.transform, false);
+
+                if (i < divisionsCount - 1)
+                {
+                    GameObject line = new GameObject("Line", typeof(RectTransform), typeof(Image));
+                    line.transform.SetParent(cell.transform, false);
+
+                    RectTransform lineRect = line.GetComponent<RectTransform>();
+                    lineRect.anchorMin = new Vector2(1f, 0f);
+                    lineRect.anchorMax = new Vector2(1f, 1f);
+                    lineRect.pivot = new Vector2(1f, 0.5f);
+
+                    lineRect.sizeDelta = new Vector2(3f, 0f);
+                    lineRect.offsetMin = new Vector2(lineRect.offsetMin.x, 0f);
+                    lineRect.offsetMax = new Vector2(lineRect.offsetMax.x, 0f);
+
+                    Image lineImage = line.GetComponent<Image>();
+                    lineImage.color = Color.white;
+                    lineImage.raycastTarget = false;
+                }
+            }
+        }
+
         private Button BuildButton(Transform parent, string name, string label)
         {
             GameObject buttonTemplate = this.buttonTemplate;
@@ -376,7 +388,7 @@ namespace CUAchievements.UI
 
                 VerticalLayoutGroup layout = content.gameObject.AddComponent<VerticalLayoutGroup>();
                 layout.padding = new RectOffset(10, 10, 10, 10);
-                layout.spacing = 6f;
+                layout.spacing = 24f;
                 layout.childControlHeight = true;
                 layout.childForceExpandWidth = true;
                 layout.childForceExpandHeight = true;
@@ -447,17 +459,6 @@ namespace CUAchievements.UI
             }
         }
 
-        private static int GetSortRank(RegisteredAchievement achievement)
-        {
-            if (achievement.Progress.Unlocked)
-                return 0;
-
-            if (achievement.Definition.IsHidden)
-                return 2;
-
-            return 1;
-        }
-
         private void BuildAchievementRow(string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
         {
             if (content == null) return;
@@ -466,15 +467,25 @@ namespace CUAchievements.UI
             GameObject achievementPluginContainer = new GameObject("AchievementPluginContainer", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement), typeof(ContentSizeFitter));
             achievementPluginContainer.transform.SetParent(content, false);
 
-            VerticalLayoutGroup achievementsVerticalLayout = achievementPluginContainer.GetComponent<VerticalLayoutGroup>();
-            achievementsVerticalLayout.spacing = 12f;
-            achievementsVerticalLayout.childControlHeight = true;
-            achievementsVerticalLayout.childForceExpandHeight = false;
+            VerticalLayoutGroup achievementsPluginContainerVerticalLayout = achievementPluginContainer.GetComponent<VerticalLayoutGroup>();
+            achievementsPluginContainerVerticalLayout.spacing = 12f;
+            achievementsPluginContainerVerticalLayout.childControlHeight = true;
+            achievementsPluginContainerVerticalLayout.childForceExpandHeight = false;
 
             ContentSizeFitter fitter = achievementPluginContainer.GetComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             CreateAchievementRowHeader(achievementPluginContainer.transform, pluginName, pluginRegisteredAchievements);
+
+            GameObject achievementContainer = new GameObject("Achievements", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(LayoutElement), typeof(ContentSizeFitter));
+            achievementContainer.transform.SetParent(achievementPluginContainer.transform, false);
+            VerticalLayoutGroup achievementsContainerVerticalLayout = achievementContainer.GetComponent<VerticalLayoutGroup>();
+            achievementsContainerVerticalLayout.spacing = 12f;
+            achievementsContainerVerticalLayout.childControlHeight = true;
+            achievementsContainerVerticalLayout.childForceExpandHeight = false;
+
+            AchievementPluginUI pluginUi = achievementPluginContainer.AddComponent<AchievementPluginUI>();
+            pluginUi.Initialize(achievementContainer, CollapsingPluginContainer);
 
             List<RegisteredAchievement> hiddenAchievements = new List<RegisteredAchievement>();
             foreach (var achievement in pluginRegisteredAchievements)
@@ -484,14 +495,17 @@ namespace CUAchievements.UI
                     hiddenAchievements.Add(achievement);
                     continue;
                 }
-                CreateAchievementObject(achievementPluginContainer.transform, achievement);
+                CreateAchievementObject(achievementContainer.transform, achievement);
             }
             if (hiddenAchievements.Count > 0)
             {
-                CreateHiddenAchievementObject(achievementPluginContainer.transform, hiddenAchievements);
+                CreateHiddenAchievementObject(achievementContainer.transform, hiddenAchievements);
             }
         }
-
+        private void CollapsingPluginContainer(GameObject gameObject)
+        {
+            gameObject.SetActive(!gameObject.activeSelf);
+        }
         private void CreateAchievementRowHeader(Transform parent, string pluginName, List<RegisteredAchievement> pluginRegisteredAchievements)
         {
             GameObject buttonTemplate = this.buttonTemplate;

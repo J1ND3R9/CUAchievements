@@ -121,6 +121,7 @@
     <Compile Include="UI\AchievementMenuManager.cs" />
     <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
     <Compile Include="Options\AchievementOptions.cs" />
+    <Compile Include="UI\AchievementPluginUI.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
     <Compile Include="UI\AchievementStatsPanel.cs" />
     <Compile Include="UI\MenuButtonBuilder.cs" />
