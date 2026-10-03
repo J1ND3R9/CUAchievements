@@ -21,7 +21,7 @@ namespace CUAchievements.Registry
             return new AchievementRegistry(pluginGuid);
         }
         
-        internal RegisteredAchievement Register(AchievementDefinition achievement)
+        public RegisteredAchievement Register(AchievementDefinition achievement)
         {
             if (string.IsNullOrEmpty(_pluginGuid))
             {
@@ -50,7 +50,6 @@ namespace CUAchievements.Registry
             return registeredAchievement;
         }
 
-        
         internal static bool TryGet(string pluginGuid, string id, out RegisteredAchievement achievement)
         {
             achievement = null;

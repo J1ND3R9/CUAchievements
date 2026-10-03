@@ -9,8 +9,8 @@ namespace CUAchievements.UI
 {
     internal static class MenuButtonBuilder
     {
-        internal static TMP_FontAsset FindFont() => Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Retro GamingPix");
-        internal static AchievementMenuManager achievementMenu;
+        private static TMP_FontAsset FindFont() => Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Retro GamingPix");
+        private static MenuManager menu;
 
         public static void CreateButton(Transform parent, PreRunScript preRun)
         {
@@ -48,8 +48,8 @@ namespace CUAchievements.UI
             var canvas = preRun.mainCanvas;
             GameObject modalMenu = new GameObject("AchievementModal", typeof(RectTransform));
             modalMenu.transform.SetParent(canvas.transform, false);
-            achievementMenu = modalMenu.AddComponent<AchievementMenuManager>();
-            achievementMenu.Initialize(FindFont());
+            menu = modalMenu.AddComponent<MenuManager>();
+            menu.Initialize(FindFont());
             AddParallax(achievementsButtonRect);
         }
 
@@ -119,8 +119,8 @@ namespace CUAchievements.UI
 
         internal static void OnClicked()
         {
-            if (achievementMenu == null) return;
-            achievementMenu.SetVisible(true);
+            if (menu == null) return;
+            menu.Window.Show();
         }
     }
 }

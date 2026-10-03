@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using CUAchievements.UI.Menu;
+using HarmonyLib;
 using System;
 using System.Reflection;
 
@@ -20,7 +21,7 @@ namespace CUAchievements.UI
 
         private static void Postfix(ref float __result)
         {
-            if (AchievementMenuManager.IsModalOpen)
+            if (ModalWindow.IsModalOpen)
             {
                 __result = 10000f;
             }
