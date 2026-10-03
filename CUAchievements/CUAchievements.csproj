@@ -118,7 +118,12 @@
     <Compile Include="UI\AchievementDetailsPanel.cs" />
     <Compile Include="UI\AchievementEvents.cs" />
     <Compile Include="UI\AchievementItemUI.cs" />
-    <Compile Include="UI\AchievementMenuManager.cs" />
+    <Compile Include="UI\Menu\AchievementCardModel.cs" />
+    <Compile Include="UI\Menu\AchievementCardView.cs" />
+    <Compile Include="UI\AchievementFrames.cs" />
+    <Compile Include="UI\Menu\AchievementListView.cs" />
+    <Compile Include="UI\MenuManager.cs" />
+    <Compile Include="UI\Menu\ModalWindow.cs" />
     <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
     <Compile Include="Options\AchievementOptions.cs" />
     <Compile Include="UI\AchievementPluginUI.cs" />
@@ -126,6 +131,8 @@
     <Compile Include="UI\AchievementStatsPanel.cs" />
     <Compile Include="UI\MenuButtonBuilder.cs" />
     <Compile Include="UI\MenuButtonHoverVisual.cs" />
+    <Compile Include="UI\AchievementSorter.cs" />
+    <Compile Include="UI\Menu\PluginSectionView.cs" />
     <Compile Include="UI\Utility\AnimationUtility.cs" />
     <Compile Include="UI\Utility\LayoutIgnorer.cs" />
     <Compile Include="UI\Utility\SpriteSlicer.cs" />
@@ -161,6 +168,7 @@
     <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
     <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
   </ItemGroup>
+  <ItemGroup />
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />
