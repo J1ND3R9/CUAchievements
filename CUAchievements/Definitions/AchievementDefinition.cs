@@ -37,7 +37,7 @@ namespace CUAchievements.Definitions
         /// </summary>
         public AchievementScope Scope { get; private set; }
         /// <summary>
-        /// Unlocked achievement icon. Displayed in the pop-up window and the list of achievements
+        /// Unlocked achievement icon. Displayed in the pop-up window and the list of achievements. If the value is null, a placeholder will be used.
         /// </summary>
         public Sprite Icon { get; private set; }
         /// <summary>
