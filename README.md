@@ -9,6 +9,7 @@ An achievement framework for **Casualties Unknown**: provides mods with a unifie
 - Three difficulty levels for achievements.
 - Hidden achievements displayed as a single "X hidden achievements" card.
 - The achievements for each mod are grouped separately.
+- An anti-cheat system that disables achievements if an "unsafe" console command is entered.
 
 ## For players
 
