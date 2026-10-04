@@ -113,11 +113,11 @@ namespace CUAchievements.UI.Menu
             progressObject.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 10f, align: TextAnchor.MiddleLeft);
             progressObject.GetComponent<LayoutElement>().preferredHeight = squareSize;
 
-            UIUtility.CreateSquareProgress(progressObject.transform, squareSize, counter.FilledSquares);
-
             TextMeshProUGUI progressText = UIUtility.CreateText(progressObject.transform, "ProgressNumber", counter.Text, font, 18f);
             progressText.gameObject.AddComponent<LayoutElement>();
             progressText.color = Color.white;
+
+            UIUtility.CreateSquareProgress(progressObject.transform, squareSize, counter.FilledSquares);
         }
     }
 }
