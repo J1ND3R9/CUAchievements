@@ -57,13 +57,19 @@ public class Plugin : BaseUnityPlugin
 		string luminaryOfScienceName = LocaleRegistry.Get("achievement_luminary_of_science_name", "Luminary of science");
 		string luminaryOfScienceDesc = LocaleRegistry.Get("achievement_luminary_of_science_desc", "Keeping a light bulb in mouth was probably a bad idea.");
 
+		// CUCoreLib is also used here to load the sprite.
+		Sprite luminaryOfScienceIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.luminary.png");
+		
+		// An important clarification: if your achievement icon is not pixel art, it is recommended to switch the filter to bilinear.
+		luminaryOfScienceIcon.texture.filterMode = FilterMode.Bilinear;
+
         // --- Instant achievement: earned with a single call ---
 		Achievements.Register(AchievementDefinition.Instant(
-		    id: "luminary_of_science",		// unique within your mod
+		    id: "luminary_of_science",			// unique within your mod
 		    name: luminaryOfScienceName,
 		    description: luminaryOfScienceDesc,
-		    icon: null,						// null = default icon
-		    hidden: true					// shown only as part of "X hidden achievements"
+		    icon: luminaryOfScienceIcon,		
+		    hidden: true						// shown only as part of "X hidden achievements"
 		    ));
 	
 		string paintItYellowName = LocaleRegistry.Get("achievement_paint_it_yellow_name", "Paint It, Yellow");
@@ -74,10 +80,10 @@ public class Plugin : BaseUnityPlugin
 		    id: "paint_it_yellow",
 		    name: paintItYellowName,
 		    description: paintItYellowDesc,
-		    maxProgress: 15f,				// value needed to unlock
-		    icon: null,
-		    scope: AchievementScope.Run,	// progress is counted per run, not for the whole game
-		    progressDecimals: 2				// digits after the decimal point shown in the menu
+		    maxProgress: 15f,					// value needed to unlock
+		    icon: null,							// null = default icon
+		    scope: AchievementScope.Run,		// progress is counted per run, not for the whole game
+		    progressDecimals: 2					// digits after the decimal point shown in the menu
 		    ));
 	}
 
@@ -106,7 +112,13 @@ Read more: (a link to the documentation and a mod example will be here)
 
 ## Discord and Support
 If any problems or questions arise, feel free to write on the Discord server! Don't hesitate to ask even the "dumbest" questions. :)
+
 https://discord.gg/AJDjmyeEFe
+
+## Icons
+It is recommended to use a square PNG image sized 256x256 (minimum 152x152). 
+For smooth artwork, set `texture.filterMode = FilterMode.Bilinear`. 
+For pixel art, use `FilterMode.Point`.
 
 ## Contributing
 Any contribution is welcome! Please adhere to C# coding styles and patterns. Extending existing components is preferable to adding new ones.

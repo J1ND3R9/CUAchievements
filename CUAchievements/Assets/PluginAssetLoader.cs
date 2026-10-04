@@ -19,12 +19,14 @@ namespace CUAchievements.Assets
             public string CacheKey { get; }
             public float PixelsPerUnit { get; }
             public float Border { get; }
-            public SpriteEntry(string path, string cacheKey, float ppu = 100f, float border = 0f)
+            public FilterMode? Filter { get; }
+            public SpriteEntry(string path, string cacheKey, float ppu = 100f, float border = 0f, FilterMode? filter = null)
             {
                 Path = path;
                 CacheKey = cacheKey;
                 PixelsPerUnit = ppu;
                 Border = border;
+                Filter = filter;
             }
         }
         private readonly struct AudioEntry
@@ -48,16 +50,11 @@ namespace CUAchievements.Assets
                 new SpriteEntry("Assets.Images.UI.achievement_button.png", "achievement_button"),
                 new SpriteEntry("Assets.Images.UI.achievement_button_overlay.png", "achievement_button_overlay"),
 
-                new SpriteEntry("Assets.Images.achievement_default_sprite.png", "achievement_default_sprite"),
-                new SpriteEntry("Assets.Images.achievement_default_locked.png", "achievement_default_locked"),
-                new SpriteEntry("Assets.Images.achievement_default_hidden.png", "achievement_default_hidden"),
 
-                new SpriteEntry("Assets.Images.PopUp.achievement_popup_frame_v1.png", "achievement_popup_frame_v1"),
-                new SpriteEntry("Assets.Images.PopUp.achievement_popup_frame_v1alt.png", "achievement_popup_frame_v1alt"),
-                new SpriteEntry("Assets.Images.PopUp.achievement_popup_frame_v2.png", "achievement_popup_frame_v2"),
-                new SpriteEntry("Assets.Images.PopUp.achievement_popup_frame_v2alt.png", "achievement_popup_frame_v2alt"),
-                new SpriteEntry("Assets.Images.PopUp.achievement_popup_frame_v3.png", "achievement_popup_frame_v3"),
-                new SpriteEntry("Assets.Images.PopUp.achievement_popup_frame_v3alt.png", "achievement_popup_frame_v3alt"),
+                new SpriteEntry("Assets.Images.achievement_default_sprite.png", "achievement_default_sprite", filter: FilterMode.Bilinear),
+                new SpriteEntry("Assets.Images.achievement_default_locked.png", "achievement_default_locked", filter: FilterMode.Bilinear),
+                new SpriteEntry("Assets.Images.achievement_default_hidden.png", "achievement_default_hidden", filter: FilterMode.Bilinear),
+                new SpriteEntry("Assets.Images.achievement_debug_icon.png", "achievement_debug_icon", filter: FilterMode.Bilinear),
 
                 new SpriteEntry("Assets.Images.UI.achievement_frame_image.png", "achievement_frame_image"),
                 new SpriteEntry("Assets.Images.UI.achievement_frame_normal.png", "achievement_frame_normal", border: 6f)
@@ -68,6 +65,10 @@ namespace CUAchievements.Assets
                 Sprite sprite = AssetLoader.LoadEmbeddedSprite(entry.Path, entry.PixelsPerUnit);
                 if (entry.Border > 0f)
                     sprite = SpriteSlicer.MakeSliced(sprite, entry.Border);
+
+                if (entry.Filter.HasValue)
+                    sprite.texture.filterMode = entry.Filter.Value;
+
                 LoadedSprites[entry.CacheKey] = sprite;
             }
 
