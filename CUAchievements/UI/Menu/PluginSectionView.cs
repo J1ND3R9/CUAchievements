@@ -35,7 +35,7 @@ namespace CUAchievements.UI.Menu
             GameObject body = UIUtility.Create("Achievements", root.transform, typeof(VerticalLayoutGroup));
             body.GetComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true);
 
-            root.AddComponent<AchievementPluginUI>().Initialize(body, go => go.SetActive(!go.activeSelf)); // FIXME: Работает и при нажатии на блок скрытых достижений.
+            header.AddComponent<AchievementPluginUI>().Initialize(body, go => go.SetActive(!go.activeSelf));
 
             return new PluginSectionView { Root = root, Body = body.transform };
         }
