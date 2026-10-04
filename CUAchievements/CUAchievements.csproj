@@ -142,14 +142,6 @@
     <EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v1.png" />
-    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v1alt.png" />
-    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v2.png" />
-    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v3alt.png" />
-    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v3.png" />
-    <EmbeddedResource Include="Assets\Images\PopUp\achievement_popup_frame_v2alt.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Assets\Images\UI\achievement_frame_normal.png" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +160,9 @@
     <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
     <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\achievement_debug_icon.png" />
+  </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />
