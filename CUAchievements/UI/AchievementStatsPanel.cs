@@ -23,6 +23,8 @@ namespace CUAchievements.UI
         private Vector2 hiddenPos = new Vector2(600f, 0f);
         private Vector2 shownPos = new Vector2(-20f, 0f);
 
+        private AchievementStatsPanel instance;
+
         public static AchievementStatsPanel Create(Transform parent, TMP_FontAsset font)
         {
             Transform panelTransform = parent.Find("Panel");
@@ -37,7 +39,7 @@ namespace CUAchievements.UI
             panelComponent.Initialize();
 
             AchievementEvents.AchievementsChanged += panelComponent.OnAchievementsChanged;
-
+            panelComponent.instance = panelComponent;
             return panelComponent;
         }
 
@@ -259,7 +261,6 @@ namespace CUAchievements.UI
 
         public void Refresh()
         {
-           
             RefreshPluginContainer(pluginContainer.transform, fontAsset);
             RefreshText();
         }
@@ -279,7 +280,7 @@ namespace CUAchievements.UI
 
         private void OnDestroy()
         {
-            AchievementEvents.AchievementsChanged -= OnAchievementsChanged;
+            AchievementEvents.AchievementsChanged -= instance.OnAchievementsChanged;
         }
     }
 }
