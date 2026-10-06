@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CUAchievements.UI.Menu;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 
 namespace CUAchievements.UI
 {
-    internal class MenuButtonHoverVisual : MonoBehaviour
+    internal class MenuButtonHandler : MonoBehaviour
     {
         private RectTransform clickRect;
         private Image overlay;
@@ -16,7 +17,7 @@ namespace CUAchievements.UI
 
         private const float FadeSpeed = 0.5f;
 
-        private static readonly List<RaycastResult> raycastResultsBuffer = new List<RaycastResult>();
+        private static readonly List<RaycastResult> raycastResultsBuffer = [];
 
         public void Initialize(RectTransform clickRect, Image overlay, TextMeshProUGUI label, Action onClicked)
         {
@@ -28,7 +29,7 @@ namespace CUAchievements.UI
 
         private void Update()
         {
-            if (clickRect == null) return;
+            if (clickRect == null || ModalWindow.IsModalOpen) return;
 
             bool hovering = IsPointerOver(out bool topmost) && topmost;
 

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 
@@ -12,11 +13,11 @@ namespace CUAchievements.Persistence
 {
     internal sealed class AchievementPersistence
     {
-        private static readonly Dictionary<string, AchievementSaveFile> Saves = new Dictionary<string, AchievementSaveFile>();
+        private static readonly Dictionary<string, AchievementSaveFile> Saves = [];
 
-        private static readonly HashSet<string> DirtyPlugins = new HashSet<string>();
+        private static readonly HashSet<string> DirtyPlugins = [];
 
-        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings Settings = new()
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Formatting = Formatting.None
@@ -60,10 +61,7 @@ namespace CUAchievements.Persistence
                 }
             }
 
-            if (save == null)
-            {
-                save = CreateSave(modGuid, 1);
-            }
+            save ??= CreateSave(modGuid, 1);
 
             Saves[modGuid] = save;
         }
@@ -89,9 +87,7 @@ namespace CUAchievements.Persistence
 
                 if (loaded != null)
                 {
-                    if (loaded.Achievements == null)
-                        loaded.Achievements = new Dictionary<string, AchievementProgressData>();
-
+                    loaded.Achievements ??= [];
                     return loaded;
                 }
             }
@@ -177,7 +173,7 @@ namespace CUAchievements.Persistence
                 string tempPath = $"{saveFilePath}.tmp";
                 string backupPath = $"{saveFilePath}.backup";
 
-                using (FileStream fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
+                using (FileStream fs = new(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
                 {
                     fs.Write(compressed, 0, compressed.Length);
                     fs.Flush(flushToDisk: true);
@@ -237,7 +233,7 @@ namespace CUAchievements.Persistence
             {
                 Version = version,
                 PluginGuid = modGuid,
-                Achievements = new Dictionary<string, AchievementProgressData>()
+                Achievements = []
             };
         }
 

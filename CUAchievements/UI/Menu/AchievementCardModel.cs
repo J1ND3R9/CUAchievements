@@ -54,7 +54,7 @@ namespace CUAchievements.UI.Menu
             return model;
         }
 
-        public static AchievementCardModel Hidden(int count) => new AchievementCardModel
+        public static AchievementCardModel Hidden(int count) => new()
         {
             Title = string.Format(LocaleRegistry.Get("achievementspanel_hidden_achievements_title",
             "Hidden achievements remaining: {0}"), count),

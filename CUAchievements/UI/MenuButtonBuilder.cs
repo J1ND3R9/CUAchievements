@@ -1,86 +1,107 @@
-﻿using CUCoreLib.Helpers;
+﻿using CUAchievements.UI.Utility;
+using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
+using System;
 using System.Linq;
+using System.Security.Policy;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace CUAchievements.UI
 {
+    internal class PauseMenuButtonHandler : MonoBehaviour
+    {
+
+    }
+    internal static class PauseMenuButtonBuilder
+    {
+        public const string ButtonName = "AchievementsPauseButton";
+
+        public static void CreateButton(Transform parent, Action onClick)
+        {
+            Sprite baseSprite = AssetLoader.GetCachedSprite("achievement_pause_button");
+
+            if (baseSprite == null)
+            {
+                CUAchievementsPlugin.Logger.LogError("achievement_pause_button sprite not found.");
+                return;
+            }
+
+            GameObject buttonObject = UIUtility.Create(ButtonName, parent, typeof(Image), typeof(UITooltip), typeof(Button));
+            UITooltip buttonTooltip = buttonObject.GetComponent<UITooltip>();
+
+            string tipPauseName = LocaleRegistry.Get("achievement_pause_button_tip_name", "Achievements");
+            string tipPauseDesc = LocaleRegistry.Get("achievement_pause_button_tip_desc", "Check your achievement progress!");
+            buttonTooltip.tipName = tipPauseName;
+            buttonTooltip.tipDesc = tipPauseDesc;
+
+            Image image = buttonObject.GetComponent<Image>();
+            image.sprite = baseSprite;
+            image.raycastTarget = false;
+
+            RectTransform rect = (RectTransform)buttonObject.transform;
+            rect.anchorMin = rect.anchorMax = new Vector2(1f, 0.5f);
+            rect.pivot = new Vector2(1f, 0.5f);
+            rect.anchoredPosition = new Vector2(0f, 0f);
+            rect.sizeDelta = new Vector2(120f, 120f);
+
+            
+        }
+    }
     internal static class MenuButtonBuilder
     {
-        private static TMP_FontAsset FindFont() => Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Retro GamingPix");
-        private static MenuManager menu;
-
-        public static void CreateButton(Transform parent, PreRunScript preRun)
+        public const string ButtonName = "AchievementsButton";
+        public static void CreateButton(Transform parent, TMP_FontAsset font, Action onClick)
         {
-            if (parent == null || preRun == null) return;
-
-            Transform existing = parent.Find("AchievementsButton");
-            GameObject achievementsButtonObject = existing != null ? existing.gameObject : new GameObject("AchievementsButton", typeof(RectTransform), typeof(Image));
-
             Sprite baseSprite = AssetLoader.GetCachedSprite("achievement_button");
             Sprite overlaySprite = AssetLoader.GetCachedSprite("achievement_button_overlay");
-            string achievementsLocale = LocaleRegistry.Get("achievements_button", "Achievements");
 
-            achievementsButtonObject.transform.SetParent(parent, false);
+            if (baseSprite == null)
+            {
+                CUAchievementsPlugin.Logger.LogError("achievement_button sprite not found.");
+                return;
+            }
 
-            Image achievementsButtonImage = achievementsButtonObject.GetComponent<Image>();
-            achievementsButtonImage.sprite = baseSprite;
-            achievementsButtonImage.type = Image.Type.Simple;
-            achievementsButtonImage.preserveAspect = false;
-            achievementsButtonImage.raycastTarget = false;
-            achievementsButtonImage.color = Color.white;
+            GameObject buttonObject = UIUtility.Create(ButtonName, parent, typeof(Image));
 
-            RectTransform achievementsButtonRect = achievementsButtonObject.GetComponent<RectTransform>();
-            achievementsButtonRect.anchorMin = achievementsButtonRect.anchorMax = new Vector2(1f, 0f);
-            achievementsButtonRect.pivot = new Vector2(1f, 0f);
-            achievementsButtonRect.anchoredPosition = new Vector2(-300f, 25f);
-            achievementsButtonRect.sizeDelta = baseSprite.rect.size;
+            Image image = buttonObject.GetComponent<Image>();
+            image.sprite = baseSprite;
+            image.raycastTarget = false;
 
-            Image overlayImage = AddOverlay(achievementsButtonRect, overlaySprite);
-            TextMeshProUGUI label = AddLabel(achievementsLocale, achievementsButtonRect);
+            RectTransform rect = (RectTransform)buttonObject.transform;
+            rect.anchorMin = rect.anchorMax = new Vector2(1f, 0f);
+            rect.pivot = new Vector2(1f, 0f);
+            rect.anchoredPosition = new Vector2(-300f, 25f);
+            rect.sizeDelta = baseSprite.rect.size;
 
-            MenuButtonHoverVisual hover = achievementsButtonObject.GetComponent<MenuButtonHoverVisual>() ?? achievementsButtonObject.AddComponent<MenuButtonHoverVisual>();
+            Image overlay = AddOverlay(rect, overlaySprite);
+            TextMeshProUGUI label = AddLabel(rect, font);
 
-            hover.Initialize(achievementsButtonRect, overlayImage, label, OnClicked);
-
-            var canvas = preRun.mainCanvas;
-            GameObject modalMenu = new GameObject("AchievementModal", typeof(RectTransform));
-            modalMenu.transform.SetParent(canvas.transform, false);
-            menu = modalMenu.AddComponent<MenuManager>();
-            menu.Initialize(FindFont());
-            AddParallax(achievementsButtonRect);
+            buttonObject.AddComponent<MenuButtonHandler>().Initialize(rect, overlay, label, onClick);
+            AddParallax(rect);
         }
 
-        private static Image AddOverlay(RectTransform achievementsButtonRect, Sprite overlaySprite)
+        private static void AddParallax(RectTransform rect)
         {
-            Transform existingOverlay = achievementsButtonRect.Find("Overlay");
-            GameObject overlayObject = existingOverlay != null ? existingOverlay.gameObject : new GameObject("Overlay", typeof(RectTransform), typeof(Image));
-            overlayObject.transform.SetParent(achievementsButtonRect, false);
+            if (MenuParallax.instance == null) return;
 
-            RectTransform overlayRect = overlayObject.GetComponent<RectTransform>();
-            overlayRect.anchorMin = Vector2.zero;
-            overlayRect.anchorMax = Vector2.one;
-            overlayRect.offsetMin = Vector2.zero;
-            overlayRect.offsetMax = Vector2.zero;
-
-            Image overlayImage = overlayObject.GetComponent<Image>();
-            overlayImage.sprite = overlaySprite;
-            overlayImage.type = Image.Type.Simple;
-            overlayImage.preserveAspect = false;
-            overlayImage.raycastTarget = false;
-            overlayImage.color = new Color(1f, 1f, 1f, 0f);
-
-            return overlayImage;
+            var existingLayer = MenuParallax.instance.parallax.layers.FirstOrDefault(l => l.reference == rect);
+            if (existingLayer == null)
+            {
+                MenuParallax.ParallaxLayerInfo layer = new MenuParallax.ParallaxLayerInfo
+                {
+                    reference = rect,
+                    mouseMoveScale = 0.20f,
+                    originalPos = rect.anchoredPosition
+                };
+                MenuParallax.instance.parallax.layers.Add(layer);
+            }
         }
 
-        private static TextMeshProUGUI AddLabel(string achievementsLocale, RectTransform achievementsButtonRect)
+        private static TextMeshProUGUI AddLabel(Transform parent, TMP_FontAsset font)
         {
-            Transform existingLabel = achievementsButtonRect.Find("HoverLabel");
-            GameObject labelObject = existingLabel != null ? existingLabel.gameObject : new GameObject("HoverLabel", typeof(RectTransform), typeof(TextMeshProUGUI));
-            labelObject.transform.SetParent(achievementsButtonRect, false);
-
+            GameObject labelObject = UIUtility.Create("HoverLabel", parent, typeof(TextMeshProUGUI));
             RectTransform labelRect = labelObject.GetComponent<RectTransform>();
             labelRect.anchorMin = new Vector2(0.5f, 1f);
             labelRect.anchorMax = new Vector2(0.5f, 1f);
@@ -89,38 +110,30 @@ namespace CUAchievements.UI
             labelRect.localScale = Vector3.one;
             labelRect.SetAsLastSibling();
 
+            string achievementsLocale = LocaleRegistry.Get("achievements_button", "Achievements");
+
             TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
             label.text = achievementsLocale;
-            label.font = FindFont();
+            label.font = font;
             label.alignment = TextAlignmentOptions.Center;
             label.color = new Color(1f, 1f, 1f, 0f);
             label.raycastTarget = false;
             label.enableWordWrapping = false;
-
             label.ForceMeshUpdate();
+
             labelRect.sizeDelta = new Vector2(label.preferredWidth + 40f, label.preferredHeight + 10f);
+
             return label;
         }
 
-        private static void AddParallax(RectTransform achievementsButtonRect)
+        private static Image AddOverlay(Transform parent, Sprite sprite)
         {
-            var existingLayer = MenuParallax.instance.parallax.layers.FirstOrDefault(l => l.reference == achievementsButtonRect);
-            if (existingLayer == null)
-            {
-                MenuParallax.ParallaxLayerInfo layer = new MenuParallax.ParallaxLayerInfo
-                {
-                    reference = achievementsButtonRect,
-                    mouseMoveScale = 0.20f,
-                    originalPos = achievementsButtonRect.anchoredPosition
-                };
-                MenuParallax.instance.parallax.layers.Add(layer);
-            }
-        }
-
-        internal static void OnClicked()
-        {
-            if (menu == null) return;
-            menu.Window.Show();
+            Image overlay = UIUtility.Create("Overlay", parent, typeof(Image)).GetComponent<Image>();
+            overlay.transform.Stretch();
+            overlay.sprite = sprite;
+            overlay.raycastTarget = false;
+            overlay.color = new Color(1f, 1f, 1f, 0f);
+            return overlay;
         }
     }
 }

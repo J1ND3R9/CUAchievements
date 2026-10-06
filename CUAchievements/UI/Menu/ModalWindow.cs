@@ -43,7 +43,7 @@ namespace CUAchievements.UI.Menu
         }
         private void BuildModal()
         {
-            UIUtility.Stretch(GetComponent<RectTransform>());
+            UIUtility.Stretch(transform);
 
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.overrideSorting = true;
@@ -71,8 +71,7 @@ namespace CUAchievements.UI.Menu
 
             var modalScroll = Root.GetComponentInChildren<ScrollRect>(true);
             Content = modalScroll?.content;
-
-            ConfigureModalContent();
+            Content?.SetupScrollContent();
 
             Button[] buttons = Root.GetComponentsInChildren<Button>(true);
             foreach (var b in buttons)
@@ -97,33 +96,12 @@ namespace CUAchievements.UI.Menu
         {
             IsModalOpen = show;
 
-            if (Root != null) Root.SetActive(show);
+            Root?.SetActive(show);
 
             if (show)
                 Opened?.Invoke();
             else
                 Closed?.Invoke();
-        }
-
-        private void ConfigureModalContent()
-        {
-            if (Content != null)
-            {
-                for (int i = Content.childCount - 1; i >= 0; i--)
-                    Destroy(Content.GetChild(i).gameObject);
-
-                VerticalLayoutGroup modalVlg = Content.gameObject.AddComponent<VerticalLayoutGroup>();
-                modalVlg.Configure(spacing: 24f,
-                    controlW: true,
-                    controlH: true,
-                    expandW: true,
-                    expandH: true,
-                    padding: new RectOffset(10, 10, 10, 10)
-                    );
-
-                ContentSizeFitter modalFitter = Content.gameObject.AddComponent<ContentSizeFitter>();
-                modalFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            }
         }
 
         private void ClearModal(GameObject modalPanel)
@@ -136,5 +114,7 @@ namespace CUAchievements.UI.Menu
                     Destroy(monoBehaviourObject);
             }
         }
+
+        private void OnDestroy() => IsModalOpen = false;
     }
 }

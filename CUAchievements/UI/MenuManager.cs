@@ -10,26 +10,34 @@ namespace CUAchievements.UI
 {
     internal sealed class MenuManager : MonoBehaviour
     {
-        public ModalWindow Window;
+        private ModalWindow window;
         private AchievementListView list;
-        private AchievementStatsPanel statsPanel;
+        private StatsPanel statsPanel;
         private AchievementDetailsPanel detailsPanel;
         private string currentFilter = "";
         private bool needsRefresh = true;
         public void Initialize(TMP_FontAsset font)
         {
-            Window = gameObject.AddComponent<ModalWindow>();
-            Window.Initialize();
+            window = gameObject.AddComponent<ModalWindow>();
+            window.Initialize();
 
-            BuildTabs(font);
-            statsPanel = AchievementStatsPanel.Create(Window.Root.transform, font);
-            detailsPanel = AchievementDetailsPanel.Create(Window.Root.transform, font);
-            list = new AchievementListView(Window.Content, font, ShowDetails);
+            BuildTabs();
+            statsPanel = StatsPanel.Create(window.Root.transform, window.Panel);
+            detailsPanel = AchievementDetailsPanel.Create(window.Root.transform);
+            list = new AchievementListView(window.Content, font, ShowDetails);
 
-            Window.Opened += OnOpened;
+            window.Opened += OnOpened;
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
-            Window.Hide();
+            window.Hide();
         }
+        internal static MenuManager Create(Transform canvas, TMP_FontAsset font)
+        {
+            var gameObject = UIUtility.Create("AchievementModal", canvas);
+            var manager = gameObject.AddComponent<MenuManager>();
+            manager.Initialize(font);
+            return manager;
+        }
+        public void Open() => window.Show();
         private void OnOpened()
         {
             if (needsRefresh)
@@ -41,7 +49,10 @@ namespace CUAchievements.UI
         }
         private void OnStatisticClick()
         {
-            statsPanel.SetVisible();
+            if (StatsPanel.IsStatsOpen)
+                statsPanel.Close();
+            else
+                statsPanel.Open();
         }
 
         private void OnAchievementsChanged()
@@ -61,9 +72,9 @@ namespace CUAchievements.UI
         private void ShowDetails(RegisteredAchievement achievement) =>
             detailsPanel.Refresh(achievement, AchievementFrames.Get(achievement.Definition.Difficulty));
 
-        private void BuildTabs(TMP_FontAsset font)
+        private void BuildTabs()
         {
-            GameObject headerObject = UIUtility.Create("ModalHeader", Window.Panel, typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+            GameObject headerObject = UIUtility.Create("ModalHeader", window.Panel, typeof(HorizontalLayoutGroup), typeof(LayoutElement));
             RectTransform headerRect = headerObject.GetComponent<RectTransform>();
             headerRect.anchorMin = new Vector2(0f, 1f);
             headerRect.anchorMax = new Vector2(1f, 1f);
@@ -82,7 +93,7 @@ namespace CUAchievements.UI
                 );
 
             string searchLocale = LocaleRegistry.Get("achievements_panel_search_placeholder", "Search...");
-            UIUtility.CreateInputField("SearchField", tabsObject.transform, searchLocale, font, OnSearchChanged);
+            UIUtility.CreateInputField("SearchField", tabsObject.transform, searchLocale, GameFonts.Retro, OnSearchChanged);
             string statsLocale = LocaleRegistry.Get("achievements_panel_stats_button", "Stats");
             UIUtility.CreateButton(tabsObject.transform, "StatsButton", statsLocale, OnStatisticClick);
         }

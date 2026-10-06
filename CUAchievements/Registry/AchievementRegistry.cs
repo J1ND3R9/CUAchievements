@@ -10,7 +10,7 @@ namespace CUAchievements.Registry
 {
     internal sealed class AchievementRegistry
     {
-        private static readonly Dictionary<string, RegisteredAchievement> RegisteredAchievements = new Dictionary<string, RegisteredAchievement>(StringComparer.Ordinal);
+        private static readonly Dictionary<string, RegisteredAchievement> RegisteredAchievements = new(StringComparer.Ordinal);
         private readonly string _pluginGuid;
         private AchievementRegistry(string pluginGuid)
         {
@@ -41,8 +41,8 @@ namespace CUAchievements.Registry
                 return null;
             }
 
-            AchievementProgressData progress = new AchievementProgressData(fullId);
-            RegisteredAchievement registeredAchievement = new RegisteredAchievement(_pluginGuid, achievement, progress);
+            AchievementProgressData progress = new(fullId);
+            RegisteredAchievement registeredAchievement = new(_pluginGuid, achievement, progress);
             RegisteredAchievements[fullId] = registeredAchievement;
 
             AchievementPersistence.Restore(registeredAchievement);
@@ -54,6 +54,17 @@ namespace CUAchievements.Registry
         {
             achievement = null;
             string fullId = $"{pluginGuid}::{id}";
+            if (RegisteredAchievements.ContainsKey(fullId))
+            {
+                achievement = RegisteredAchievements[fullId];
+                return true;
+            }
+            return false;
+        }
+
+        internal static bool TryGetFull(string fullId, out RegisteredAchievement achievement)
+        {
+            achievement = null;
             if (RegisteredAchievements.ContainsKey(fullId))
             {
                 achievement = RegisteredAchievements[fullId];
@@ -87,17 +98,19 @@ namespace CUAchievements.Registry
             return false;
         }
 
-        internal static (int, int) GetTotalProgress() => (RegisteredAchievements.Values.Count(a => a.IsUnlocked), RegisteredAchievements.Count());
+        internal static (int unlocked, int total) GetTotalProgress() => (RegisteredAchievements.Values.Count(a => a.IsUnlocked), RegisteredAchievements.Count());
 
         internal static IReadOnlyDictionary<string, List<RegisteredAchievement>> GetAchievementsPerPlugin(bool nameInsteadGuid, string search = "")
         {
-            Dictionary<string, List<RegisteredAchievement>> pluginAchievements = new Dictionary<string, List<RegisteredAchievement>>();
+            Dictionary<string, List<RegisteredAchievement>> pluginAchievements = [];
 
             var registeredAchievements = RegisteredAchievements.Values.ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                registeredAchievements = registeredAchievements.Where(a => a.Definition.Name.ToLower().Contains(search.ToLower()) || a.Definition.Description.ToLower().Contains(search.ToLower())).ToList();
+                registeredAchievements = [.. registeredAchievements
+                    .Where(a => a.Definition.Name.ToLower().Contains(search.ToLower()) 
+                    || a.Definition.Description.ToLower().Contains(search.ToLower()))];
             }
 
             foreach (var achievement in registeredAchievements)
@@ -112,7 +125,7 @@ namespace CUAchievements.Registry
                 }
 
                 if (!pluginAchievements.ContainsKey(plugin))
-                    pluginAchievements[plugin] = new List<RegisteredAchievement>();
+                    pluginAchievements[plugin] = [];
 
                 pluginAchievements[plugin].Add(achievement);
 

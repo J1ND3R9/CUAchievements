@@ -7,7 +7,7 @@ namespace CUAchievements.Services
     /// </summary>
     public class ConditionalAchievementTracker
     {
-        private readonly Dictionary<string, bool> flags = new Dictionary<string, bool>();
+        private readonly Dictionary<string, bool> flags = [];
         /// <summary>
         /// Creates/sets a flag
         /// </summary>

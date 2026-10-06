@@ -113,11 +113,11 @@ namespace CUAchievements.UI.Utility
             button.interactable = true;
 
             TMP_Text tmp = button.GetComponentInChildren<TMP_Text>(true);
-            if (tmp != null) tmp.text = label;
+            tmp?.text = label;
 
             return button;
         }
-        
+
         public static GameObject CreatePanel(string name, Transform parent, Vector2 thickness = default)
         {
             GameObject panelObject = Create(name, parent, typeof(Image), typeof(Outline));
@@ -130,6 +130,46 @@ namespace CUAchievements.UI.Utility
             panelOutline.effectDistance = thickness == default ? new Vector2(3f, 3f) : thickness;
 
             return panelObject;
+        }
+        public static T GetOrAdd<T>(this GameObject go) where T : Component
+        {
+            T component = go.GetComponent<T>();
+            return component ?? go.AddComponent<T>();
+        }
+
+        public static void ClearChildren(this Transform parent)
+        {
+            for (int i = parent.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = parent.GetChild(i).gameObject;
+                child.SetActive(false);
+                UnityEngine.Object.Destroy(child);
+            }
+        }
+
+        public static VerticalLayoutGroup SetupScrollContent(this RectTransform content, float spacing = 24f, RectOffset padding = null)
+        {
+            if (content == null) return null;
+
+            content.ClearChildren();
+
+            content.gameObject.GetOrAdd<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            return content.gameObject.GetOrAdd<VerticalLayoutGroup>().Configure(
+                spacing: spacing,
+                expandW: true,
+                expandH: true,
+                padding: padding ?? new RectOffset(10, 10, 10, 10));
+        }
+
+        public static void ClearPanel(this Transform panel)
+        {
+            if (panel == null) return;
+            foreach (Transform child in panel)
+            {
+                if (child.name == "Scroll" || child.name == "Description") continue;
+                UnityEngine.Object.Destroy(child.gameObject);
+            }
         }
 
         public static GameObject CreateSquareProgress(Transform parent, float squareSize, int filled)

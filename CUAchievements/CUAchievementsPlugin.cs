@@ -26,7 +26,7 @@ namespace CUAchievements
 
         internal static new ManualLogSource Logger;
 
-        private readonly Harmony _harmony = new Harmony(ModGUID);
+        private readonly Harmony _harmony = new(ModGUID);
 
         private const float AutoSaveInterval = 10f;
         void Awake()
@@ -57,7 +57,7 @@ namespace CUAchievements
 
         private IEnumerator AutoSaveCoroutine()
         {
-            WaitForSecondsRealtime wait = new WaitForSecondsRealtime(AutoSaveInterval);
+            WaitForSecondsRealtime wait = new(AutoSaveInterval);
 
             while (true)
             {

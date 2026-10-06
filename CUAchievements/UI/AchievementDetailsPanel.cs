@@ -22,11 +22,10 @@ namespace CUAchievements.UI
         private TextMeshProUGUI detailUnlockedAtDate;
         private TextMeshProUGUI detailUnlockedAtTime;
         private bool isVisible = false;
-        private Vector2 hiddenPos = new Vector2(-600f, 0f);
-        private Vector2 shownPos = new Vector2(20f, 0f);
-        private TMP_FontAsset fontAsset;
+        private Vector2 hiddenPos = new(-600f, 0f);
+        private Vector2 shownPos = new(20f, 0f);
 
-        public static AchievementDetailsPanel Create(Transform parent, TMP_FontAsset font)
+        public static AchievementDetailsPanel Create(Transform parent)
         {
             Transform panelTransform = parent.Find("Panel");
             if (panelTransform == null) return null;
@@ -35,7 +34,6 @@ namespace CUAchievements.UI
             detailsPanel.name = "DetailsPanel";
 
             AchievementDetailsPanel panelComponent = detailsPanel.AddComponent<AchievementDetailsPanel>();
-            panelComponent.fontAsset = font;
             panelComponent.Initialize();
 
             return panelComponent;
@@ -100,14 +98,14 @@ namespace CUAchievements.UI
 
             UIUtility.CreateSeparator(detailsObject.transform);
 
-            GameObject bottomSectionObject = new GameObject("BottomSection", typeof(RectTransform), typeof(VerticalLayoutGroup));
+            GameObject bottomSectionObject = new("BottomSection", typeof(RectTransform), typeof(VerticalLayoutGroup));
             bottomSectionObject.transform.SetParent(detailsObject.transform, false);
 
-            TextMeshProUGUI unlockedTmp = UIUtility.CreateText(bottomSectionObject.transform, "Unlocked", "Unlocked", fontAsset, 18f);
+            TextMeshProUGUI unlockedTmp = UIUtility.CreateText(bottomSectionObject.transform, "Unlocked", "Unlocked", GameFonts.Retro, 18f);
             detailUnlocked = unlockedTmp;
-            detailUnlocked.font = fontAsset;
+            detailUnlocked.font = GameFonts.Retro;
 
-            (TextMeshProUGUI unlockedDate, TextMeshProUGUI unlockedTime) = CreateStatisticRow(bottomSectionObject.transform, "UnlockedAt", "-", "-", fontAsset);
+            (TextMeshProUGUI unlockedDate, TextMeshProUGUI unlockedTime) = CreateStatisticRow(bottomSectionObject.transform, "UnlockedAt", "-", "-", GameFonts.Retro);
             detailUnlockedAtDate = unlockedDate;
             detailUnlockedAtTime = unlockedTime;
         }
@@ -117,9 +115,9 @@ namespace CUAchievements.UI
             GameObject descriptionSectionObject = new GameObject("DescriptionSection", typeof(RectTransform), typeof(VerticalLayoutGroup));
             descriptionSectionObject.transform.SetParent(detailsObject.transform, false);
 
-            TextMeshProUGUI descriptionTmp = UIUtility.CreateText(descriptionSectionObject.transform, "Description", "Description", fontAsset, 16f);
+            TextMeshProUGUI descriptionTmp = UIUtility.CreateText(descriptionSectionObject.transform, "Description", "Description", GameFonts.Retro, 16f);
             detailDescription = descriptionTmp;
-            detailDescription.font = fontAsset;
+            detailDescription.font = GameFonts.Retro;
         }
 
         private void CreateHeader(GameObject detailsObject)
@@ -134,13 +132,13 @@ namespace CUAchievements.UI
 
             CreateIconObject(headerSectionObject.transform);
 
-            TextMeshProUGUI labelTmp = UIUtility.CreateText(headerSectionObject.transform, "Label", "Label", fontAsset, 20f, TextAlignmentOptions.Center);
+            TextMeshProUGUI labelTmp = UIUtility.CreateText(headerSectionObject.transform, "Label", "Label", GameFonts.Retro, 20f, TextAlignmentOptions.Center);
             detailTitle = labelTmp;
 
             var labelLayout = labelTmp.gameObject.AddComponent<LayoutElement>();
             labelLayout.minHeight = 32f;
 
-            TextMeshProUGUI sourceTmp = UIUtility.CreateText(headerSectionObject.transform, "Source", "Source", fontAsset, 16f, TextAlignmentOptions.Center);
+            TextMeshProUGUI sourceTmp = UIUtility.CreateText(headerSectionObject.transform, "Source", "Source", GameFonts.Retro, 16f, TextAlignmentOptions.Center);
             detailSource = sourceTmp;
             detailSource.alpha = 0.75f;
         }

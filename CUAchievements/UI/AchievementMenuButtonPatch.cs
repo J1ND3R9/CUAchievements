@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Xml.Xsl;
+using TMPro;
 using UnityEngine;
 
 namespace CUAchievements.UI
@@ -7,12 +8,25 @@ namespace CUAchievements.UI
     [HarmonyPatch(typeof(PreRunScript), "Start")]
     internal static class AchievementMenuButtonPatch // Thanks Custom Structures code.
     {
-        public static void Postfix(PreRunScript __instance)
+        private static void Postfix(PreRunScript __instance)
         {
-            Transform menuBackground = __instance.mainCanvas.transform.Find("MenuBackground");
+            Transform canvas = __instance.mainCanvas.transform;
+            Transform menuBackground = canvas.Find("MenuBackground");
             if (menuBackground == null) return;
+            if (menuBackground.Find(MenuButtonBuilder.ButtonName) != null) return;
 
-            MenuButtonBuilder.CreateButton(menuBackground, __instance);
+            TMP_FontAsset font = GameFonts.Retro;
+            MenuManager menu = MenuManager.Create(canvas, font);
+            MenuButtonBuilder.CreateButton(menuBackground, font, menu.Open);
+        }
+    }
+
+    [HarmonyPatch(typeof(PauseHandler), "Start")]
+    internal static class AchievementPauseMenuButtonPatcn
+    {
+        private static void Postfix()
+        {
+
         }
     }
 }
