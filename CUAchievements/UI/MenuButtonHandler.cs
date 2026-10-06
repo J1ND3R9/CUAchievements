@@ -29,11 +29,11 @@ namespace CUAchievements.UI
 
         private void Update()
         {
-            if (clickRect == null || ModalWindow.IsModalOpen) return;
+            if (clickRect == null) return;
 
             bool hovering = IsPointerOver(out bool topmost) && topmost;
 
-            float target = hovering ? 1f : 0f;
+            float target = (hovering && !ModalWindow.IsModalOpen) ? 1f : 0f;
             float step = FadeSpeed * Time.unscaledDeltaTime;
 
             var oc = overlay.color;
