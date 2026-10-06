@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+	<LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -128,12 +129,14 @@
     <Compile Include="Options\AchievementOptions.cs" />
     <Compile Include="UI\AchievementPluginUI.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
-    <Compile Include="UI\AchievementStatsPanel.cs" />
+    <Compile Include="UI\StatsPanel.cs" />
     <Compile Include="UI\MenuButtonBuilder.cs" />
-    <Compile Include="UI\MenuButtonHoverVisual.cs" />
+    <Compile Include="UI\MenuButtonHandler.cs" />
     <Compile Include="UI\AchievementSorter.cs" />
     <Compile Include="UI\Menu\PluginSectionView.cs" />
+    <Compile Include="UI\PauseMenuManager.cs" />
     <Compile Include="UI\Utility\AnimationUtility.cs" />
+    <Compile Include="UI\Utility\GameFonts.cs" />
     <Compile Include="UI\Utility\LayoutIgnorer.cs" />
     <Compile Include="UI\Utility\SpriteSlicer.cs" />
     <Compile Include="UI\Utility\UIUtility.cs" />
@@ -162,6 +165,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_debug_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\StatsPanel\" />
   </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
