@@ -28,8 +28,8 @@ namespace CUAchievements.UI.Menu
         public event Action Opened;
         public event Action Closed;
 
-        public void Show() => SetVisible(true);
-        public void Hide() => SetVisible(false);
+        public void Open() => SetVisible(true);
+        public void Close() => SetVisible(false);
 
         public void Initialize()
         {
@@ -39,7 +39,7 @@ namespace CUAchievements.UI.Menu
 
         void Update()
         {
-            if (IsModalOpen && Input.GetKeyDown(KeyCode.Escape)) Hide();
+            if (IsModalOpen && Input.GetKeyDown(KeyCode.Escape)) Close();
         }
         private void BuildModal()
         {

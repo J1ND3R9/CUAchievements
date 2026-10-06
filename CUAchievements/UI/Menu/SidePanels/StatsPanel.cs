@@ -12,19 +12,23 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI
+namespace CUAchievements.UI.Menu.SidePanels
 {
     internal sealed class StatsPanel : MonoBehaviour
     {
-        public static bool IsStatsOpen { get; private set; }
+        public static bool IsOpen { get; private set; }
         public GameObject Root;
         public RectTransform Content;
         public Transform Panel { get; private set; }
-        public event Action Opened;
-        public event Action Closed;
+        //public event Action Opened;
+        //public event Action Closed;
 
-        private const float PanelWidth = 370f;
-        private const float PanelHeight = 700f;
+        private const float PanelWidth = 380f;
+        private const float PanelHeight = 800f;
+        private const float ScrollWidth = PanelWidth - 10f;
+        private const float ScrollHeight = PanelHeight - 100f;
+
+        private Coroutine slideAnim;
 
         private Vector2 HiddenPos = new(600f, 0f);
         private Vector2 ShownPos = new(-20f, 0f);
@@ -36,19 +40,17 @@ namespace CUAchievements.UI
 
         private GameObject modifications;
 
-        private Coroutine slideAnim;
 
         private bool needsRefresh = true;
 
         public static StatsPanel Create(Transform parent, Transform panel)
         {
             GameObject statsPanel = Instantiate(panel, parent).gameObject;
-            statsPanel.name = "StatsPanel";
+            statsPanel.name = "Stats";
 
             StatsPanel panelComponent = statsPanel.AddComponent<StatsPanel>();
 
             panelComponent.Initialize();
-            panelComponent.SetVisible(false);
             return panelComponent;
         }
 
@@ -58,8 +60,6 @@ namespace CUAchievements.UI
         void OnEnable()
         {
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
-            Opened += OnOpen;
-            Closed += OnClose;
         }
 
         private void OnAchievementsChanged()
@@ -70,8 +70,6 @@ namespace CUAchievements.UI
         void OnDisable()
         {
             AchievementEvents.AchievementsChanged -= OnAchievementsChanged;
-            Opened -= OnOpen;
-            Closed -= OnClose;
         }
 
         void OnOpen()
@@ -97,17 +95,18 @@ namespace CUAchievements.UI
             }
 
             RectTransform scrollRect = scroll.GetComponent<RectTransform>();
-            scrollRect.sizeDelta = new Vector2(PanelWidth, PanelHeight);
+            scrollRect.sizeDelta = new Vector2(ScrollWidth, ScrollHeight);
 
             var description = transform.GetComponentInChildren<TextMeshProUGUI>();
-            description.text = LocaleRegistry.Get("achievements_stats_panel_title", "Statistic");
+            description.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(ScrollWidth, 50f);
+            description.text = LocaleRegistry.Get("achievements_stats_title", "Statistic");
 
-            RectTransform statsRect = GetComponent<RectTransform>();
-            statsRect.anchorMax = new Vector2(1f, 0.5f);
-            statsRect.anchorMin = new Vector2(1f, 0.5f);
-            statsRect.pivot = new Vector2(1f, 0.5f);
-            statsRect.sizeDelta = new Vector2(380f, 800f);
-            statsRect.anchoredPosition = HiddenPos;
+            RectTransform rect = GetComponent<RectTransform>();
+            rect.anchorMax = new Vector2(1f, 0.5f);
+            rect.anchorMin = new Vector2(1f, 0.5f);
+            rect.pivot = new Vector2(1f, 0.5f);
+            rect.sizeDelta = new Vector2(PanelWidth, PanelHeight);
+            rect.anchoredPosition = HiddenPos;
 
             (int unlocked, int total) = AchievementRegistry.GetTotalProgress();
 
@@ -125,12 +124,8 @@ namespace CUAchievements.UI
             GameObject byModObject = UIUtility.Create("ByMod", parent, typeof(VerticalLayoutGroup));
             byModObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 24f);
 
-            string byModLocale = LocaleRegistry.Get("achievements_stats_panel_by_mod", "BY MOD");
-            UIUtility.CreateText(parent: byModObject.transform,
-                                 name: "ByModText",
-                                 text: byModLocale,
-                                 font: GameFonts.Retro,
-                                 fontSize: 18f);
+            string byModLocale = LocaleRegistry.Get("achievements_stats_by_mod", "BY MOD");
+            UIUtility.CreateText(byModObject.transform, "ByModText", byModLocale, GameFonts.Retro, 18f);
 
             modifications = UIUtility.Create("ModificationList", byModObject.transform, typeof(VerticalLayoutGroup));
 
@@ -145,7 +140,7 @@ namespace CUAchievements.UI
                 int total = plugin.Value.Count;
                 int unlocked = plugin.Value.Count(a => a.IsUnlocked);
 
-                (TextMeshProUGUI labelText, TextMeshProUGUI _) = CreateStatisticRow(parent, plugin.Key, $"{plugin.Key}:", $"{unlocked}/{total}");
+                (TextMeshProUGUI labelText, TextMeshProUGUI _) = UIUtility.CreateStatisticRow(parent, plugin.Key, $"{plugin.Key}:", $"{unlocked}/{total}");
                 labelText.enableWordWrapping = true;
                 labelText.overflowMode = TextOverflowModes.Ellipsis;
                 labelText.maxVisibleLines = 1;
@@ -156,16 +151,13 @@ namespace CUAchievements.UI
         {
             GameObject statisticObject = UIUtility.Create("Statistic", parent, typeof(VerticalLayoutGroup));
 
-            string totalLocale = LocaleRegistry.Get("achievements_stats_panel_total", "TOTAL");
-            string unlockedLocale = LocaleRegistry.Get("achievements_stats_panel_unlocked", "UNLOCKED");
-            string lockedLocale = LocaleRegistry.Get("achievements_stats_panel_locked", "LOCKED");
+            string totalLocale = LocaleRegistry.Get("achievements_stats_total", "TOTAL");
+            string unlockedLocale = LocaleRegistry.Get("achievements_stats_unlocked", "UNLOCKED");
+            string lockedLocale = LocaleRegistry.Get("achievements_stats_locked", "LOCKED");
 
-            CreateStatisticRow(parent: statisticObject.transform, name: "Total", label: $"{totalLocale}:", $"{total}");
-            (_, TextMeshProUGUI unlockedValue) = CreateStatisticRow(parent: statisticObject.transform, name: "Unlocked", label: $"{unlockedLocale}:", $"{unlocked}");
-            (_, TextMeshProUGUI lockedValue) = CreateStatisticRow(parent: statisticObject.transform, name: "Locked", label: $"{lockedLocale}:", $"{total - unlocked}");
-
-            unlockedText = unlockedValue;
-            lockedText = lockedValue;
+            UIUtility.CreateStatisticRow(parent: statisticObject.transform, name: "Total", label: $"{totalLocale}:", $"{total}");
+            (_, unlockedText) = UIUtility.CreateStatisticRow(statisticObject.transform, "Unlocked", $"{unlockedLocale}:", $"{unlocked}");
+            (_, lockedText) = UIUtility.CreateStatisticRow(statisticObject.transform, "Locked", $"{lockedLocale}:", $"{total - unlocked}");
         }
 
         private void CreateHeader(Transform parent, int unlocked, int total)
@@ -175,56 +167,29 @@ namespace CUAchievements.UI
 
             int precentage = total > 0 ? (int)Math.Round((double)unlocked / total * 100, MidpointRounding.AwayFromZero) : 0;
 
-            unlockedPrecentageText = UIUtility.CreateText(parent: headerObject.transform,
-                                                      name: "Precentage",
-                                                      text: $"{precentage}%",
-                                                      GameFonts.Retro,
-                                                      fontSize: 20f,
-                                                      alignment: TextAlignmentOptions.Center);
+            unlockedPrecentageText = UIUtility.CreateText(headerObject.transform, "Precentage", $"{precentage}%", GameFonts.Retro, 20f, TextAlignmentOptions.Center);
 
-            int filledSquares = unlocked > 0 
-                ? Mathf.Clamp(Mathf.FloorToInt((float)unlocked / total * 10), 0, 10) 
+            int filledSquares = unlocked > 0
+                ? Mathf.Clamp(Mathf.FloorToInt((float)unlocked / total * 10), 0, 10)
                 : 0;
 
             UIUtility.CreateSquareProgress(headerObject.transform, 24f, filledSquares);
 
-            string achievedLocale = LocaleRegistry.Get("achievements_stats_panel_achieved", "ACHIEVED");
+            string achievedLocale = LocaleRegistry.Get("achievements_stats_achieved", "ACHIEVED");
 
-            UIUtility.CreateText(parent: headerObject.transform,
-                                 name: "Achieved",
-                                 text: achievedLocale,
-                                 font: GameFonts.Retro,
-                                 fontSize: 20f,
-                                 alignment: TextAlignmentOptions.Center);
+            UIUtility.CreateText(headerObject.transform, "Achieved", achievedLocale, GameFonts.Retro, 20f, TextAlignmentOptions.Center);
 
-            outOfText = UIUtility.CreateText(parent: headerObject.transform,
-                                         name: "OutOf",
-                                         text: $"{unlocked}/{total}",
-                                         font: GameFonts.Retro,
-                                         fontSize: 18f,
-                                         alignment: TextAlignmentOptions.Center);
-        }
-
-        private (TextMeshProUGUI labelTmp, TextMeshProUGUI valueTmp) CreateStatisticRow(Transform parent, string name, string label, string value)
-        {
-            GameObject row = UIUtility.Create(name, parent, typeof(HorizontalLayoutGroup));
-            row.GetComponent<HorizontalLayoutGroup>().Configure(expandH: true);
-
-            TextMeshProUGUI labelTmp = UIUtility.CreateText(row.transform, "Label", label, GameFonts.Retro, 18f);
-            UIUtility.CreateSpacer(row.transform);
-            TextMeshProUGUI valueTmp = UIUtility.CreateText(row.transform, "Value", value, GameFonts.Retro, 18f);
-
-            return (labelTmp, valueTmp);
+            outOfText = UIUtility.CreateText(headerObject.transform, "OutOf", $"{unlocked}/{total}", GameFonts.Retro, 24f, TextAlignmentOptions.Center);
         }
 
         private void SetVisible(bool show)
         {
-            IsStatsOpen = show;
+            IsOpen = show;
 
             if (show)
-                Opened?.Invoke();
+                OnOpen();
             else
-                Closed?.Invoke();
+                OnClose();
         }
 
         private void Refresh()

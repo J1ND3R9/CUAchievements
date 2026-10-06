@@ -1,5 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Menu;
+using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Registries;
 using TMPro;
@@ -13,7 +14,7 @@ namespace CUAchievements.UI
         private ModalWindow window;
         private AchievementListView list;
         private StatsPanel statsPanel;
-        private AchievementDetailsPanel detailsPanel;
+        private DetailsPanel detailsPanel;
         private string currentFilter = "";
         private bool needsRefresh = true;
         public void Initialize(TMP_FontAsset font)
@@ -23,12 +24,12 @@ namespace CUAchievements.UI
 
             BuildTabs();
             statsPanel = StatsPanel.Create(window.Root.transform, window.Panel);
-            detailsPanel = AchievementDetailsPanel.Create(window.Root.transform);
+            detailsPanel = DetailsPanel.Create(window.Root.transform, window.Panel);
             list = new AchievementListView(window.Content, font, ShowDetails);
 
             window.Opened += OnOpened;
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
-            window.Hide();
+            window.Close();
         }
         internal static MenuManager Create(Transform canvas, TMP_FontAsset font)
         {
@@ -37,7 +38,7 @@ namespace CUAchievements.UI
             manager.Initialize(font);
             return manager;
         }
-        public void Open() => window.Show();
+        public void Open() => window.Open();
         private void OnOpened()
         {
             if (needsRefresh)
@@ -49,7 +50,7 @@ namespace CUAchievements.UI
         }
         private void OnStatisticClick()
         {
-            if (StatsPanel.IsStatsOpen)
+            if (StatsPanel.IsOpen)
                 statsPanel.Close();
             else
                 statsPanel.Open();
@@ -70,7 +71,7 @@ namespace CUAchievements.UI
         }
 
         private void ShowDetails(RegisteredAchievement achievement) =>
-            detailsPanel.Refresh(achievement, AchievementFrames.Get(achievement.Definition.Difficulty));
+            detailsPanel.Open(achievement);
 
         private void BuildTabs()
         {

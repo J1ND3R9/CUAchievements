@@ -89,6 +89,18 @@ namespace CUAchievements.UI.Utility
             return input;
         }
 
+        public static (TextMeshProUGUI labelTmp, TextMeshProUGUI valueTmp) CreateStatisticRow(Transform parent, string name, string label, string value)
+        {
+            GameObject row = Create(name, parent, typeof(HorizontalLayoutGroup));
+            row.GetComponent<HorizontalLayoutGroup>().Configure(expandH: true);
+
+            TextMeshProUGUI labelTmp = CreateText(row.transform, "Label", label, GameFonts.Retro, 18f);
+            CreateSpacer(row.transform);
+            TextMeshProUGUI valueTmp = CreateText(row.transform, "Value", value, GameFonts.Retro, 18f);
+
+            return (labelTmp, valueTmp);
+        }
+
         public static Button CreateButton(Transform parent, string name, string label, UnityAction onClick = null)
         {
             if (ButtonTemplate == null)
