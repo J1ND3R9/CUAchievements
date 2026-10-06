@@ -11,6 +11,7 @@ namespace CUAchievements.Registry
     public sealed class RegisteredAchievement
     {
         internal string PluginGuid { get; }
+        internal string FullId => $"{PluginGuid}::{Definition.Id}";
         /// <summary>
         /// Returns <see cref="AchievementDefinition"/>
         /// </summary>
