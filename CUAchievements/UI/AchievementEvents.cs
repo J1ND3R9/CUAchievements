@@ -14,7 +14,17 @@ namespace CUAchievements.UI
 
         internal static void RaiseAchievementsChanged()
         {
-            AchievementsChanged?.Invoke();
+            var handler = AchievementsChanged;
+            if (handler == null) return;
+
+            foreach (Delegate d in handler.GetInvocationList())
+            {
+                try { ((Action)d)(); }
+                catch (Exception e)
+                {
+                    CUAchievementsPlugin.Logger.LogError($"AchievementsChanged subscriber failed: {e}");
+                }
+            }
         }
     }
 }
