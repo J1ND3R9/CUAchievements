@@ -1,4 +1,4 @@
-﻿using CUAchievements.UI.Menu;
+﻿using CUAchievements.UI.Menu.Main;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI
+namespace CUAchievements.UI.Menu.CustomButton
 {
     internal class MenuButtonHandler : MonoBehaviour
     {
@@ -14,9 +14,9 @@ namespace CUAchievements.UI
         private Image overlay;
         private TextMeshProUGUI label;
         private Action onClicked;
-
         private const float FadeSpeed = 0.5f;
 
+        private static readonly List<MenuButtonHandler> Active = [];
         private static readonly List<RaycastResult> raycastResultsBuffer = [];
 
         public void Initialize(RectTransform clickRect, Image overlay, TextMeshProUGUI label, Action onClicked)
@@ -27,13 +27,16 @@ namespace CUAchievements.UI
             this.onClicked = onClicked;
         }
 
+        private void OnEnable() => Active.Add(this);
+        private void OnDisable() => Active.Remove(this);
+
         private void Update()
         {
             if (clickRect == null) return;
 
             bool hovering = IsPointerOver(out bool topmost) && topmost;
 
-            float target = (hovering && !ModalWindow.IsModalOpen) ? 1f : 0f;
+            float target = (hovering && !MainMenuWindow.IsOpen) ? 1f : 0f;
             float step = FadeSpeed * Time.unscaledDeltaTime;
 
             var oc = overlay.color;
@@ -49,14 +52,17 @@ namespace CUAchievements.UI
             label.color = lc;
 
             if (hovering && Input.GetMouseButtonDown(0))
+            {
+                PlayerCamera.PlayUISound("click", 1f);
                 onClicked?.Invoke();
+            }
         }
 
         private bool IsPointerOver(out bool topmost)
         {
             topmost = true;
 
-            if (EventSystem.current == null) 
+            if (EventSystem.current == null)
                 return false;
 
             Canvas canvas = clickRect.GetComponentInParent<Canvas>();
@@ -88,6 +94,27 @@ namespace CUAchievements.UI
             }
 
             return true;
+        }
+        public static bool IsPointerOverAny()
+        {
+            for (int i = 0; i < Active.Count; i++)
+                if (Active[i].ContainsPointer())
+                    return true;
+            return false;
+        }
+        private bool ContainsPointer(float inset = 0f)
+        {
+            if (clickRect == null) return false;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(clickRect, Input.mousePosition, null, out Vector2 local))
+                return false;
+
+            Rect r = clickRect.rect;
+            r.xMin += inset; 
+            r.xMax -= inset;
+            r.yMin += inset;
+            r.yMax -= inset;
+
+            return r.Contains(local);
         }
 
         private static bool IsDecorative(GameObject go)

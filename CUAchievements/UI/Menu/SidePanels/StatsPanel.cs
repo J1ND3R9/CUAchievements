@@ -1,13 +1,10 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Registries;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +16,6 @@ namespace CUAchievements.UI.Menu.SidePanels
         public static bool IsOpen { get; private set; }
         public GameObject Root;
         public RectTransform Content;
-        public Transform Panel { get; private set; }
         //public event Action Opened;
         //public event Action Closed;
 
@@ -39,7 +35,6 @@ namespace CUAchievements.UI.Menu.SidePanels
         private TextMeshProUGUI unlockedText;
 
         private GameObject modifications;
-
 
         private bool needsRefresh = true;
 
@@ -84,22 +79,25 @@ namespace CUAchievements.UI.Menu.SidePanels
         {
             Root = transform.gameObject;
 
-            var scroll = Root.GetComponentInChildren<ScrollRect>(true);
+            ScrollRect scroll = Root.GetComponentInChildren<ScrollRect>(true);
+            scroll.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1f;
+            scroll.HideScrollbar();
 
             Content = scroll?.content;
             if (Content != null)
             {
                 Root.transform.ClearPanel();
-                var vertical = Content.SetupScrollContent(spacing: 16f);
+                Root.transform.ClearButtons();
+                VerticalLayoutGroup vertical = Content.SetupScrollContent(spacing: 16f);
                 vertical.name = "Statistic";
             }
 
             RectTransform scrollRect = scroll.GetComponent<RectTransform>();
             scrollRect.sizeDelta = new Vector2(ScrollWidth, ScrollHeight);
 
-            var description = transform.GetComponentInChildren<TextMeshProUGUI>();
-            description.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(ScrollWidth, 50f);
+            TextMeshProUGUI description = transform.GetComponentInChildren<TextMeshProUGUI>();
             description.text = LocaleRegistry.Get("achievements_stats_title", "Statistic");
+            description.transform.SetAsLastSibling();
 
             RectTransform rect = GetComponent<RectTransform>();
             rect.anchorMax = new Vector2(1f, 0.5f);
@@ -135,7 +133,7 @@ namespace CUAchievements.UI.Menu.SidePanels
 
         private void FillModifications(Transform parent, IReadOnlyDictionary<string, List<RegisteredAchievement>> achievements)
         {
-            foreach (var plugin in achievements)
+            foreach (KeyValuePair<string, List<RegisteredAchievement>> plugin in achievements)
             {
                 int total = plugin.Value.Count;
                 int unlocked = plugin.Value.Count(a => a.IsUnlocked);

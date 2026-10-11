@@ -4,7 +4,7 @@ using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using UnityEngine;
 
-namespace CUAchievements.UI.Menu
+namespace CUAchievements.UI.Menu.Main
 {
     internal sealed class AchievementCardModel
     {
@@ -37,9 +37,15 @@ namespace CUAchievements.UI.Menu
 
             if (def.Type == AchievementType.Counter)
             {
-                var value = def.Scope == AchievementScope.Run && !a.IsUnlocked
-                    ? a.Progress.LastRunProgress
-                    : a.Progress.Progress;
+                //var value = def.Scope == AchievementScope.Run && !a.IsUnlocked && a.Progress.LastRunProgress > 0
+                //    ? a.Progress.LastRunProgress
+                //    : a.Progress.Progress;
+
+                var value = a.Progress.Progress;
+                if (a.IsUnlocked) 
+                    value = def.MaxProgress;
+                else if (def.Scope == AchievementScope.Run && a.Progress.LastRunProgress > 0)
+                    value = a.Progress.LastRunProgress;
 
                 string format = $"n{def.ProgressDecimals}";
                 model.Counter = new CounterInfo

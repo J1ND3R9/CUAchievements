@@ -108,7 +108,6 @@
     <Compile Include="Anticheat\ConsoleCommands.cs" />
     <Compile Include="Services\ConditionalAchievementTracker.cs" />
     <Compile Include="Services\AchievementsAPI.cs" />
-    <Compile Include="UI\AchievementMenuButtonPatch.cs" />
     <Compile Include="Registry\AchievementRegistry.cs" />
     <Compile Include="Persistence\AchievementSaveFile.cs" />
     <Compile Include="Services\AchievementService.cs" />
@@ -116,24 +115,25 @@
     <Compile Include="CUAchievementsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registry\RegisteredAchievement.cs" />
+    <Compile Include="UI\Menu\CustomButton\MenuButtonPatches.cs" />
+    <Compile Include="UI\Menu\Main\AchievementCardModel.cs" />
     <Compile Include="UI\Menu\SidePanels\DetailsPanel.cs" />
     <Compile Include="UI\AchievementEvents.cs" />
-    <Compile Include="UI\AchievementItemUI.cs" />
-    <Compile Include="UI\Menu\AchievementCardModel.cs" />
-    <Compile Include="UI\Menu\AchievementCardView.cs" />
-    <Compile Include="UI\AchievementFrames.cs" />
-    <Compile Include="UI\Menu\AchievementListView.cs" />
-    <Compile Include="UI\MenuManager.cs" />
-    <Compile Include="UI\Menu\ModalWindow.cs" />
-    <Compile Include="UI\AchievementModalInputBlockPatch.cs" />
+    <Compile Include="UI\Menu\Main\Helpers\AchievementItemUI.cs" />
+    <Compile Include="UI\Menu\Main\AchievementCardView.cs" />
+    <Compile Include="UI\Menu\Main\Helpers\AchievementFrames.cs" />
+    <Compile Include="UI\Menu\Main\AchievementListView.cs" />
+    <Compile Include="UI\Menu\Main\MainMenuManager.cs" />
+    <Compile Include="UI\Menu\Main\MainMenuWindow.cs" />
+    <Compile Include="UI\Menu\InputBlockPatch.cs" />
     <Compile Include="Options\AchievementOptions.cs" />
-    <Compile Include="UI\AchievementPluginUI.cs" />
+    <Compile Include="UI\Menu\Main\Helpers\AchievementPluginUI.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
     <Compile Include="UI\Menu\SidePanels\StatsPanel.cs" />
-    <Compile Include="UI\MenuButtonBuilder.cs" />
-    <Compile Include="UI\MenuButtonHandler.cs" />
+    <Compile Include="UI\Menu\CustomButton\MenuButtonBuilder.cs" />
+    <Compile Include="UI\Menu\CustomButton\MenuButtonHandler.cs" />
     <Compile Include="UI\AchievementSorter.cs" />
-    <Compile Include="UI\Menu\PluginSectionView.cs" />
+    <Compile Include="UI\Menu\Main\PluginSectionView.cs" />
     <Compile Include="UI\PauseMenuManager.cs" />
     <Compile Include="UI\Utility\AnimationUtility.cs" />
     <Compile Include="UI\Utility\GameFonts.cs" />
@@ -160,13 +160,15 @@
     <EmbeddedResource Include="Assets\Images\achievement_default_locked.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
-    <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Assets\Images\achievement_debug_icon.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
+    <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\PauseMenu\" />
+  </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />

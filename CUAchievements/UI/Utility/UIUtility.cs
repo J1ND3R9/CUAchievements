@@ -57,10 +57,14 @@ namespace CUAchievements.UI.Utility
             return g;
         }
 
-        public static TMP_InputField CreateInputField(string name, Transform parent, string placeholder, TMP_FontAsset font, UnityAction<string> onValueChanged = null)
+        public static TMP_InputField CreateInputField(string name, Transform parent, string placeholder, TMP_FontAsset font, bool interactable = true, UnityAction<string> onValueChanged = null)
         {
-            GameObject inputObject = CreatePanel(name, parent);
+            GameObject inputObject = Create(name, parent, typeof(Image));
             inputObject.SetActive(false);
+
+            var inputImage = inputObject.GetComponent<Image>();
+            inputImage.type = Image.Type.Sliced;
+            inputImage.sprite = ButtonTemplate?.GetComponent<Image>().sprite;
 
             GameObject viewport = Create("TextViewport", inputObject.transform, typeof(RectMask2D));
             RectTransform viewportRect = viewport.transform.Stretch(new Vector2(8f, 4f), new Vector2(-8f, -4f));
@@ -78,6 +82,7 @@ namespace CUAchievements.UI.Utility
 
             var input = inputObject.AddComponent<TMP_InputField>();
             input.textViewport = viewportRect;
+            input.interactable = interactable;
             input.textComponent = text;
             input.placeholder = hint;
             input.fontAsset = font;
@@ -101,7 +106,7 @@ namespace CUAchievements.UI.Utility
             return (labelTmp, valueTmp);
         }
 
-        public static Button CreateButton(Transform parent, string name, string label, UnityAction onClick = null)
+        public static Button CreateButton(Transform parent, string name, string label, bool interactable = true, UnityAction onClick = null)
         {
             if (ButtonTemplate == null)
             {
@@ -122,7 +127,7 @@ namespace CUAchievements.UI.Utility
 
             button.onClick = new Button.ButtonClickedEvent();
             if (onClick != null) button.onClick.AddListener(onClick);
-            button.interactable = true;
+            button.interactable = interactable;
 
             TMP_Text tmp = button.GetComponentInChildren<TMP_Text>(true);
             tmp?.text = label;
@@ -174,13 +179,37 @@ namespace CUAchievements.UI.Utility
                 padding: padding ?? new RectOffset(10, 10, 10, 10));
         }
 
-        public static void ClearPanel(this Transform panel)
+        public static ScrollRect HideScrollbar(this ScrollRect scrollRect)
+        {
+            if (scrollRect == null) return null;
+
+            scrollRect.viewport.offsetMax = Vector2.zero;
+            scrollRect.verticalScrollbar?.GetComponent<Image>()?.enabled = false;
+            scrollRect.verticalScrollbar?.targetGraphic?.enabled = false;
+
+            return scrollRect;
+        }
+
+        public static void ClearPanel(this Transform panel, bool clearScroll = false, bool clearDescription = false, bool clearButton = false)
         {
             if (panel == null) return;
             foreach (Transform child in panel)
             {
-                if (child.name == "Scroll" || child.name == "Description") continue;
+                //if (child.name == "Scroll" || child.name == "Description" || child.name == "Button") continue;
+                if (child.name == "Scroll" && !clearScroll) continue;
+                if (child.name == "Description" && !clearDescription) continue;
+                if (child.name == "Button" && !clearButton) continue;
                 UnityEngine.Object.Destroy(child.gameObject);
+            }
+        }
+
+        public static void ClearButtons(this Transform panel)
+        {
+            if (panel == null) return;
+            Button[] buttons = panel.GetComponentsInChildren<Button>(true);
+            foreach (var b in buttons)
+            {
+                UnityEngine.Object.Destroy(b.gameObject);
             }
         }
 

@@ -16,14 +16,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI.Menu
+namespace CUAchievements.UI.Menu.Main
 {
-    internal sealed class ModalWindow : MonoBehaviour
+    internal sealed class MainMenuWindow : MonoBehaviour
     {
-        public static bool IsModalOpen { get; private set; }
+        public static bool IsOpen { get; private set; }
         public GameObject Root;
         public RectTransform Content;
         public Transform Panel { get; private set; }
+        public Transform Header { get; private set; }
 
         public event Action Opened;
         public event Action Closed;
@@ -39,7 +40,7 @@ namespace CUAchievements.UI.Menu
 
         void Update()
         {
-            if (IsModalOpen && Input.GetKeyDown(KeyCode.Escape)) Close();
+            if (IsOpen && Input.GetKeyDown(KeyCode.Escape)) Close();
         }
         private void BuildModal()
         {
@@ -64,20 +65,32 @@ namespace CUAchievements.UI.Menu
 
             ClearModal(Root);
 
-            UIUtility.Stretch(Root.transform);
+            Panel = Root.transform.Find("Panel");
+            UIUtility.ClearPanel(Panel);
+            Panel.gameObject.AddComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true, padding: new RectOffset(12, 12, 12, 12));
+            GameObject header, bottom;
+
+            CreateHeaderAndBottom(out header, out bottom);
 
             var descriptionComponent = Root.GetComponentInChildren<TextMeshProUGUI>();
             descriptionComponent.text = LocaleRegistry.Get("achievements_button", "Achievements");
+            descriptionComponent.gameObject.AddComponent<LayoutIgnorer>();
+            descriptionComponent.transform.SetParent(bottom.transform, false);
+            descriptionComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
             var modalScroll = Root.GetComponentInChildren<ScrollRect>(true);
             Content = modalScroll?.content;
             Content?.SetupScrollContent();
 
+            modalScroll.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1f;
+            CreateBackButton(bottom);
+
+            Header = header.transform;
+        }
+
+        private void CreateBackButton(GameObject bottom)
+        {
             Button[] buttons = Root.GetComponentsInChildren<Button>(true);
-            foreach (var b in buttons)
-            {
-                b.gameObject.SetActive(b == buttons[0]);
-            }
             if (buttons.Length > 0)
             {
                 var closeButton = buttons[0];
@@ -86,15 +99,30 @@ namespace CUAchievements.UI.Menu
                 var closeButtonTextComponent = closeButton.GetComponentInChildren<TextMeshProUGUI>();
                 closeButtonTextComponent.text = Locale.GetOther("back");
 
+                closeButton.transform.SetParent(bottom.transform, false);
                 UIUtility.ButtonTemplate = closeButton.gameObject;
-            }
 
-            Panel = Root.transform.Find("Panel");
+                var le = closeButton.gameObject.AddComponent<LayoutElement>();
+                le.minHeight = 48f;
+                le.preferredWidth = 250f;
+                UIUtility.CreateSpacer(bottom.transform);
+            }
+        }
+
+        private void CreateHeaderAndBottom(out GameObject header, out GameObject bottom)
+        {
+            header = UIUtility.Create("Header", Panel, typeof(HorizontalLayoutGroup));
+            bottom = UIUtility.Create("Bottom", Panel, typeof(HorizontalLayoutGroup));
+            header.transform.SetAsFirstSibling();
+            bottom.transform.SetAsLastSibling();
+
+            header.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 6f, expandW: true);
+            bottom.GetComponent<HorizontalLayoutGroup>().Configure(expandW: false);
         }
 
         private void SetVisible(bool show)
         {
-            IsModalOpen = show;
+            IsOpen = show;
 
             Root?.SetActive(show);
 
@@ -115,6 +143,6 @@ namespace CUAchievements.UI.Menu
             }
         }
 
-        private void OnDestroy() => IsModalOpen = false;
+        private void OnDestroy() => IsOpen = false;
     }
 }

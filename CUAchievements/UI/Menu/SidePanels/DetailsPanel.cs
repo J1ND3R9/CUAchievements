@@ -1,6 +1,6 @@
 ﻿using CUAchievements.Definitions;
 using CUAchievements.Registry;
-using CUAchievements.UI.Menu;
+using CUAchievements.UI.Menu.Main;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
@@ -18,7 +18,6 @@ namespace CUAchievements.UI.Menu.SidePanels
         public static bool IsOpen { get; private set; }
         public GameObject Root;
         public RectTransform Content;
-        public Transform Panel { get; private set; }
         //public event Action Opened;
         //public event Action Closed;
 
@@ -59,12 +58,15 @@ namespace CUAchievements.UI.Menu.SidePanels
         {
             Root = transform.gameObject;
 
-            var scroll = Root.GetComponentInChildren<ScrollRect>(true);
+            ScrollRect scroll = Root.GetComponentInChildren<ScrollRect>(true);
+            scroll.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1f;
+            scroll.HideScrollbar();
 
             Content = scroll?.content;
             if (Content != null)
             {
                 Root.transform.ClearPanel();
+                Root.transform.ClearButtons();
                 var vertical = Content.SetupScrollContent(spacing: 16f);
                 vertical.name = "Details";
             }

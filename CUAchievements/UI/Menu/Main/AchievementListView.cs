@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace CUAchievements.UI.Menu
+namespace CUAchievements.UI.Menu.Main
 {
     internal sealed class AchievementListView
     {
         private readonly RectTransform content;
         private readonly TMP_FontAsset font;
         private readonly Action<RegisteredAchievement> onSelected;
-        private readonly List<GameObject> sections = new List<GameObject>();
+        private readonly List<GameObject> sections = [];
 
         public AchievementListView(RectTransform content, TMP_FontAsset font, Action<RegisteredAchievement> onSelected)
         {
@@ -19,7 +19,11 @@ namespace CUAchievements.UI.Menu
             this.font = font;
             this.onSelected = onSelected;
         }
-
+        public void BuildEmptyNote(bool emptyRegister)
+        {
+            Clear();
+            BuildEmptySection(emptyRegister);
+        }
         public void Rebuild(IReadOnlyDictionary<string, List<RegisteredAchievement>> perPlugin)
         {
             Clear();
@@ -40,6 +44,7 @@ namespace CUAchievements.UI.Menu
             sections.Clear();
         }
 
+
         private void BuildSection(string pluginName, List<RegisteredAchievement> sorted)
         {
             var section = PluginSectionView.Create(content, pluginName, sorted, font);
@@ -57,6 +62,12 @@ namespace CUAchievements.UI.Menu
             }
             if (hidden.Count > 0)
                 AchievementCardView.Create(section.Body, AchievementCardModel.Hidden(hidden.Count), font);
+        }
+
+        private void BuildEmptySection(bool emptyRegister)
+        {
+            var section = PluginSectionView.CreateNoAchievement(content, font, emptyRegister);
+            sections.Add(section.Root);
         }
     }
 }

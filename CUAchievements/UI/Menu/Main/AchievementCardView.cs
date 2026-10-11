@@ -1,12 +1,13 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
+using CUCoreLib.Registries;
 using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI.Menu
+namespace CUAchievements.UI.Menu.Main
 {
     internal static class AchievementCardView
     {
@@ -76,9 +77,9 @@ namespace CUAchievements.UI.Menu
             iconFrameImage.type = Image.Type.Simple;
             iconFrameImage.raycastTarget = false;
         }
-        private static void BuildTexts(Transform root, AchievementCardModel model, TMP_FontAsset font)
+        private static void BuildTexts(Transform parent, AchievementCardModel model, TMP_FontAsset font)
         {
-            var text = UIUtility.Create("Text", root, typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            var text = UIUtility.Create("Text", parent, typeof(VerticalLayoutGroup), typeof(LayoutElement));
             text.GetComponent<LayoutElement>().flexibleWidth = 1f;
             text.GetComponent<VerticalLayoutGroup>().Configure(spacing: 4f,
                 expandW: true,
