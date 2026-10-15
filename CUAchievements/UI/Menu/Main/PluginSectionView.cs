@@ -1,5 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
+using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,13 +31,37 @@ namespace CUAchievements.UI.Menu.Main
                 expandW: true,
                 padding: new RectOffset(12, 12, 12, 12));
 
-            UIUtility.CreateText(header.transform, "Title", $"{pluginName} [{unlocked}/{total}]", font, 18f);
+            GameObject upperObject = UIUtility.Create("UpperHeader", header.transform, typeof(HorizontalLayoutGroup));
+            upperObject.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 4f);
+
+            var titleTmp = UIUtility.CreateText(upperObject.transform, "Title", $"{pluginName} [{unlocked}/{total}]", font, 18f);
+            titleTmp.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+
+            GameObject arrow = UIUtility.Create("Arrow", upperObject.transform, typeof(Image), typeof(LayoutElement));
+
+            Image arrowImage = arrow.GetComponent<Image>();
+            arrowImage.sprite = AssetLoader.GetCachedSprite("statusarrow");
+
+            RectTransform arrowRect = arrow.GetComponent<RectTransform>();
+            arrowRect.sizeDelta = new Vector2(20f, 20f);
+            arrowRect.eulerAngles = new Vector3(0f, 0f, 270f);
+
+            LayoutElement arrowLayout = arrow.GetComponent<LayoutElement>();
+            arrowLayout.minHeight = 20f;
+            arrowLayout.minWidth = 20f;
+            arrowLayout.preferredHeight = 20f;
+            arrowLayout.preferredWidth = 20f;
+
             UIUtility.CreateLineProgress(header.transform, unlocked, total, font);
 
             GameObject body = UIUtility.Create("Achievements", root.transform, typeof(VerticalLayoutGroup));
-            body.GetComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true);
+            body.GetComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true);    
 
-            header.AddComponent<AchievementPluginUI>().Initialize(body, go => go.SetActive(!go.activeSelf));
+            header.AddComponent<AchievementPluginUI>().Initialize(body, go =>
+            {
+                go.SetActive(!go.activeSelf);
+                arrowRect.eulerAngles = go.activeSelf ? new Vector3(0f, 0f, 270f) : new Vector3(0f, 0f, 90f);
+            });
 
             return new PluginSectionView { Root = root, Body = body.transform };
         }
