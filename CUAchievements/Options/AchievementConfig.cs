@@ -29,7 +29,7 @@ namespace CUAchievements.Options
         public static void Initialize(ConfigFile config)
         {
             AnticheatEnabled = config.Bind("Anticheat", "AnticheatEnabled", true, "Enable or disable the command anti-cheat system – most commands are marked as \"unsafe,\" and executing any such command will disable unlocks and achievement progress for that save file.");
-            AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", true, "Enables or disables the ability to earn achievements in the tutorial/sandbox.");
+            AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", false, "Enables or disables the ability to earn achievements in the tutorial/sandbox, regardless of whether it permits the achievement.");
 
             AlertType = config.Bind("Alert", "AlertType", AchievementAlertType.Popup, "Achievement notification type\n" +
                 "0 - Pop-up\n" +

@@ -3,6 +3,7 @@ using CUAchievements.Definitions;
 using CUAchievements.Persistence;
 using CUAchievements.Registry;
 using CUAchievements.UI;
+using CUAchievements.UI.Utility;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Windows.Speech;
@@ -56,7 +57,7 @@ namespace CUAchievements.Services
 #if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
-                if (IsInTutorial()) return true;
+                if (GameUtility.IsTutorialOrSandbox()) return true;
             }
 #endif
 
@@ -93,7 +94,7 @@ namespace CUAchievements.Services
 #if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
-                if (IsInTutorial()) return true;
+                if (GameUtility.IsTutorialOrSandbox()) return true;
             }
 #endif
 

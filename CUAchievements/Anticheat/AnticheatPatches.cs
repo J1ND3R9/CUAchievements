@@ -1,4 +1,5 @@
-﻿using CUAchievements.UI.Utility;
+﻿using CUAchievements.UI.Menu.CustomButton;
+using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using HarmonyLib;
 using System;
@@ -62,6 +63,7 @@ namespace CUAchievements.Anticheat
 
             RunIntegrity.MarkCheated();
             CUCoreUtils.ConsoleLog(ConsoleScript.instance, "This run is marked as \"cheated.\" Achievements cannot be earned for the remainder of the run.");
+            PauseMenuButtonBuilder.SetTooltip();
         }
 
         static string GetDescriptionAddition(CommandSafety safety)
