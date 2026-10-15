@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
 using System.Xml.Xsl;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CUAchievements.UI.Menu.CustomButton
 {
@@ -15,7 +17,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             if (menuBackground == null) return;
             if (menuBackground.Find(MenuButtonBuilder.ButtonName) != null) return;
 
-            MainMenuManager menu = MainMenuManager.Create(canvas, GameFonts.Retro);
+            MainMenuManager menu = MainMenuManager.GetOrCreate(canvas, GameFonts.Retro);
             MenuButtonBuilder.CreateButton(menuBackground, GameFonts.Retro, menu.Open);
         }
     }
@@ -23,9 +25,25 @@ namespace CUAchievements.UI.Menu.CustomButton
     [HarmonyPatch(typeof(PauseHandler), "Start")]
     internal static class AchievementPauseMenuButtonPatcn
     {
-        static void Postfix()
+        static void Postfix(PauseHandler __instance, List<Vector2> ___buttonPos)
         {
+            Transform pauseMenu = __instance.pauseContainer.transform;
+            if (pauseMenu == null) return;
+            if (pauseMenu.Find(PauseMenuButtonBuilder.ButtonName) != null) return;
 
+            Transform canvas = PlayerCamera.main.mainCanvas.transform;
+            MainMenuManager menu = MainMenuManager.GetOrCreate(canvas, GameFonts.Retro);
+            var button = PauseMenuButtonBuilder.CreateButton(pauseMenu, GameFonts.Retro, __instance.buttons[0]);
+
+            var uiButton = button.GetComponent<Button>();
+            if (uiButton != null)
+            {
+                uiButton.onClick = new Button.ButtonClickedEvent();
+                uiButton.onClick.AddListener(menu.Open);
+            }
+
+            __instance.buttons.Insert(0, button);
+            ___buttonPos.Insert(0, button.anchoredPosition);
         }
     }
 }

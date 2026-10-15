@@ -4,6 +4,7 @@ using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Registries;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,11 +25,13 @@ namespace CUAchievements.UI
 
         private bool needsRefresh = true;
         private bool anyRegistered = true;
+
+        private const string ObjectName = "AchievementModal";
         public void Initialize(TMP_FontAsset font)
         {
             window = gameObject.AddComponent<MainMenuWindow>();
             window.Initialize();
-
+            
             BuildTabs();
             statsPanel = StatsPanel.Create(window.Root.transform, window.Panel);
             detailsPanel = DetailsPanel.Create(window.Root.transform, window.Panel);
@@ -42,7 +45,7 @@ namespace CUAchievements.UI
         }
         internal static MainMenuManager Create(Transform canvas, TMP_FontAsset font)
         {
-            var gameObject = UIUtility.Create("AchievementModal", canvas);
+            var gameObject = UIUtility.Create(ObjectName, canvas);
             var manager = gameObject.AddComponent<MainMenuManager>();
             manager.Initialize(font);
             return manager;
@@ -66,13 +69,7 @@ namespace CUAchievements.UI
                 statsPanel.Open();
         }
 
-        private void OnAchievementsChanged()
-        {
-            needsRefresh = true;
-
-            if (MainMenuWindow.IsOpen)
-                Refresh();
-        }
+        private void OnAchievementsChanged() => needsRefresh = true;
 
         private void Refresh()
         {
@@ -111,5 +108,16 @@ namespace CUAchievements.UI
             statsLe.minHeight = 48f;
         }
         private void OnDestroy() => AchievementEvents.AchievementsChanged -= OnAchievementsChanged;
+
+        internal static MainMenuManager GetOrCreate(Transform canvas, TMP_FontAsset font)
+        {
+            Transform existing = canvas.Find(ObjectName);
+            if (existing != null)
+            {
+                MainMenuManager found = existing.GetComponent<MainMenuManager>();
+                if (found != null) return found;
+            }
+            return Create(canvas, font);
+        }
     }
 }
