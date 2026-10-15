@@ -36,7 +36,7 @@ namespace CUAchievements
             SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunIntegritySaveProvider());
             PluginAssetLoader.LoadAssets();
             ConsoleCommands.RegisterCUCommands();
-            AchievementOptions.Register();
+            AchievementConfig.Initialize(Config);
 #if DEBUG
             AchievementDebug.Register();
 #endif

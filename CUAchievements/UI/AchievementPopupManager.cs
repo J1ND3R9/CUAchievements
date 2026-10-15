@@ -1,4 +1,5 @@
 ﻿using CUAchievements.Definitions;
+using CUAchievements.Options;
 using CUAchievements.Registry;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
@@ -17,12 +18,6 @@ using UnityEngine.UI;
 
 namespace CUAchievements.UI
 {
-    internal enum AlertType
-    {
-        PopUp = 0,
-        Alert = 1,
-        Hidden = 2
-    }
 
     internal enum DisplayType
     {
@@ -40,8 +35,9 @@ namespace CUAchievements.UI
 
         private const float PanelWidth = 460f;
         private const float PanelHeight = 120f;
-        private const float ShowDuration = 5f;
         private const float Margin = 20f;
+
+        private static float ShowDuration = 5f;
 
         private RectTransform popupRoot;
         private GameObject popupCanvasObject;
@@ -71,7 +67,8 @@ namespace CUAchievements.UI
 
         public static void Show(RegisteredAchievement achievement)
         {
-            AlertType alertType = (AlertType)PlayerPrefs.GetInt("Achievements_AlertType", 0);
+            AchievementAlertType alertType = AchievementConfig.AlertType.Value;
+            ShowDuration = AchievementConfig.PopUpTime.Value;
             if (!NeedPopup(alertType, achievement)) return;
 
             BuildOnPlayerPrefs();
@@ -79,9 +76,9 @@ namespace CUAchievements.UI
             AchievementDefinition achievementDef = achievement.Definition;
             Instance.queue.Enqueue((achievementDef.Difficulty, achievementDef.Icon, achievementDef.Name, achievementDef.ShortDescription));
 
-            float playerPrefVolume = PlayerPrefs.GetFloat("Achievements_UnlockVolume", 0.5f);
+            float volume = AchievementConfig.UnlockVolume.Value;
             AudioClip unlockSound = GetUnlockSound();
-            uiAudioSource.PlayOneShot(unlockSound, playerPrefVolume);
+            uiAudioSource.PlayOneShot(unlockSound, volume);
 
             if (!Instance.isShowing)
             {
@@ -91,9 +88,14 @@ namespace CUAchievements.UI
 
         internal static void DebugShow()
         {
-            AchievementDefinition debugAchievement = AchievementDefinition.Instant("test", "Thanks for using CUAchievements!", "This is CUAchievements! Hello!! Hi!!! hii!!! HEEELlOOO!!!", null);
+            AchievementDefinition debugAchievement = AchievementDefinition.Instant(
+                "test",
+                "Thanks for using CUAchievements!",
+                "This is CUAchievements! Hello!! Hi!!! hii!!! HEEELlOOO!!!",
+                AssetLoader.GetCachedSprite("achievement_preview")
+                );
 
-            AlertType alertType = (AlertType)PlayerPrefs.GetInt("Achievements_AlertType", 0);
+            AchievementAlertType alertType = AchievementConfig.AlertType.Value;
             if (!NeedPopup(alertType, null)) return;
 
             BuildOnPlayerPrefs();
@@ -249,14 +251,14 @@ namespace CUAchievements.UI
             yield return AnimationUtility.SlideTo(hiddenPos, popupRoot);
         }
 
-        private static bool NeedPopup(AlertType type, RegisteredAchievement achievement)
+        private static bool NeedPopup(AchievementAlertType type, RegisteredAchievement achievement)
         {
             switch (type)
             {
-                case AlertType.PopUp:
+                case AchievementAlertType.Popup:
                     return true;
 
-                case AlertType.Alert:
+                case AchievementAlertType.Default:
 
                     if (!CUCoreUtils.TryGetCamera(out _))
                         break;
@@ -266,7 +268,7 @@ namespace CUAchievements.UI
 
                     return false;
 
-                case AlertType.Hidden:
+                case AchievementAlertType.Hidden:
                     return false;
             }
 
@@ -287,7 +289,7 @@ namespace CUAchievements.UI
 
         private static void AlertShow(RegisteredAchievement achievement)
         {
-            string alertLocale = LocaleRegistry.Get("alert_achievement_unlocked", "Achievement \"{0}\" unlocked!");
+            string alertLocale = LocaleRegistry.Get("achievement_alert_unlocked", "Achievement \"{0}\" unlocked!");
             string alertMessage = string.Format(alertLocale, achievement.Definition.Name);
             CUCoreUtils.ShowAlert(alertMessage);
         }
