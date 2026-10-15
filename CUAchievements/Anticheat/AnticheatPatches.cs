@@ -14,16 +14,16 @@ namespace CUAchievements.Anticheat
     internal static class AnticheatPatches
     {
 #if DEBUG
-        public static bool anticheatDisabled = false;
+        public static bool anticheatDisabled = true;
 #endif
-        [HarmonyPatch(typeof(Command), MethodType.Constructor, new Type[]
-        {
+        [HarmonyPatch(typeof(Command), MethodType.Constructor,
+        [
             typeof(string),
             typeof(string),
             typeof(Command.Action),
             typeof(Dictionary<int, List<string>>),
             typeof(ValueTuple<string, string>[])
-        })]
+        ])]
         [HarmonyPostfix]
         static void CommandPostfix(Command __instance)
         {
@@ -73,6 +73,8 @@ namespace CUAchievements.Anticheat
                     return "UNSAFE. Using it will prevent you from earning achievements during this run!";
                 case CommandSafety.Unknown:
                     return "UNKNOWN. Using it will prevent you from earning achievements during this run!";
+                default:
+                    break;
             }
             return "UNKNOWN. Using it will prevent you from earning achievements during this run!";
         }
