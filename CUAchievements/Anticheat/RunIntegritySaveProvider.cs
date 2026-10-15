@@ -1,4 +1,5 @@
-﻿using CUCoreLib.Saving;
+﻿using CUAchievements.UI.Menu.CustomButton;
+using CUCoreLib.Saving;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,10 @@ namespace CUAchievements.Anticheat
             RunIntegrity.Reset();
 
             if (cheated)
+            {
+                PauseMenuButtonBuilder.SetTooltip();
                 RunIntegrity.MarkCheated();
+            }
         }
     }
 }
