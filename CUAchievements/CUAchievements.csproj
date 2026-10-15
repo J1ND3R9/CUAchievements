@@ -116,6 +116,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registry\RegisteredAchievement.cs" />
     <Compile Include="UI\Menu\CustomButton\MenuButtonPatches.cs" />
+    <Compile Include="UI\Menu\CustomButton\PauseMenuButtonBuilder.cs" />
     <Compile Include="UI\Menu\Main\AchievementCardModel.cs" />
     <Compile Include="UI\Menu\SidePanels\DetailsPanel.cs" />
     <Compile Include="UI\AchievementEvents.cs" />
@@ -126,7 +127,7 @@
     <Compile Include="UI\Menu\Main\MainMenuManager.cs" />
     <Compile Include="UI\Menu\Main\MainMenuWindow.cs" />
     <Compile Include="UI\Menu\InputBlockPatch.cs" />
-    <Compile Include="Options\AchievementOptions.cs" />
+    <Compile Include="Options\AchievementConfig.cs" />
     <Compile Include="UI\Menu\Main\Helpers\AchievementPluginUI.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
     <Compile Include="UI\Menu\SidePanels\StatsPanel.cs" />
@@ -134,15 +135,11 @@
     <Compile Include="UI\Menu\CustomButton\MenuButtonHandler.cs" />
     <Compile Include="UI\AchievementSorter.cs" />
     <Compile Include="UI\Menu\Main\PluginSectionView.cs" />
-    <Compile Include="UI\PauseMenuManager.cs" />
     <Compile Include="UI\Utility\AnimationUtility.cs" />
     <Compile Include="UI\Utility\GameFonts.cs" />
     <Compile Include="UI\Utility\LayoutIgnorer.cs" />
     <Compile Include="UI\Utility\SpriteSlicer.cs" />
     <Compile Include="UI\Utility\UIUtility.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\UI\achievement_frame_normal.png" />
@@ -163,11 +160,25 @@
     <EmbeddedResource Include="Assets\Images\achievement_debug_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
+    <EmbeddedResource Include="Assets\Images\achievement_preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\UI\achievement_pause_button.png" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="UI\PauseMenu\" />
+    <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\UI\achievement_button_glow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Images\UI\statusarrow.png" />
   </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
