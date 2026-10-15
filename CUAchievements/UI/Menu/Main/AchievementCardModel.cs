@@ -10,6 +10,7 @@ namespace CUAchievements.UI.Menu.Main
     {
         public string Title;
         public string Description;
+        public string ShortDescription;
         public Sprite Icon;
         public Sprite Frame;
         public float Alpha = 1f;
@@ -28,7 +29,8 @@ namespace CUAchievements.UI.Menu.Main
             var model = new AchievementCardModel
             {
                 Title = def.Name,
-                Description = def.ShortDescription,
+                Description = def.Description,
+                ShortDescription = def.ShortDescription,
                 Icon = a.IsUnlocked ? def.Icon : def.LockedIcon,
                 Frame = AchievementFrames.Get(def.Difficulty),
                 Alpha = a.IsUnlocked ? 1f : 0.35f,
@@ -64,7 +66,7 @@ namespace CUAchievements.UI.Menu.Main
         {
             Title = string.Format(LocaleRegistry.Get("achievementspanel_hidden_achievements_title",
             "Hidden achievements remaining: {0}"), count),
-            Description = LocaleRegistry.Get("achievementspanel_hidden_achievements_description",
+            ShortDescription = LocaleRegistry.Get("achievementspanel_hidden_achievements_description",
             "Information about each achievement will be available after it is obtained"),
             Icon = AssetLoader.GetCachedSprite("achievement_default_hidden"),
             Frame = AchievementFrames.Get(AchievementDifficulty.Normal),
