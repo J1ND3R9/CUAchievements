@@ -17,6 +17,7 @@ namespace CUAchievements.UI.Menu.CustomButton
         public static void CreateButton(Transform parent, TMP_FontAsset font, Action onClick)
         {
             Sprite baseSprite = AssetLoader.GetCachedSprite("achievement_button");
+            Sprite glowSprite = AssetLoader.GetCachedSprite("achievement_button_glow");
             Sprite overlaySprite = AssetLoader.GetCachedSprite("achievement_button_overlay");
 
             if (baseSprite == null)
@@ -39,12 +40,13 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             Image overlay = AddOverlay(rect, overlaySprite);
             TextMeshProUGUI label = AddLabel(rect, font);
+            AddGlow(rect, glowSprite);
 
             buttonObject.AddComponent<MenuButtonHandler>().Initialize(rect, overlay, label, onClick);
             AddToParallax(rect);
         }
 
-        private static void AddToParallax(RectTransform rect) // FIXME: Дрожание спрайта.
+        private static void AddToParallax(RectTransform rect)
         {
             var parallax = MenuParallax.instance?.parallax;
 
@@ -55,9 +57,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             var experimentLayer = parallax.layers.FirstOrDefault(l => l.reference.transform.name == "Experiment");
             if (experimentLayer != null)
             {
-                CUAchievementsPlugin.Logger.LogInfo("Founded!");
                 scale = experimentLayer.mouseMoveScale;
-
             }
             MenuParallax.ParallaxLayerInfo layer = new()
             {
@@ -103,6 +103,15 @@ namespace CUAchievements.UI.Menu.CustomButton
             overlay.raycastTarget = false;
             overlay.color = new Color(1f, 1f, 1f, 0f);
             return overlay;
+        }
+
+        private static Image AddGlow(Transform parent, Sprite sprite)
+        {
+            Image glow = UIUtility.Create("Glow", parent, typeof(Image)).GetComponent<Image>();
+            glow.transform.Stretch();
+            glow.sprite = sprite;
+            glow.raycastTarget = false;
+            return glow;
         }
     }
 }
