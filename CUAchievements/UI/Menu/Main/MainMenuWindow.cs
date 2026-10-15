@@ -68,9 +68,8 @@ namespace CUAchievements.UI.Menu.Main
             Panel = Root.transform.Find("Panel");
             UIUtility.ClearPanel(Panel);
             Panel.gameObject.AddComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true, padding: new RectOffset(12, 12, 12, 12));
-            GameObject header, bottom;
 
-            CreateHeaderAndBottom(out header, out bottom);
+            CreateHeaderAndBottom(out GameObject header, out GameObject bottom);
 
             var descriptionComponent = Root.GetComponentInChildren<TextMeshProUGUI>();
             descriptionComponent.text = LocaleRegistry.Get("achievements_button", "Achievements");

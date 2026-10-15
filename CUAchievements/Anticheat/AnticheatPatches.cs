@@ -1,4 +1,5 @@
-﻿using CUCoreLib.Helpers;
+﻿using CUAchievements.UI.Utility;
+using CUCoreLib.Helpers;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,8 @@ namespace CUAchievements.Anticheat
     [HarmonyPatch]
     internal static class AnticheatPatches
     {
-#if DEBUG
-        public static bool anticheatDisabled = true;
-#endif
+        public static bool AnticheatDisabled = false;
+
         [HarmonyPatch(typeof(Command), MethodType.Constructor,
         [
             typeof(string),
@@ -27,6 +27,8 @@ namespace CUAchievements.Anticheat
         [HarmonyPostfix]
         static void CommandPostfix(Command __instance)
         {
+            if (AnticheatDisabled) return;
+
             var safetyDesc = GetDescriptionAddition(CommandSafety.Unknown);
             if (ConsoleCommands.Commands.TryGetValue(__instance.name, out var safety) && safety != CommandSafety.Unknown)
                 safetyDesc = GetDescriptionAddition(safety);
@@ -38,12 +40,11 @@ namespace CUAchievements.Anticheat
         [HarmonyPrefix]
         static void TryExecutePrefix(string[] args)
         {
-#if DEBUG
-            if (anticheatDisabled) return;
-#endif
+            if (AnticheatDisabled) return;
+
             if (WorldGeneration.world != null)
             {
-                if (WorldGeneration.world.biomeOverride == WorldGeneration.OverrideSceneType.Tutorial)
+                if (GameUtility.IsTutorialOrSandbox())
                     return;
             }
 

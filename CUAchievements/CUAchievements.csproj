@@ -137,6 +137,7 @@
     <Compile Include="UI\Menu\Main\PluginSectionView.cs" />
     <Compile Include="UI\Utility\AnimationUtility.cs" />
     <Compile Include="UI\Utility\GameFonts.cs" />
+    <Compile Include="UI\Utility\GameUtility.cs" />
     <Compile Include="UI\Utility\LayoutIgnorer.cs" />
     <Compile Include="UI\Utility\SpriteSlicer.cs" />
     <Compile Include="UI\Utility\UIUtility.cs" />
@@ -179,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Images\UI\statusarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Locales\ru-RU.json" />
   </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />

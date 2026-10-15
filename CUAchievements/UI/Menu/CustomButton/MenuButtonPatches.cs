@@ -33,7 +33,7 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             Transform canvas = PlayerCamera.main.mainCanvas.transform;
             MainMenuManager menu = MainMenuManager.GetOrCreate(canvas, GameFonts.Retro);
-            var button = PauseMenuButtonBuilder.CreateButton(pauseMenu, GameFonts.Retro, __instance.buttons[0]);
+            var button = PauseMenuButtonBuilder.CreateButton(pauseMenu, __instance.buttons[0]);
 
             var uiButton = button.GetComponent<Button>();
             if (uiButton != null)

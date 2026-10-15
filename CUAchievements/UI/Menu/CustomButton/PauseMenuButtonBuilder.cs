@@ -16,7 +16,7 @@ namespace CUAchievements.UI.Menu.CustomButton
         public const string ButtonName = "Plush";
 
         private static UITooltip buttonTooltip;
-        public static RectTransform CreateButton(Transform parent, TMP_FontAsset font, RectTransform buttonTemplate)
+        public static RectTransform CreateButton(Transform parent, RectTransform buttonTemplate)
         {
             Sprite sprite = AssetLoader.GetCachedSprite("achievement_pause_button");
 
@@ -47,21 +47,21 @@ namespace CUAchievements.UI.Menu.CustomButton
 
         public static void SetTooltip()
         {
-            string tipName = LocaleRegistry.Get("achievements_pause_button_tip_name", "Achievements");
+            string tipName = LocaleRegistry.Get("achievements_button", "Achievements");
             string tipDesc = LocaleRegistry.Get("achievements_pause_button_tip_desc", "Show my achievements!");
 
             buttonTooltip.skipLocale = true;
             buttonTooltip.tipName = tipName;
             buttonTooltip.tipDesc = tipDesc;
 
-            if (WorldGeneration.world.biomeOverride == WorldGeneration.OverrideSceneType.Tutorial)
+            if (GameUtility.IsTutorialOrSandbox())
             {
                 string tipDescAdditional = LocaleRegistry.Get("achievements_pause_button_tip_desc_tutorial", "<color=\"orange\">ATTENTION!</color> Achievements will not be unlocked in the tutorial or sandbox!");
                 buttonTooltip.tipDesc += $"\n\n{tipDescAdditional}";
             }
             else if (RunIntegrity.Cheated)
             {
-                string tipDescAdditional = LocaleRegistry.Get("achievements_pause_button_tip_desc_cheated", "<color=\"orange\">ATTENTION!</color>Achievements will not be unlocked because this run is marked as \"cheated\"!");
+                string tipDescAdditional = LocaleRegistry.Get("achievements_pause_button_tip_desc_cheated", "<color=\"orange\">ATTENTION!</color> Achievements will not be unlocked because this run is marked as \"cheated\"!");
                 buttonTooltip.tipDesc += $"\n\n{tipDescAdditional}";
             }
         }

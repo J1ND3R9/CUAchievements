@@ -64,13 +64,21 @@ namespace CUAchievements.UI.Menu.Main
 
         public static AchievementCardModel Hidden(int count) => new()
         {
-            Title = string.Format(LocaleRegistry.Get("achievementspanel_hidden_achievements_title",
+            Title = string.Format(LocaleRegistry.Get("achievements_panel_hidden_achievements_title",
             "Hidden achievements remaining: {0}"), count),
-            ShortDescription = LocaleRegistry.Get("achievementspanel_hidden_achievements_description",
+            ShortDescription = LocaleRegistry.Get("achievements_panel_hidden_achievements_description",
             "Information about each achievement will be available after it is obtained"),
             Icon = AssetLoader.GetCachedSprite("achievement_default_hidden"),
             Frame = AchievementFrames.Get(AchievementDifficulty.Normal),
             Alpha = 0.35f
+        };
+
+        internal static AchievementCardModel Debug() => new()
+        {
+            Title = LocaleRegistry.Get("achievement_debug_title", "Thanks for using CUAchievements!"),
+            ShortDescription = LocaleRegistry.Get("achievement_debug_description", "Hi! Im alive :)"),
+            Icon = AssetLoader.GetCachedSprite("achievement_preview"),
+            Frame = AchievementFrames.Get(AchievementDifficulty.Normal)
         };
     }
 }

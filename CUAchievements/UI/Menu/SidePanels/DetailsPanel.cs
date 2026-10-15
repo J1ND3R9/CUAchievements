@@ -74,9 +74,9 @@ namespace CUAchievements.UI.Menu.SidePanels
             RectTransform scrollRect = scroll.GetComponent<RectTransform>();
             scrollRect.sizeDelta = new Vector2(ScrollWidth, ScrollHeight);
 
-            var description = transform.GetComponentInChildren<TextMeshProUGUI>();
-            description.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(ScrollWidth, 50f);
-            description.text = LocaleRegistry.Get("achievements_details_panel_title", "Details");
+            //var description = transform.GetComponentInChildren<TextMeshProUGUI>();
+            //description.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(ScrollWidth, 50f);
+            //description.text = LocaleRegistry.Get("achievements_details_panel_title", "Details");
 
             RectTransform rect = GetComponent<RectTransform>();
             rect.anchorMax = new Vector2(0f, 0.5f);
@@ -142,7 +142,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             
             if (card.Source.IsUnlocked)
             {
-                string unlockedLocale = LocaleRegistry.Get("achievements_details_earned", "EARNED");
+                string unlockedLocale = LocaleRegistry.Get("achievements_earned", "EARNED");
                 aUnlocked.text = unlockedLocale;
                 aUnlocked.color = Color.green;
 
@@ -151,7 +151,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             }
             else
             {
-                string lockedLocale = LocaleRegistry.Get("achievements_details_locked", "LOCKED");
+                string lockedLocale = LocaleRegistry.Get("achievements_locked", "LOCKED");
                 aUnlocked.text = lockedLocale;
                 aUnlocked.color = Color.red;
 

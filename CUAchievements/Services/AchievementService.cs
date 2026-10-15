@@ -133,17 +133,5 @@ namespace CUAchievements.Services
                 achievement.ConditionalTracker?.Clear();
             }
         }
-
-        internal static bool IsInTutorial()
-        {
-            if (WorldGeneration.world != null)
-            {
-                if (WorldGeneration.world.biomeOverride == WorldGeneration.OverrideSceneType.Tutorial)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }

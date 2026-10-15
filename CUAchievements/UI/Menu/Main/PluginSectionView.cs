@@ -74,7 +74,7 @@ namespace CUAchievements.UI.Menu.Main
             if (noRegisteredAchievements)
             {
                 noAchievementsTitle = LocaleRegistry.Get("achievements_list_no_achievements_title", "No achievements :(");
-                noAchievementsDesc = LocaleRegistry.Get("achievements_list_no_achievements_desc", "You don't have any mods installed that add achievements.\nFix this by installing, for example, this mod!"); // TODO: Кликабельная ссылка
+                noAchievementsDesc = LocaleRegistry.Get("achievements_list_no_achievements_desc", "You don't have any mods installed that add achievements.\nFix this by installing, for example, <color=\"yellow\">Floydba's Achievements</color>!"); // TODO: Кликабельная ссылка
             }
 
             GameObject root = UIUtility.Create("AchievementsPluginContainer", parent, typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));

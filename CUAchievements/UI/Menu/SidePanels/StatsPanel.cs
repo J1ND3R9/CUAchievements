@@ -95,9 +95,9 @@ namespace CUAchievements.UI.Menu.SidePanels
             RectTransform scrollRect = scroll.GetComponent<RectTransform>();
             scrollRect.sizeDelta = new Vector2(ScrollWidth, ScrollHeight);
 
-            TextMeshProUGUI description = transform.GetComponentInChildren<TextMeshProUGUI>();
-            description.text = LocaleRegistry.Get("achievements_stats_title", "Statistic");
-            description.transform.SetAsLastSibling();
+            //TextMeshProUGUI description = transform.GetComponentInChildren<TextMeshProUGUI>();
+            //description.text = LocaleRegistry.Get("achievements_stats_title", "Statistic");
+            //description.transform.SetAsLastSibling();
 
             RectTransform rect = GetComponent<RectTransform>();
             rect.anchorMax = new Vector2(1f, 0.5f);
@@ -150,8 +150,8 @@ namespace CUAchievements.UI.Menu.SidePanels
             GameObject statisticObject = UIUtility.Create("Statistic", parent, typeof(VerticalLayoutGroup));
 
             string totalLocale = LocaleRegistry.Get("achievements_stats_total", "TOTAL");
-            string unlockedLocale = LocaleRegistry.Get("achievements_stats_unlocked", "UNLOCKED");
-            string lockedLocale = LocaleRegistry.Get("achievements_stats_locked", "LOCKED");
+            string unlockedLocale = LocaleRegistry.Get("achievements_unlocked", "UNLOCKED");
+            string lockedLocale = LocaleRegistry.Get("achievements_locked", "LOCKED");
 
             UIUtility.CreateStatisticRow(parent: statisticObject.transform, name: "Total", label: $"{totalLocale}:", $"{total}");
             (_, unlockedText) = UIUtility.CreateStatisticRow(statisticObject.transform, "Unlocked", $"{unlockedLocale}:", $"{unlocked}");
