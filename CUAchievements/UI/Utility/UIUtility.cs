@@ -227,6 +227,8 @@ namespace CUAchievements.UI.Utility
                 LayoutElement squareLayout = squareObject.GetComponent<LayoutElement>();
                 squareLayout.preferredHeight = squareSize;
                 squareLayout.preferredWidth = squareSize;
+                squareLayout.minHeight = squareSize;
+                squareLayout.minWidth = squareSize;
 
                 Image squareImage = squareObject.GetComponent<Image>();
                 squareImage.color = i < filled ? Color.white : new Color(1f, 1f, 1f, 0.1f);

@@ -86,22 +86,28 @@ namespace CUAchievements.UI.Menu.Main
                 expandH: true);
 
             var header = UIUtility.Create("Header", text.transform, typeof(HorizontalLayoutGroup));
-            header.GetComponent<HorizontalLayoutGroup>().Configure(expandH: true,
+            header.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 12f,
+                expandH: true,
                 align: TextAnchor.MiddleLeft);
 
             TextMeshProUGUI title = UIUtility.CreateText(header.transform, "Title", model.Title, font, 24f);
             title.color = Color.white;
             title.fontStyle = FontStyles.Bold;
-            title.alignment = TextAlignmentOptions.Center;
+            title.alignment = TextAlignmentOptions.Left;
             title.overflowMode = TextOverflowModes.Ellipsis;
             title.maxVisibleLines = 1;
+            title.enableWordWrapping = false;
 
-            UIUtility.CreateSpacer(header.transform);
+            var titleLayout = title.gameObject.AddComponent<LayoutElement>();
+            titleLayout.flexibleWidth = 1f;
+            titleLayout.preferredWidth = 0f;
+
+            //UIUtility.CreateSpacer(header.transform);
 
             if (model.Counter != null)
                 BuildCounterRow(header.transform, model.Counter, font);
 
-            TextMeshProUGUI desc = UIUtility.CreateText(text.transform, "Description", model.Description, font, 18f);
+            TextMeshProUGUI desc = UIUtility.CreateText(text.transform, "Description", model.ShortDescription, font, 18f);
             desc.color = new Color(1f, 1f, 1f, 0.7f);
             desc.overflowMode = TextOverflowModes.Ellipsis;
             desc.maxVisibleLines = 2;
@@ -110,13 +116,14 @@ namespace CUAchievements.UI.Menu.Main
 
         private static void BuildCounterRow(Transform parent, AchievementCardModel.CounterInfo counter, TMP_FontAsset font, float squareSize = 24f)
         {
-            GameObject progressObject = UIUtility.Create("ProgressRow", parent, typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+            GameObject progressObject = UIUtility.Create("ProgressRow", parent, typeof(HorizontalLayoutGroup));
             progressObject.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 10f, align: TextAnchor.MiddleLeft);
-            progressObject.GetComponent<LayoutElement>().preferredHeight = squareSize;
 
             TextMeshProUGUI progressText = UIUtility.CreateText(progressObject.transform, "ProgressNumber", counter.Text, font, 18f);
             progressText.gameObject.AddComponent<LayoutElement>();
             progressText.color = Color.white;
+            progressText.enableWordWrapping = false;
+            progressText.overflowMode = TextOverflowModes.Ellipsis;
 
             UIUtility.CreateSquareProgress(progressObject.transform, squareSize, counter.FilledSquares);
         }
