@@ -18,9 +18,10 @@ namespace CUAchievements.Options
     {
         public static ConfigEntry<bool> AnticheatEnabled { get; private set; }
         public static ConfigEntry<bool> AllowSandboxAchievements { get; private set; }
+        public static ConfigEntry<bool> EnabledGreetingMessage { get; private set; }
 
         public static ConfigEntry<AchievementAlertType> AlertType { get; private set; }
-        
+
         public static ConfigEntry<AchievementDisplayType> DisplayType { get; private set; }
 
         public static ConfigEntry<int> PopUpTime { get; private set; }
@@ -28,8 +29,9 @@ namespace CUAchievements.Options
         public static ConfigEntry<float> UnlockVolume { get; private set; }
         public static void Initialize(ConfigFile config)
         {
-            AnticheatEnabled = config.Bind("Anticheat", "AnticheatEnabled", true, "Enable or disable the command anti-cheat system – most commands are marked as \"unsafe,\" and executing any such command will disable unlocks and achievement progress for that save file.");
-            AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", false, "Enables or disables the ability to earn achievements in the tutorial/sandbox, regardless of whether it permits the achievement.");
+            AnticheatEnabled = config.Bind("Anticheat", "AnticheatEnabled", true, "Toggles the command anti-cheat system – most commands are marked as \"unsafe,\" and executing any such command will disable unlocks and achievement progress for that save file.");
+            AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", false, "Toggles the ability to earn achievements in the tutorial/sandbox, regardless of whether it permits the achievement.");
+            EnabledGreetingMessage = config.Bind("Alert", "EnabledGreetingMessage", true, "Toggles the initial pop-up message");
 
             AlertType = config.Bind("Alert", "AlertType", AchievementAlertType.Popup, "Achievement notification type\n" +
                 "0 - Pop-up\n" +
@@ -51,6 +53,15 @@ namespace CUAchievements.Options
         }
         private static void RegisterOptions()
         {
+            ModOptionsRegistry.Register(ModOptionDefinition.Bool(
+                $"{CUAchievementsPlugin.ModGUID}.GreetingsMessage",
+                "Greetings message",
+                "Displays a pop-up initial message",
+                "Achievements",
+                true,
+                value => EnabledGreetingMessage.Value = value
+                ));
+
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
                 $"{CUAchievementsPlugin.ModGUID}.AlertType",
                 "Alert type",
@@ -65,6 +76,7 @@ namespace CUAchievements.Options
                 value => AlertType.Value = (AchievementAlertType)value
                 ));
 
+            bool isFirstLaunch = true;
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
                 $"{CUAchievementsPlugin.ModGUID}.DisplayType",
                 "Display type",
@@ -80,7 +92,13 @@ namespace CUAchievements.Options
                 value =>
                 {
                     DisplayType.Value = (AchievementDisplayType)value;
-                    AchievementPopupManager.DebugShow();
+                    if (!isFirstLaunch)
+                        AchievementPopupManager.DebugShow();
+
+                    else if (EnabledGreetingMessage.Value)
+                        AchievementPopupManager.DebugShow();
+
+                    isFirstLaunch = false;
                 }));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Float(
@@ -106,7 +124,6 @@ namespace CUAchievements.Options
                 value => UnlockVolume.Value = value,
                 value => Mathf.RoundToInt(value * 100f) + "%"
                 ));
-
         }
     }
 }
