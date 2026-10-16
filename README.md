@@ -16,7 +16,7 @@ An achievement framework for **Casualties Unknown**: provides mods with a unifie
 ### Installation
 1. Install [BepInEx](https://github.com/bepinex/bepinex) if you haven't already.
 2. Download and install [CUCoreLib](https://www.nexusmods.com/scavprototype/mods/341).
-3. Download the latest release from the [Releases](https://github.com/J1ND3R9/CUAchievements/releases) page.
+3. Download the latest release from the [NexusMods](https://www.nexusmods.com/games/scavprototype/mods/801/) or [Releases](https://github.com/J1ND3R9/CUAchievements/releases) page.
 4. Place the CUAchievements folder into the BepInEx/plugins folder.
 5. Launch the game. The framework will notify you in-game that it has been successfully installed.
 
@@ -37,68 +37,58 @@ using CUAchievements.Services;
 using CUCoreLib.Registries;
 
 [BepInPlugin(ModGUID, ModName, ModVersion)]
-// HardDependency: your mod will not load if CUAchievements is missing.
-[BepInDependency("com.cuachievements", BepInDependency.DependencyFlags.HardDependency)]
+[BepInDependency("com.cuachievements", BepInDependency.DependencyFlags.HardDependency)] // HardDependency: your mod will not load if CUAchievements is missing.
 public class Plugin : BaseUnityPlugin
 {
 	 public const string ModGUID = "com.myachievementmod";
 	 public const string ModName = "My achievement mod!";
 	 public const string ModVersion = "1.0.0.0";
 
-    // Keep the API instance in a static field to reach it from anywhere in your mod.
-	internal static AchievementsAPI Achievements;
+	internal static AchievementsAPI Achievements; // Keep the API instance in a static field to reach it from anywhere in your mod.
 
 	public void Awake()
 	{
-        // Create the API for your mod. The GUID ties achievements to your plugin, so IDs never conflict with other mods.
-		Achievements = AchievementsAPI.Create(ModGUID);
+		Achievements = AchievementsAPI.Create(ModGUID); // Create the API for your mod. The GUID ties achievements to your plugin, so IDs never conflict with other mods.
 
-		// Try to use LocaleRegistry from CUCoreLib for the name and description.
 		string luminaryOfScienceName = LocaleRegistry.Get("achievement_luminary_of_science_name", "Luminary of science");
 		string luminaryOfScienceDesc = LocaleRegistry.Get("achievement_luminary_of_science_desc", "Keeping a light bulb in mouth was probably a bad idea.");
 
-		// CUCoreLib is also used here to load the sprite.
-		Sprite luminaryOfScienceIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.luminary.png");
+		Sprite luminaryOfScienceIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.luminary.png"); // CUCoreLib is also used here to load the sprite.
 		
-		// An important clarification: if your achievement icon is not pixel art, it is recommended to switch the filter to bilinear.
-		luminaryOfScienceIcon.texture.filterMode = FilterMode.Bilinear;
+		luminaryOfScienceIcon.texture.filterMode = FilterMode.Bilinear; // An important clarification: if your achievement icon is not pixel art, it is recommended to switch the filter to bilinear.
 
-        // --- Instant achievement: earned with a single call ---
-		Achievements.Register(AchievementDefinition.Instant(
-		    id: "luminary_of_science",			// unique within your mod
+		Achievements.Register(AchievementDefinition.Instant( // --- Instant achievement: earned with a single call ---
+		    id: "luminary_of_science", // unique within your mod
 		    name: luminaryOfScienceName,
 		    description: luminaryOfScienceDesc,
 		    icon: luminaryOfScienceIcon,		
-		    hidden: true						// shown only as part of "X hidden achievements"
+		    hidden: true // shown only as part of "X hidden achievements"
 		    ));
 	
 		string paintItYellowName = LocaleRegistry.Get("achievement_paint_it_yellow_name", "Paint It, Yellow");
 		string paintItYellowDesc = LocaleRegistry.Get("achievement_paint_it_yellow_desc", "Lose 15 liters of blood in a single run.");
 
-        // --- Counter achievement: earned after reaching maxProgress ---
-		Achievements.Register(AchievementDefinition.Counter(
+		Achievements.Register(AchievementDefinition.Counter( // --- Counter achievement: earned after reaching maxProgress ---
 		    id: "paint_it_yellow",
 		    name: paintItYellowName,
 		    description: paintItYellowDesc,
-		    maxProgress: 15f,					// value needed to unlock
-		    icon: null,							// null = default icon
-		    scope: AchievementScope.Run,		// progress is counted per run, not for the whole game
-		    progressDecimals: 2					// digits after the decimal point shown in the menu
+		    maxProgress: 15f, // value needed to unlock
+		    icon: null, // null = default icon
+		    scope: AchievementScope.Run, // progress is counted per run, not for the whole game
+		    progressDecimals: 2	// digits after the decimal point shown in the menu
 		    ));
 	}
 
-	// Call these from your gameplay code (e.g. a Harmony patch).
-    internal static void OnLightBulbEaten()
+    internal static void OnLightBulbEaten() // Call these from your gameplay code (e.g. a Harmony patch).
     {
-        // TryGet returns false if the achievement isn't registered, so no exceptions.
-        if (Achievements.TryGet("luminary_of_science", out RegisteredAchievement lightBulb))
+        if (Achievements.TryGet("luminary_of_science", out RegisteredAchievement lightBulb)) // TryGet returns false if the achievement isn't registered, so no exceptions.
             lightBulb.Unlock();
     }
 
 	internal static void OnBloodLost(float liters)
     {
         if (Achievements.TryGet("paint_it_yellow", out RegisteredAchievement blood))
-            blood.AddProgress(liters);                // unlocks automatically at maxProgress
+            blood.AddProgress(liters); // unlocks automatically at maxProgress
     }
 }
 ```
@@ -107,6 +97,7 @@ Achievements are tied to your plugin's GUID, so there will be no ID conflicts be
 Read more: (a link to the documentation and a mod example will be here)
 
 ## A small roadmap
+- [ ] Create documentation
 - [ ] Multiplayer support
 - [ ] Ability to add custom achievement unlock sounds
 
