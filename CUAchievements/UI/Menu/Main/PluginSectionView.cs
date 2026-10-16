@@ -55,7 +55,7 @@ namespace CUAchievements.UI.Menu.Main
             UIUtility.CreateLineProgress(header.transform, unlocked, total, font);
 
             GameObject body = UIUtility.Create("Achievements", root.transform, typeof(VerticalLayoutGroup));
-            body.GetComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true);    
+            body.GetComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true, padding: new RectOffset(2, 2, 0, 0));    
 
             header.AddComponent<AchievementPluginUI>().Initialize(body, go =>
             {
