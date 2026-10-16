@@ -94,7 +94,8 @@ public class Plugin : BaseUnityPlugin
 ```
 
 Achievements are tied to your plugin's GUID, so there will be no ID conflicts between mods.
-Read more: (a link to the documentation and a mod example will be here)
+Read more: (a link to the documentation will be here)
+There is a mod here that makes use of almost everything CUAchievements has to offer: [Floydba Achievements](https://github.com/J1ND3R9/FloydbaAchievements)
 
 ## A small roadmap
 - [ ] Create documentation
