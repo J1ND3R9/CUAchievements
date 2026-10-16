@@ -76,7 +76,7 @@ namespace CUAchievements.UI.Menu.Main
         internal static AchievementCardModel Debug() => new()
         {
             Title = LocaleRegistry.Get("achievement_debug_title", "Thanks for using CUAchievements!"),
-            ShortDescription = LocaleRegistry.Get("achievement_debug_description", "Hi! Im alive :)"),
+            ShortDescription = LocaleRegistry.Get("achievement_debug_description", "oh my god! Hello!! Hi!!! hii!!! HEEELlOOO!!!"),
             Icon = AssetLoader.GetCachedSprite("achievement_preview"),
             Frame = AchievementFrames.Get(AchievementDifficulty.Normal)
         };
