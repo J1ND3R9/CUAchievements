@@ -100,6 +100,7 @@ There is a mod here that makes use of almost everything CUAchievements has to of
 - [ ] Create documentation
 - [ ] Multiplayer support
 - [ ] Ability to add custom achievement unlock sounds
+- [ ] Sort settings
 
 ## Discord and Support
 If any problems or questions arise, feel free to write on the Discord server! Don't hesitate to ask even the "dumbest" questions. :)
