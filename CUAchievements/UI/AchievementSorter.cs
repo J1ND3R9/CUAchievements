@@ -8,21 +8,14 @@ namespace CUAchievements.UI
     {
         public static List<RegisteredAchievement> Sort(IEnumerable<RegisteredAchievement> source)
         {
-            var all = source.ToList();
+            List<RegisteredAchievement> all = source.ToList();
 
-            var unlocked = all.Where(a => a.IsUnlocked)
-                .OrderByDescending(a => a.UnlockedAt)
-                .ThenBy(a => (int)a.Definition.Difficulty);
+            IOrderedEnumerable<RegisteredAchievement> unlocked = all.Where(a => a.IsUnlocked).OrderByDescending(a => a.UnlockedAt);
 
-            return unlocked
-                .Concat(Locked(all, hidden: false))
-                .Concat(Locked(all, hidden: true))
-                .ToList();
+            return unlocked.Concat(Locked(all)).ToList();
         }
 
-        private static IEnumerable<RegisteredAchievement> Locked(List<RegisteredAchievement> all, bool hidden) => all
-            .Where(a => !a.IsUnlocked && a.Definition.IsHidden == hidden)
-            .OrderBy(a => (int)a.Definition.Difficulty)
-            .ThenBy(a => a.Definition.Name);
+        private static IEnumerable<RegisteredAchievement> Locked(List<RegisteredAchievement> all) => all
+            .Where(a => !a.IsUnlocked);
     }
 }
