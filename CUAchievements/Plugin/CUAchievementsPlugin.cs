@@ -2,6 +2,7 @@
 using BepInEx.Logging;
 using CUAchievements.Anticheat;
 using CUAchievements.Assets;
+using CUAchievements.Debug;
 using CUAchievements.Options;
 using CUAchievements.Persistence;
 using CUAchievements.Services;
