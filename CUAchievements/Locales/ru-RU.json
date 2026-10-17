@@ -4,6 +4,8 @@
   "moodle": {},
   "other": {
     "gamesetcom.cuachievements.AlertType": "Уведомления",
+    "gamesetcom.cuachievements.GreetingsMessage": "Приветственное уведомление",
+    "gamesetcom.cuachievements.GreetingsMessagedsc": "Переключает приветственное уведомление",
     "gamesetcom.cuachievements.AlertTypedsc": "Тип уведомлений об открытии достижения",
     "gamesetcom.cuachievements.AlertTypepopup": "Поп-ап",
     "gamesetcom.cuachievements.AlertTypedefault": "Алёрт",
@@ -33,7 +35,7 @@
     "achievements_panel_hidden_achievements_description": "Информация об каждом достижении будет доступна после его получения",
     "achievements_sec": " сек.",
     "achievements_pause_button_tip_desc": "Покажите мои достижения!",
-    "achievements_pause_button_tip_desc_tutorial": "<color=\"orange\">ATTENTION!</color> Достижения не разблокируются в туториале или песочнице!",
+    "achievements_pause_button_tip_desc_tutorial": "<color=\"orange\">ВНИМАНИЕ!</color> Достижения не разблокируются в туториале или песочнице!",
     "achievements_pause_button_tip_desc_cheated": "<color=\"orange\">ВНИМАНИЕ!</color> Достижения в этом забеге разблокироваться не будут, т.к. он отмечен как \"с читами\"!",
     "achievements_list_no_results_title": "Достижения не найдены!",
     "achievements_list_no_results_desc": "Мы не нашли ни одно достижения по твоим фильтрам",
@@ -44,6 +46,8 @@
   "command": {},
   "option": {
     "com.cuachievements.AlertType": "Уведомления",
+    "com.cuachievements.GreetingsMessage": "Приветственное уведомление",
+    "com.cuachievements.GreetingsMessagedsc": "Переключает приветственное уведомление",
     "com.cuachievements.AlertTypedsc": "Тип уведомлений об открытии достижения",
     "com.cuachievements.AlertTypepopup": "Поп-ап",
     "com.cuachievements.AlertTypedefault": "Алёрт",
