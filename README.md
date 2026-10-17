@@ -30,7 +30,7 @@ Check `BepInEx/LogOutput.log` for errors and ask on [Discord](https://discord.gg
 1. Add a reference to `CUAchievements.dll` in your project.
 2. Declare it as a dependency of your plugin (see below), so BepInEx loads it first.
 
-```csharp
+```csharpя
 using BepInEx;
 using CUAchievements.Definitions;
 using CUAchievements.Services;
@@ -50,8 +50,8 @@ public class Plugin : BaseUnityPlugin
 	{
 		Achievements = AchievementsAPI.Create(ModGUID); // Create the API for your mod. The GUID ties achievements to your plugin, so IDs never conflict with other mods.
 
-		string luminaryOfScienceName = LocaleRegistry.Get("achievement_luminary_of_science_name", "Luminary of science");
-		string luminaryOfScienceDesc = LocaleRegistry.Get("achievement_luminary_of_science_desc", "Keeping a light bulb in mouth was probably a bad idea.");
+		LocalizedText luminaryOfScienceName = new LocalizedText("achievement_luminary_of_science_name", "Luminary of science"); // If you want to localize an achievement, use LocalizedText instead of LocaleRegistry.Get().
+        LocalizedText luminaryOfScienceDesc = new LocalizedText("achievement_luminary_of_science_desc", "Keeping a light bulb in mouth was probably a bad idea.");
 
 		Sprite luminaryOfScienceIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.luminary.png"); // CUCoreLib is also used here to load the sprite.
 		
@@ -65,8 +65,8 @@ public class Plugin : BaseUnityPlugin
 		    hidden: true // shown only as part of "X hidden achievements"
 		    ));
 	
-		string paintItYellowName = LocaleRegistry.Get("achievement_paint_it_yellow_name", "Paint It, Yellow");
-		string paintItYellowDesc = LocaleRegistry.Get("achievement_paint_it_yellow_desc", "Lose 15 liters of blood in a single run.");
+		LocalizedText paintItYellowName = new LocalizedText("achievement_paint_it_yellow_name", "Paint It, Yellow");
+        LocalizedText paintItYellowDesc = new LocalizedText("achievement_paint_it_yellow_desc", "Lose 15 liters of blood in a single run.");
 
 		Achievements.Register(AchievementDefinition.Counter( // --- Counter achievement: earned after reaching maxProgress ---
 		    id: "paint_it_yellow",
