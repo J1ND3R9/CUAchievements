@@ -32,8 +32,7 @@ Check `BepInEx/LogOutput.log` for errors and ask on [Discord](https://discord.gg
 
 ```csharpя
 using BepInEx;
-using CUAchievements.Definitions;
-using CUAchievements.Services;
+using CUAchievements;
 using CUCoreLib.Registries;
 
 [BepInPlugin(ModGUID, ModName, ModVersion)]
