@@ -97,29 +97,30 @@
     <Compile Include="Anticheat\RunIntegritySaveProvider.cs" />
     <Compile Include="Assets\PluginAssetLoader.cs" />
     <Compile Include="Debug\AchievementDebug.cs" />
-    <Compile Include="Definitions\AchievementDefinition.cs" />
-    <Compile Include="Definitions\AchievementDifficulty.cs" />
-    <Compile Include="Definitions\AchievementScope.cs" />
-    <Compile Include="Definitions\AchievementType.cs" />
+    <Compile Include="AchievementDefinition.cs" />
+    <Compile Include="AchievementDifficulty.cs" />
+    <Compile Include="AchievementScope.cs" />
+    <Compile Include="AchievementType.cs" />
     <Compile Include="Anticheat\AnticheatPatches.cs" />
     <Compile Include="Persistence\EndSequencePatch.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />
     <Compile Include="Persistence\SaveCompression.cs" />
     <Compile Include="Anticheat\ConsoleCommands.cs" />
-    <Compile Include="Services\ConditionalAchievementTracker.cs" />
-    <Compile Include="Services\AchievementsAPI.cs" />
+    <Compile Include="LocalizedText.cs" />
+    <Compile Include="ConditionalAchievementTracker.cs" />
+    <Compile Include="AchievementsAPI.cs" />
     <Compile Include="Registry\AchievementRegistry.cs" />
     <Compile Include="Persistence\AchievementSaveFile.cs" />
     <Compile Include="Services\AchievementService.cs" />
     <Compile Include="Persistence\AchievementProgressData.cs" />
-    <Compile Include="CUAchievementsPlugin.cs" />
+    <Compile Include="Plugin\CUAchievementsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Registry\RegisteredAchievement.cs" />
+    <Compile Include="RegisteredAchievement.cs" />
     <Compile Include="UI\Menu\CustomButton\MenuButtonPatches.cs" />
     <Compile Include="UI\Menu\CustomButton\PauseMenuButtonBuilder.cs" />
     <Compile Include="UI\Menu\Main\AchievementCardModel.cs" />
     <Compile Include="UI\Menu\SidePanels\DetailsPanel.cs" />
-    <Compile Include="UI\AchievementEvents.cs" />
+    <Compile Include="AchievementEvents.cs" />
     <Compile Include="UI\Menu\Main\Helpers\AchievementItemUI.cs" />
     <Compile Include="UI\Menu\Main\AchievementCardView.cs" />
     <Compile Include="UI\Menu\Main\Helpers\AchievementFrames.cs" />
@@ -184,6 +185,7 @@
   <ItemGroup>
     <None Include="Locales\ru-RU.json" />
   </ItemGroup>
+  <ItemGroup />
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />

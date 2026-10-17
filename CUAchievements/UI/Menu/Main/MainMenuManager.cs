@@ -4,7 +4,6 @@ using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Registries;
 using System.Collections.Generic;
-using System.Security.AccessControl;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

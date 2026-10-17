@@ -2,19 +2,15 @@
 using BepInEx.Logging;
 using CUAchievements.Anticheat;
 using CUAchievements.Assets;
-using CUAchievements.Debug;
-using CUAchievements.Definitions;
 using CUAchievements.Options;
 using CUAchievements.Persistence;
 using CUAchievements.Services;
-using CUAchievements.UI;
-using CUCoreLib.Data;
 using CUCoreLib.Registries;
 using HarmonyLib;
 using System.Collections;
 using UnityEngine;
 
-namespace CUAchievements
+namespace CUAchievements.Plugin
 {
     [BepInPlugin(ModGUID, ModName, ModVersion)]
     [BepInDependency("net.cucorelib", BepInDependency.DependencyFlags.HardDependency)]

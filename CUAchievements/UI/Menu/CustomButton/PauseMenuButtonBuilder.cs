@@ -1,11 +1,8 @@
 ﻿using CUAchievements.Anticheat;
+using CUAchievements.Plugin;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
-using System;
-using System.Configuration;
-using System.Runtime.CompilerServices;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 

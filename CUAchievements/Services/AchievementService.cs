@@ -1,12 +1,10 @@
 ﻿using CUAchievements.Anticheat;
-using CUAchievements.Definitions;
 using CUAchievements.Persistence;
+using CUAchievements.Plugin;
 using CUAchievements.Registry;
 using CUAchievements.UI;
 using CUAchievements.UI.Utility;
 using System;
-using System.Collections.Generic;
-using UnityEngine.Windows.Speech;
 
 namespace CUAchievements.Services
 {
@@ -48,7 +46,7 @@ namespace CUAchievements.Services
 
         internal static bool AddProgressInternal(RegisteredAchievement achievement, float amount)
         {
-            if (achievement.Definition.Type != Definitions.AchievementType.Counter)
+            if (achievement.Definition.Type != AchievementType.Counter)
             {
                 CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {achievement.Definition.Id} is not a counter type.");
                 return false;
@@ -57,17 +55,17 @@ namespace CUAchievements.Services
 #if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
-                if (GameUtility.IsTutorialOrSandbox()) return true;
+                if (GameUtility.IsTutorialOrSandbox()) return false;
             }
 #endif
 
             if (RunIntegrity.Cheated)
-                return true;
+                return false;
 
             var progress = achievement.Progress;
 
             if (progress.Unlocked)
-                return true;
+                return false;
 
             progress.Progress += amount;
 
@@ -89,20 +87,21 @@ namespace CUAchievements.Services
 
         internal static bool UnlockInternal(RegisteredAchievement achievement)
         {
-            if (achievement.Progress.Unlocked) return true;
+            if (achievement.Progress.Unlocked) return false;
 
 #if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
-                if (GameUtility.IsTutorialOrSandbox()) return true;
+                if (GameUtility.IsTutorialOrSandbox()) return false;
             }
 #endif
 
             if (RunIntegrity.Cheated)
-                return true;
+                return false;
 
             achievement.Progress.Unlocked = true;
             achievement.Progress.UnlockedAt = DateTime.UtcNow;
+            achievement.Progress.Progress = achievement.Definition.MaxProgress;
 
             AchievementPopupManager.Show(achievement);
             AchievementPersistence.SaveNow(achievement.PluginGuid);

@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using CUAchievements.Definitions;
 using CUAchievements.Persistence;
+using CUAchievements.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;

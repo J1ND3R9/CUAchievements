@@ -1,11 +1,6 @@
 ﻿using CUAchievements.UI.Menu.CustomButton;
 using CUCoreLib.Saving;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CUAchievements.Anticheat
 {

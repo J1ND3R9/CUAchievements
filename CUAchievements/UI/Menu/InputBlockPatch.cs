@@ -1,8 +1,6 @@
 ﻿using CUAchievements.UI.Menu.CustomButton;
 using CUAchievements.UI.Menu.Main;
 using HarmonyLib;
-using System;
-using System.Reflection;
 
 namespace CUAchievements.UI
 {

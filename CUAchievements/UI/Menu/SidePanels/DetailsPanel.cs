@@ -1,12 +1,8 @@
-﻿using CUAchievements.Definitions;
-using CUAchievements.Registry;
+﻿using CUAchievements.Registry;
 using CUAchievements.UI.Menu.Main;
 using CUAchievements.UI.Utility;
-using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
-using System;
 using System.Collections;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

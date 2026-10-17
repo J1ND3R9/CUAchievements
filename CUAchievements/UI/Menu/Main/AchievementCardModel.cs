@@ -1,5 +1,4 @@
-﻿using CUAchievements.Definitions;
-using CUAchievements.Registry;
+﻿using CUAchievements.Registry;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using UnityEngine;
@@ -32,7 +31,7 @@ namespace CUAchievements.UI.Menu.Main
                 Description = def.Description,
                 ShortDescription = def.ShortDescription,
                 Icon = a.IsUnlocked ? def.Icon : def.LockedIcon,
-                Frame = AchievementFrames.Get(def.Difficulty),
+                Frame = a.Definition.CustomFrame ?? AchievementFrames.Get(def.Difficulty),
                 Alpha = a.IsUnlocked ? 1f : 0.35f,
                 Source = a
             };

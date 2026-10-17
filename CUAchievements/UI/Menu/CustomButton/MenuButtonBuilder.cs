@@ -1,10 +1,9 @@
-﻿using CUAchievements.UI.Utility;
+﻿using CUAchievements.Plugin;
+using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,5 +1,4 @@
-﻿using CUAchievements.Definitions;
-using CUCoreLib.Helpers;
+﻿using CUCoreLib.Helpers;
 using UnityEngine;
 
 namespace CUAchievements.UI

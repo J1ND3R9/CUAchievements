@@ -1,13 +1,9 @@
 ﻿using BepInEx.Configuration;
 using CUAchievements.Anticheat;
+using CUAchievements.Plugin;
 using CUAchievements.UI;
 using CUCoreLib.Data;
 using CUCoreLib.Registries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace CUAchievements.Options

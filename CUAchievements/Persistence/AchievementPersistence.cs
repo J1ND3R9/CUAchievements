@@ -1,11 +1,9 @@
-﻿using BepInEx;
-using CUAchievements.Definitions;
+﻿using CUAchievements.Plugin;
 using CUAchievements.Registry;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 
