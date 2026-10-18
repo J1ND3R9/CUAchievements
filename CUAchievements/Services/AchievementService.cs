@@ -62,7 +62,7 @@ namespace CUAchievements.Services
             if (RunIntegrity.Cheated)
                 return false;
 
-            var progress = achievement.Progress;
+            AchievementProgressData progress = achievement.Progress;
 
             if (progress.Unlocked)
                 return false;
@@ -112,6 +112,7 @@ namespace CUAchievements.Services
 
         internal static void EndRun()
         {
+            RunIntegrity.Reset();
             foreach (RegisteredAchievement achievement in AchievementRegistry.GetAll().Values)
             {
                 if (achievement.IsUnlocked)

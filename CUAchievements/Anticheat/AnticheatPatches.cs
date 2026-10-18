@@ -25,8 +25,8 @@ namespace CUAchievements.Anticheat
         {
             if (AnticheatDisabled) return;
 
-            var safetyDesc = GetDescriptionAddition(CommandSafety.Unknown);
-            if (ConsoleCommands.Commands.TryGetValue(__instance.name, out var safety) && safety != CommandSafety.Unknown)
+            string safetyDesc = GetDescriptionAddition(CommandSafety.Unknown);
+            if (ConsoleCommands.Commands.TryGetValue(__instance.name, out CommandSafety safety) && safety != CommandSafety.Unknown)
                 safetyDesc = GetDescriptionAddition(safety);
 
             __instance.description += $"\nThe console command is marked as: {safetyDesc}";
@@ -52,7 +52,7 @@ namespace CUAchievements.Anticheat
 
             if (!CUCoreUtils.IsInWorld()) return;
 
-            if (ConsoleCommands.Commands.TryGetValue(args[0], out var safety) && safety == CommandSafety.Safe) return;
+            if (ConsoleCommands.Commands.TryGetValue(args[0], out CommandSafety safety) && safety == CommandSafety.Safe) return;
 
             if (RunIntegrity.Cheated) return;
 
