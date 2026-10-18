@@ -1,9 +1,11 @@
-﻿using HarmonyLib;
+﻿using CUAchievements.UI;
+using CUAchievements.UI.Menu.CustomButton;
+using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI.Menu.CustomButton
+namespace CUAchievements.Patches
 {
     [HarmonyPatch(typeof(PreRunScript), "Start")]
     internal static class MenuButtonPatches // Thanks Custom Structures code.
@@ -31,9 +33,9 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             Transform canvas = PlayerCamera.main.mainCanvas.transform;
             MainMenuManager menu = MainMenuManager.GetOrCreate(canvas, GameFonts.Retro);
-            var button = PauseMenuButtonBuilder.CreateButton(pauseMenu, __instance.buttons[0]);
+            RectTransform button = PauseMenuButtonBuilder.CreateButton(pauseMenu, __instance.buttons[0]);
 
-            var uiButton = button.GetComponent<Button>();
+            Button uiButton = button.GetComponent<Button>();
             if (uiButton != null)
             {
                 uiButton.onClick = new Button.ButtonClickedEvent();

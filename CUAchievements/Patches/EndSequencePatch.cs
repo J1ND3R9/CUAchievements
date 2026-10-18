@@ -1,7 +1,7 @@
 ﻿using CUAchievements.Services;
 using HarmonyLib;
 
-namespace CUAchievements.Persistence
+namespace CUAchievements.Patches
 {
     [HarmonyPatch(typeof(PlayerCamera), nameof(PlayerCamera.EndSequence))]
     internal static class EndSequencePatch

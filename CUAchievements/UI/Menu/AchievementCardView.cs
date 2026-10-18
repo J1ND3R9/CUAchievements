@@ -6,13 +6,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI.Menu.Main
+namespace CUAchievements.UI.Menu
 {
     internal static class AchievementCardView
     {
         public static GameObject Create(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
         {
-            var root = UIUtility.Create("AchievementContainer", parent, typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup));
+            GameObject root = UIUtility.Create("AchievementContainer", parent, typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup));
 
             root.GetComponent<LayoutElement>().preferredHeight = 140f;
             root.GetComponent<CanvasGroup>().alpha = model.Alpha;
@@ -78,13 +78,13 @@ namespace CUAchievements.UI.Menu.Main
         }
         private static void BuildTexts(Transform parent, AchievementCardModel model, TMP_FontAsset font)
         {
-            var text = UIUtility.Create("Text", parent, typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            GameObject text = UIUtility.Create("Text", parent, typeof(VerticalLayoutGroup), typeof(LayoutElement));
             text.GetComponent<LayoutElement>().flexibleWidth = 1f;
             text.GetComponent<VerticalLayoutGroup>().Configure(spacing: 4f,
                 expandW: true,
                 expandH: true);
 
-            var header = UIUtility.Create("Header", text.transform, typeof(HorizontalLayoutGroup));
+            GameObject header = UIUtility.Create("Header", text.transform, typeof(HorizontalLayoutGroup));
             header.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 12f,
                 expandH: true,
                 align: TextAnchor.MiddleLeft);
@@ -97,7 +97,7 @@ namespace CUAchievements.UI.Menu.Main
             title.maxVisibleLines = 1;
             title.enableWordWrapping = false;
 
-            var titleLayout = title.gameObject.AddComponent<LayoutElement>();
+            LayoutElement titleLayout = title.gameObject.AddComponent<LayoutElement>();
             titleLayout.flexibleWidth = 1f;
             titleLayout.preferredWidth = 0f;
 

@@ -3,7 +3,7 @@ using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using UnityEngine;
 
-namespace CUAchievements.UI.Menu.Main
+namespace CUAchievements.UI.Menu
 {
     internal sealed class AchievementCardModel
     {
@@ -24,8 +24,8 @@ namespace CUAchievements.UI.Menu.Main
 
         public static AchievementCardModel From(RegisteredAchievement a)
         {
-            var def = a.Definition;
-            var model = new AchievementCardModel
+            AchievementDefinition def = a.Definition;
+            AchievementCardModel model = new AchievementCardModel
             {
                 Title = def.Name,
                 Description = def.Description,
@@ -43,7 +43,7 @@ namespace CUAchievements.UI.Menu.Main
                 //    : a.Progress.Progress;
 
                 var value = a.Progress.Progress;
-                if (a.IsUnlocked) 
+                if (a.IsUnlocked)
                     value = def.MaxProgress;
                 else if (def.Scope == AchievementScope.Run && a.Progress.LastRunProgress > 0)
                     value = a.Progress.LastRunProgress;

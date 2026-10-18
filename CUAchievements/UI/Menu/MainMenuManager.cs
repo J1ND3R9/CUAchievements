@@ -1,4 +1,5 @@
 ﻿using CUAchievements.Registry;
+using CUAchievements.UI.Menu;
 using CUAchievements.UI.Menu.Main;
 using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;

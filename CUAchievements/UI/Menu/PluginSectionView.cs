@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI.Menu.Main
+namespace CUAchievements.UI.Menu
 {
     internal sealed class PluginSectionView
     {
@@ -34,7 +34,7 @@ namespace CUAchievements.UI.Menu.Main
             GameObject upperObject = UIUtility.Create("UpperHeader", header.transform, typeof(HorizontalLayoutGroup));
             upperObject.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 4f);
 
-            var titleTmp = UIUtility.CreateText(upperObject.transform, "Title", $"{pluginName} [{unlocked}/{total}]", font, 18f);
+            TextMeshProUGUI titleTmp = UIUtility.CreateText(upperObject.transform, "Title", $"{pluginName} [{unlocked}/{total}]", font, 18f);
             titleTmp.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
             GameObject arrow = UIUtility.Create("Arrow", upperObject.transform, typeof(Image), typeof(LayoutElement));
@@ -55,7 +55,7 @@ namespace CUAchievements.UI.Menu.Main
             UIUtility.CreateLineProgress(header.transform, unlocked, total, font);
 
             GameObject body = UIUtility.Create("Achievements", root.transform, typeof(VerticalLayoutGroup));
-            body.GetComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true, padding: new RectOffset(2, 2, 0, 0));    
+            body.GetComponent<VerticalLayoutGroup>().Configure(spacing: 12f, expandW: true, padding: new RectOffset(2, 2, 0, 0));
 
             header.AddComponent<AchievementPluginUI>().Initialize(body, go =>
             {
@@ -68,8 +68,8 @@ namespace CUAchievements.UI.Menu.Main
 
         public static PluginSectionView CreateNoAchievement(Transform parent, TMP_FontAsset font, bool noRegisteredAchievements)
         {
-            var noAchievementsTitle = LocaleRegistry.Get("achievements_list_no_results_title", "No achievements found!");
-            var noAchievementsDesc = LocaleRegistry.Get("achievements_list_no_results_desc", "We didn't find any achievements with those filters.");
+            string noAchievementsTitle = LocaleRegistry.Get("achievements_list_no_results_title", "No achievements found!");
+            string noAchievementsDesc = LocaleRegistry.Get("achievements_list_no_results_desc", "We didn't find any achievements with those filters.");
 
             if (noRegisteredAchievements)
             {
@@ -90,7 +90,7 @@ namespace CUAchievements.UI.Menu.Main
                 padding: new RectOffset(12, 12, 12, 12));
 
             UIUtility.CreateText(header.transform, "Title", noAchievementsTitle, font, 24f, TextAlignmentOptions.Center);
-            var descTmp = UIUtility.CreateText(header.transform, "Description", noAchievementsDesc, font, 18f, TextAlignmentOptions.Center);
+            TextMeshProUGUI descTmp = UIUtility.CreateText(header.transform, "Description", noAchievementsDesc, font, 18f, TextAlignmentOptions.Center);
             descTmp.color = new Color(1f, 1f, 1f, 0.7f);
 
             return new PluginSectionView { Root = root, Body = null };

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace CUAchievements.UI.Menu.Main
+namespace CUAchievements.UI.Menu
 {
     internal sealed class AchievementListView
     {
@@ -27,7 +27,7 @@ namespace CUAchievements.UI.Menu.Main
         public void Rebuild(IReadOnlyDictionary<string, List<RegisteredAchievement>> perPlugin)
         {
             Clear();
-            foreach (var pair in perPlugin)
+            foreach (KeyValuePair<string, List<RegisteredAchievement>> pair in perPlugin)
             {
                 if (pair.Value.Count == 0) continue;
                 BuildSection(pair.Key, AchievementSorter.Sort(pair.Value));
@@ -36,7 +36,7 @@ namespace CUAchievements.UI.Menu.Main
 
         private void Clear()
         {
-            foreach (var s in sections)
+            foreach (GameObject s in sections)
             {
                 s.SetActive(false);
                 UnityEngine.Object.Destroy(s);
@@ -47,11 +47,11 @@ namespace CUAchievements.UI.Menu.Main
 
         private void BuildSection(string pluginName, List<RegisteredAchievement> sorted)
         {
-            var section = PluginSectionView.Create(content, pluginName, sorted, font);
+            PluginSectionView section = PluginSectionView.Create(content, pluginName, sorted, font);
             sections.Add(section.Root);
 
-            var hidden = new List<RegisteredAchievement>(0);
-            foreach (var a in sorted)
+            List<RegisteredAchievement> hidden = new List<RegisteredAchievement>(0);
+            foreach (RegisteredAchievement a in sorted)
             {
                 if (!a.IsUnlocked && a.Definition.IsHidden)
                 {
@@ -66,7 +66,7 @@ namespace CUAchievements.UI.Menu.Main
 
         private void BuildEmptySection(bool emptyRegister)
         {
-            var section = PluginSectionView.CreateNoAchievement(content, font, emptyRegister);
+            PluginSectionView section = PluginSectionView.CreateNoAchievement(content, font, emptyRegister);
             sections.Add(section.Root);
         }
     }

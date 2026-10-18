@@ -1,5 +1,4 @@
 ﻿using CUAchievements.Registry;
-using CUAchievements.UI.Menu.Main;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Registries;
 using System.Collections;

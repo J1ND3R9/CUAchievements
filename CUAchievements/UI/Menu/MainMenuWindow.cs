@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CUAchievements.UI.Menu.Main
+namespace CUAchievements.UI.Menu
 {
     internal sealed class MainMenuWindow : MonoBehaviour
     {
@@ -36,7 +36,7 @@ namespace CUAchievements.UI.Menu.Main
         {
             UIUtility.Stretch(transform);
 
-            var canvas = gameObject.AddComponent<Canvas>();
+            Canvas canvas = gameObject.AddComponent<Canvas>();
             canvas.overrideSorting = true;
             canvas.sortingOrder = 500;
 
@@ -61,13 +61,13 @@ namespace CUAchievements.UI.Menu.Main
 
             CreateHeaderAndBottom(out GameObject header, out GameObject bottom);
 
-            var descriptionComponent = Root.GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI descriptionComponent = Root.GetComponentInChildren<TextMeshProUGUI>();
             descriptionComponent.text = LocaleRegistry.Get("achievements_button", "Achievements");
             descriptionComponent.gameObject.AddComponent<LayoutIgnorer>();
             descriptionComponent.transform.SetParent(bottom.transform, false);
             descriptionComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
-            var modalScroll = Root.GetComponentInChildren<ScrollRect>(true);
+            ScrollRect modalScroll = Root.GetComponentInChildren<ScrollRect>(true);
             Content = modalScroll?.content;
             Content?.SetupScrollContent();
 
@@ -82,16 +82,16 @@ namespace CUAchievements.UI.Menu.Main
             Button[] buttons = Root.GetComponentsInChildren<Button>(true);
             if (buttons.Length > 0)
             {
-                var closeButton = buttons[0];
+                Button closeButton = buttons[0];
                 closeButton.onClick.RemoveAllListeners();
                 closeButton.onClick.AddListener(() => SetVisible(false));
-                var closeButtonTextComponent = closeButton.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI closeButtonTextComponent = closeButton.GetComponentInChildren<TextMeshProUGUI>();
                 closeButtonTextComponent.text = Locale.GetOther("back");
 
                 closeButton.transform.SetParent(bottom.transform, false);
                 UIUtility.ButtonTemplate = closeButton.gameObject;
 
-                var le = closeButton.gameObject.AddComponent<LayoutElement>();
+                LayoutElement le = closeButton.gameObject.AddComponent<LayoutElement>();
                 le.minHeight = 48f;
                 le.preferredWidth = 250f;
                 UIUtility.CreateSpacer(bottom.transform);
@@ -123,7 +123,7 @@ namespace CUAchievements.UI.Menu.Main
 
         private void ClearModal(GameObject modalPanel)
         {
-            foreach (var monoBehaviourObject in modalPanel.GetComponentsInChildren<MonoBehaviour>(true))
+            foreach (MonoBehaviour monoBehaviourObject in modalPanel.GetComponentsInChildren<MonoBehaviour>(true))
             {
                 if (monoBehaviourObject == null) continue;
                 string monoNamespace = monoBehaviourObject.GetType().Namespace ?? "";

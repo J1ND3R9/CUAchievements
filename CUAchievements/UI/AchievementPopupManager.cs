@@ -1,6 +1,6 @@
 ﻿using CUAchievements.Options;
 using CUAchievements.Registry;
-using CUAchievements.UI.Menu.Main;
+using CUAchievements.UI.Menu;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;

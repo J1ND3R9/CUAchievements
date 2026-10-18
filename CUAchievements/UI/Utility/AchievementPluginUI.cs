@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace CUAchievements.UI
+namespace CUAchievements.UI.Utility
 {
     internal class AchievementPluginUI : MonoBehaviour, IPointerClickHandler/*, IPointerEnterHandler, IPointerExitHandler*/
     {

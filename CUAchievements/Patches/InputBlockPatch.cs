@@ -2,7 +2,7 @@
 using CUAchievements.UI.Menu.Main;
 using HarmonyLib;
 
-namespace CUAchievements.UI
+namespace CUAchievements.Patches
 {
     [HarmonyPatch(typeof(AdaptiveButton))]
     internal static class AchievementModalInputBlockPatch

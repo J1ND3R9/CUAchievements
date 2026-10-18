@@ -1,11 +1,12 @@
-﻿using CUAchievements.UI.Menu.CustomButton;
+﻿using CUAchievements.Anticheat;
+using CUAchievements.UI.Menu.CustomButton;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
 
-namespace CUAchievements.Anticheat
+namespace CUAchievements.Patches
 {
     [HarmonyPatch]
     internal static class AnticheatPatches
