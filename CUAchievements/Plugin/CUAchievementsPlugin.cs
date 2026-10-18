@@ -2,7 +2,6 @@
 using BepInEx.Logging;
 using CUAchievements.Anticheat;
 using CUAchievements.Assets;
-using CUAchievements.Debug;
 using CUAchievements.Options;
 using CUAchievements.Persistence;
 using CUAchievements.Services;
@@ -19,7 +18,7 @@ namespace CUAchievements.Plugin
     {
         public const string ModGUID = "com.cuachievements";
         public const string ModName = "CUAchievements";
-        public const string ModVersion = "1.0.0";
+        public const string ModVersion = "1.0.1";
 
         internal static new ManualLogSource Logger;
 
