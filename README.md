@@ -16,7 +16,7 @@ An achievement framework for **Casualties Unknown**: provides mods with a unifie
 ### Installation
 1. Install [BepInEx](https://github.com/bepinex/bepinex) if you haven't already.
 2. Download and install [CUCoreLib](https://www.nexusmods.com/scavprototype/mods/341).
-3. Download the latest release from the [NexusMods](https://www.nexusmods.com/games/scavprototype/mods/801/) or [Releases](https://github.com/J1ND3R9/CUAchievements/releases) page.
+3. Download the latest release from the [NexusMods](https://www.nexusmods.com/scavprototype/mods/801) or [Releases](https://github.com/J1ND3R9/CUAchievements/releases) page.
 4. Place the CUAchievements folder into the BepInEx/plugins folder.
 5. Launch the game. The framework will notify you in-game that it has been successfully installed.
 
@@ -30,7 +30,7 @@ Check `BepInEx/LogOutput.log` for errors and ask on [Discord](https://discord.gg
 1. Add a reference to `CUAchievements.dll` in your project.
 2. Declare it as a dependency of your plugin (see below), so BepInEx loads it first.
 
-```csharpя
+```csharp
 using BepInEx;
 using CUAchievements;
 using CUCoreLib.Registries;
