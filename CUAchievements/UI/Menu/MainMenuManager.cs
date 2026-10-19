@@ -1,6 +1,5 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Menu;
-using CUAchievements.UI.Menu.Main;
 using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Registries;
@@ -31,7 +30,7 @@ namespace CUAchievements.UI
         {
             window = gameObject.AddComponent<MainMenuWindow>();
             window.Initialize();
-            
+
             BuildTabs();
             statsPanel = StatsPanel.Create(window.Root.transform, window.Panel);
             detailsPanel = DetailsPanel.Create(window.Root.transform, window.Panel);
@@ -40,13 +39,17 @@ namespace CUAchievements.UI
             anyRegistered = AchievementRegistry.GetAll().Count > 0;
             window.Opened += OnOpened;
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
+            AchievementEvents.UISettingsChanged += OnUISettingsChanged;
 
             window.Close();
         }
+
+        private void OnUISettingsChanged() => needsRefresh = true;
+
         internal static MainMenuManager Create(Transform canvas, TMP_FontAsset font)
         {
-            var gameObject = UIUtility.Create(ObjectName, canvas);
-            var manager = gameObject.AddComponent<MainMenuManager>();
+            GameObject gameObject = UIUtility.Create(ObjectName, canvas);
+            MainMenuManager manager = gameObject.AddComponent<MainMenuManager>();
             manager.Initialize(font);
             return manager;
         }
@@ -81,6 +84,7 @@ namespace CUAchievements.UI
             {
                 IReadOnlyDictionary<string, List<RegisteredAchievement>> perPlugin = AchievementRegistry.GetAchievementsPerPlugin(true, currentFilter);
                 if (perPlugin.Count > 0)
+
                     list.Rebuild(perPlugin);
                 else
                     list.BuildEmptyNote(false);
@@ -94,20 +98,24 @@ namespace CUAchievements.UI
         private void BuildTabs()
         {
             string searchLocale = LocaleRegistry.Get("achievements_panel_search_placeholder", "Search...");
-            var search = UIUtility.CreateInputField("SearchField", window.Header, searchLocale, GameFonts.Retro, true, true ? OnSearchChanged : null);
+            TMP_InputField search = UIUtility.CreateInputField("SearchField", window.Header, searchLocale, GameFonts.Retro, true, true ? OnSearchChanged : null);
 
-            var searchLe = search.gameObject.AddComponent<LayoutElement>();
+            LayoutElement searchLe = search.gameObject.AddComponent<LayoutElement>();
             searchLe.flexibleWidth = 1f;
             searchLe.minHeight = 48f;
             searchLe.preferredWidth = 600f;
 
             string statsLocale = LocaleRegistry.Get("achievements_panel_stats_button", "Stats");
-            var stats = UIUtility.CreateButton(window.Header, "StatsButton", statsLocale, true, true ? OnStatisticClick : null);
+            Button stats = UIUtility.CreateButton(window.Header, "StatsButton", statsLocale, true, true ? OnStatisticClick : null);
 
-            var statsLe = stats.gameObject.AddComponent<LayoutElement>();
+            LayoutElement statsLe = stats.gameObject.AddComponent<LayoutElement>();
             statsLe.minHeight = 48f;
         }
-        private void OnDestroy() => AchievementEvents.AchievementsChanged -= OnAchievementsChanged;
+        private void OnDestroy()
+        {
+            AchievementEvents.AchievementsChanged -= OnAchievementsChanged;
+            AchievementEvents.UISettingsChanged -= OnUISettingsChanged;
+        }
 
         internal static MainMenuManager GetOrCreate(Transform canvas, TMP_FontAsset font)
         {

@@ -32,10 +32,10 @@ namespace CUAchievements
         /// </para>
         /// </remarks>
         public static event Action AchievementsChanged;
-
+        internal static event Action UISettingsChanged;
         internal static void RaiseAchievementsChanged()
         {
-            var handler = AchievementsChanged;
+            Action handler = AchievementsChanged;
             if (handler == null) return;
 
             foreach (Delegate d in handler.GetInvocationList())
@@ -44,6 +44,20 @@ namespace CUAchievements
                 catch (Exception e)
                 {
                     CUAchievementsPlugin.Logger.LogError($"AchievementsChanged subscriber failed: {e}");
+                }
+            }
+        }
+        internal static void RaiseUISettingsChanged()
+        {
+            Action handler = UISettingsChanged;
+            if (handler == null) return;
+
+            foreach (Delegate d in handler.GetInvocationList())
+            {
+                try { ((Action)d)(); }
+                catch (Exception e)
+                {
+                    CUAchievementsPlugin.Logger.LogError($"UISettingsChanged subscriber failed: {e}");
                 }
             }
         }
