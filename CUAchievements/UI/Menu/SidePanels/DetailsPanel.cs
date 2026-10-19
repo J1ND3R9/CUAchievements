@@ -62,7 +62,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             {
                 Root.transform.ClearPanel();
                 Root.transform.ClearButtons();
-                var vertical = Content.SetupScrollContent(spacing: 16f);
+                VerticalLayoutGroup vertical = Content.SetupScrollContent(spacing: 16f);
                 vertical.name = "Details";
             }
 
@@ -133,16 +133,16 @@ namespace CUAchievements.UI.Menu.SidePanels
 
             aTitle.text = card.Title;
             aDescription.text = card.Description;
-            aModSource.text = AchievementRegistry.TryGetPluginName(card.Source.PluginGuid, out var pluginName) ? pluginName : card.Source.PluginGuid;
-            
+            aModSource.text = AchievementRegistry.TryGetPluginName(card.Source.PluginGuid, out string pluginName) ? pluginName : card.Source.PluginGuid;
+
             if (card.Source.IsUnlocked)
             {
                 string unlockedLocale = LocaleRegistry.Get("achievements_earned", "EARNED");
                 aUnlocked.text = unlockedLocale;
                 aUnlocked.color = Color.green;
 
-                aUnlockedAtDate.text = card.Source.UnlockedAt?.ToShortDateString();
-                aUnlockedAtTime.text = card.Source.UnlockedAt?.ToShortTimeString();
+                aUnlockedAtDate.text = card.Source.UnlockedAt?.ToLocalTime().ToShortDateString();
+                aUnlockedAtTime.text = card.Source.UnlockedAt?.ToLocalTime().ToShortTimeString();
             }
             else
             {
