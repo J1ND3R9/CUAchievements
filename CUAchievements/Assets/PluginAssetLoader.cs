@@ -108,7 +108,7 @@ namespace CUAchievements.Assets
         {
             SpriteEntry[] spriteEntries =
             [
-                new("Assets.Images.UI.achievement_button.png", "achievement_button", filter: FilterMode.Bilinear, alphaIsTransparency: true), // FIXME: Небольшие мерцания контура
+                new("Assets.Images.UI.achievement_button.png", "achievement_button", filter: FilterMode.Bilinear, alphaIsTransparency: true),
                 new("Assets.Images.UI.achievement_button_overlay.png", "achievement_button_overlay", filter: FilterMode.Bilinear, alphaIsTransparency: true),
                 new("Assets.Images.UI.achievement_button_glow.png", "achievement_button_glow", filter: FilterMode.Bilinear, alphaIsTransparency: true),
                 new("Assets.Images.UI.achievement_pause_button.png", "achievement_pause_button"),
