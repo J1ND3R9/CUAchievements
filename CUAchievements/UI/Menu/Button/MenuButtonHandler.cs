@@ -1,5 +1,4 @@
-﻿using CUAchievements.UI.Menu.Main;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -39,7 +38,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             float target = (hovering && !MainMenuWindow.IsOpen) ? 1f : 0f;
             float step = FadeSpeed * Time.unscaledDeltaTime;
 
-            var oc = overlay.color;
+            Color oc = overlay.color;
             oc.a = Mathf.MoveTowards(oc.a, target, step);
             overlay.color = oc;
 
@@ -47,7 +46,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             //origc.a = Mathf.MoveTowards(origc.a, hovering ? 0f : 1f, step);
             //original.color = origc;
 
-            var lc = label.color;
+            Color lc = label.color;
             lc.a = Mathf.MoveTowards(lc.a, target, step);
             label.color = lc;
 
@@ -79,7 +78,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             raycastResultsBuffer.Clear();
             EventSystem.current.RaycastAll(pointerData, raycastResultsBuffer);
 
-            foreach (var result in raycastResultsBuffer)
+            foreach (RaycastResult result in raycastResultsBuffer)
             {
                 Transform hit = result.gameObject.transform;
 
@@ -109,7 +108,7 @@ namespace CUAchievements.UI.Menu.CustomButton
                 return false;
 
             Rect r = clickRect.rect;
-            r.xMin += inset; 
+            r.xMin += inset;
             r.xMax -= inset;
             r.yMin += inset;
             r.yMax -= inset;

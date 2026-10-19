@@ -1,4 +1,5 @@
 ﻿using CUAchievements.Registry;
+using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace CUAchievements.UI.Menu
         public static AchievementCardModel From(RegisteredAchievement a)
         {
             AchievementDefinition def = a.Definition;
-            AchievementCardModel model = new AchievementCardModel
+            AchievementCardModel model = new()
             {
                 Title = def.Name,
                 Description = def.Description,
@@ -38,11 +39,7 @@ namespace CUAchievements.UI.Menu
 
             if (def.Type == AchievementType.Counter)
             {
-                //var value = def.Scope == AchievementScope.Run && !a.IsUnlocked && a.Progress.LastRunProgress > 0
-                //    ? a.Progress.LastRunProgress
-                //    : a.Progress.Progress;
-
-                var value = a.Progress.Progress;
+                float value = a.Progress.Progress;
                 if (a.IsUnlocked)
                     value = def.MaxProgress;
                 else if (def.Scope == AchievementScope.Run && a.Progress.LastRunProgress > 0)
