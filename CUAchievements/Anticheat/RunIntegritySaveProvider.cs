@@ -1,4 +1,5 @@
-﻿using CUAchievements.UI.Menu.CustomButton;
+﻿using CUAchievements.Options;
+using CUAchievements.UI.Menu.CustomButton;
 using CUCoreLib.Saving;
 using Newtonsoft.Json.Linq;
 
@@ -13,7 +14,7 @@ namespace CUAchievements.Anticheat
     internal sealed class RunIntegritySaveProvider : ICustomSaveProvider
     {
         public int GetVersion() => 1;
-        
+
         public JToken Capture()
         {
             return new JObject { ["cheated"] = RunIntegrity.Cheated };
@@ -26,6 +27,8 @@ namespace CUAchievements.Anticheat
             bool cheated = (bool?)obj?["cheated"] ?? false;
 
             RunIntegrity.Reset();
+
+            if (!AchievementConfig.AnticheatEnabled.Value) return;
 
             if (cheated)
             {
