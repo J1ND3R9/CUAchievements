@@ -1,8 +1,11 @@
-﻿using CUAchievements.Registry;
+﻿using CUAchievements.Options;
+using CUAchievements.Registry;
+using CUAchievements.UI.Utility;
 using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CUAchievements.UI.Menu
 {
@@ -50,7 +53,7 @@ namespace CUAchievements.UI.Menu
             PluginSectionView section = PluginSectionView.Create(content, pluginName, sorted, font);
             sections.Add(section.Root);
 
-            List<RegisteredAchievement> hidden = new List<RegisteredAchievement>(0);
+            List<RegisteredAchievement> hidden = [];
             foreach (RegisteredAchievement a in sorted)
             {
                 if (!a.IsUnlocked && a.Definition.IsHidden)
@@ -60,8 +63,24 @@ namespace CUAchievements.UI.Menu
                 }
                 AchievementCardView.Create(section.Body, AchievementCardModel.From(a), font, onSelected);
             }
+
+            GameObject separator = UIUtility.CreateSeparator(section.Body, 3f);
+            separator.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.35f);
+
             if (hidden.Count > 0)
-                AchievementCardView.Create(section.Body, AchievementCardModel.Hidden(hidden.Count), font);
+            {
+                if (AchievementConfig.RevealableHiddenAchievements.Value)
+                {
+                    foreach (RegisteredAchievement a in hidden)
+                    {
+                        AchievementCardView.CreateRevealableHidden(section.Body, AchievementCardModel.From(a), font, onSelected);
+                    }
+                }
+                else
+                {
+                    AchievementCardView.Create(section.Body, AchievementCardModel.Hidden(hidden.Count), font);
+                }
+            }
         }
 
         private void BuildEmptySection(bool emptyRegister)

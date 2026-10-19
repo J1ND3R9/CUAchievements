@@ -35,6 +35,28 @@ namespace CUAchievements.UI.Menu
             return root;
         }
 
+        public static GameObject CreateRevealableHidden(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
+        {
+            RevealCover cover = null;
+
+            GameObject root = Create(parent, model, font, a =>
+            {
+                if (cover != null)
+                {
+                    cover.Reveal();
+                    return;
+                }
+                onClick?.Invoke(a);
+            });
+
+            //root.GetComponent<CanvasGroup>().alpha = 1f;
+
+            if (!RevealCover.IsRevealed(model.Source.FullId))
+                cover = RevealCoverBuilder.Build(root.transform, model.Source.FullId, font);
+
+            return root;
+        }
+
         private static void BuildBackground(Transform parent, Sprite frame)
         {
             GameObject bgObject = UIUtility.Create("Background", parent, typeof(Image), typeof(LayoutIgnorer));
@@ -100,8 +122,6 @@ namespace CUAchievements.UI.Menu
             LayoutElement titleLayout = title.gameObject.AddComponent<LayoutElement>();
             titleLayout.flexibleWidth = 1f;
             titleLayout.preferredWidth = 0f;
-
-            //UIUtility.CreateSpacer(header.transform);
 
             if (model.Counter != null)
                 BuildCounterRow(header.transform, model.Counter, font);

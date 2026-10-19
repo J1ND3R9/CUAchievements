@@ -1,4 +1,5 @@
-﻿using CUAchievements.Plugin;
+﻿using CUAchievements.Options;
+using CUAchievements.Plugin;
 using CUAchievements.Registry;
 using CUCoreLib.Helpers;
 using UnityEngine;
@@ -91,7 +92,7 @@ namespace CUAchievements
         public Sprite CustomFrame { get; private set; }
         /// <summary>
         /// Whether the achievement is hidden. Hidden achievements do not show their name, description
-        /// or icon to the player until they are unlocked.
+        /// or icon to the player until they are unlocked or revealed.
         /// </summary>
         public bool IsHidden { get; private set; }
         /// <summary>
@@ -174,7 +175,7 @@ namespace CUAchievements
         /// <param name="progressDecimals">Number of digits after the decimal point when the progress is displayed.</param>
         /// <returns>A new <see cref="AchievementDefinition"/>.</returns>
         /// <remarks>
-        /// If <paramref name="hidden"/> is <see langword="true"/>, <paramref name="lockedIcon"/> is ignored and
+        /// If <paramref name="hidden"/> is <see langword="true"/> and <see cref="AchievementConfig.RevealableHiddenAchievements"/> is <see langword="false"/>, <paramref name="lockedIcon"/> is ignored and
         /// <paramref name="customFrame"/> is not shown until the achievement is unlocked.
         /// </remarks>
         /// <example>
@@ -227,7 +228,7 @@ namespace CUAchievements
         /// <param name="canGetInTutorial">Whether the achievement can be earned during the tutorial.</param>
         /// <returns>A new <see cref="AchievementDefinition"/>.</returns>
         /// <remarks>
-        /// If <paramref name="hidden"/> is <see langword="true"/>, <paramref name="lockedIcon"/> is ignored and
+        /// If <paramref name="hidden"/> is <see langword="true"/> and <see cref="AchievementConfig.RevealableHiddenAchievements"/> is <see langword="false"/>, <paramref name="lockedIcon"/> is ignored and
         /// <paramref name="customFrame"/> is not shown until the achievement is unlocked.
         /// </remarks>
         /// <example>

@@ -15,6 +15,7 @@ namespace CUAchievements.Options
         public static ConfigEntry<bool> AnticheatEnabled { get; private set; }
         public static ConfigEntry<bool> AllowSandboxAchievements { get; private set; }
         public static ConfigEntry<bool> EnabledGreetingMessage { get; private set; }
+        public static ConfigEntry<bool> RevealableHiddenAchievements { get; private set; }
 
         public static ConfigEntry<AchievementAlertType> AlertType { get; private set; }
 
@@ -25,15 +26,16 @@ namespace CUAchievements.Options
         public static ConfigEntry<float> UnlockVolume { get; private set; }
         public static void Initialize(ConfigFile config)
         {
+            RevealableHiddenAchievements = config.Bind("General", "RevealableHiddenAchievements", true, "Changes the appearance of hidden achievements: instead of a single panel showing a count, it displays multiple panels with hidden text that are revealed when clicked.");
+
             AnticheatEnabled = config.Bind("Anticheat", "AnticheatEnabled", true, "Toggles the command anti-cheat system – most commands are marked as \"unsafe,\" and executing any such command will disable unlocks and achievement progress for that save file.");
             AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", false, "Toggles the ability to earn achievements in the tutorial/sandbox, regardless of whether it permits the achievement.");
-            EnabledGreetingMessage = config.Bind("Alert", "EnabledGreetingMessage", true, "Toggles the initial pop-up message");
 
+            EnabledGreetingMessage = config.Bind("Alert", "EnabledGreetingMessage", true, "Toggles the initial pop-up message");
             AlertType = config.Bind("Alert", "AlertType", AchievementAlertType.Popup, "Achievement notification type\n" +
                 "0 - Pop-up\n" +
                 "1 - Standard in-game Alert\n" +
                 "2 - Hidden");
-
             DisplayType = config.Bind("Alert", "DisplayType", AchievementDisplayType.BottomToUp, "Pop-up notification display type\n" +
                 "0 - From bottom to top\n" +
                 "1 - From the bottom-left corner to the right\n" +
@@ -41,7 +43,6 @@ namespace CUAchievements.Options
                 "3 - Like in Steam: from the bottom-right corner upwards");
 
             PopUpTime = config.Bind("Notifications", "PopUpTime", 5, new ConfigDescription("Duration for which the achievement notification is displayed. (from 1 to 15 seconds)", new AcceptableValueRange<int>(1, 15)));
-
             UnlockVolume = config.Bind("Notifications", "UnlockVolume", 1f, new ConfigDescription("Volume for the achievement unlock sound (0 = muted)", new AcceptableValueRange<float>(0f, 1f)));
 
             AnticheatPatches.AnticheatDisabled = !AnticheatEnabled.Value;
@@ -49,6 +50,8 @@ namespace CUAchievements.Options
         }
         private static void RegisterOptions()
         {
+            bool isLaunch = true;
+
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
                 $"{CUAchievementsPlugin.ModGUID}.GreetingsMessage",
                 "Greetings message",
@@ -57,6 +60,21 @@ namespace CUAchievements.Options
                 true,
                 value => EnabledGreetingMessage.Value = value
                 ));
+
+            ModOptionsRegistry.Register(ModOptionDefinition.Bool(
+               $"{CUAchievementsPlugin.ModGUID}.RevealableHiddenAchievements",
+               "Revealable hidden achievements",
+               "Changes the appearance of hidden achievements: " +
+               "instead of a single panel showing a count, it displays multiple panels with hidden text that are revealed when clicked.",
+               "Achievements",
+               true,
+               value =>
+               {
+                   RevealableHiddenAchievements.Value = value;
+                   if (!isLaunch)
+                       AchievementEvents.RaiseUISettingsChanged();
+               }
+               ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
                 $"{CUAchievementsPlugin.ModGUID}.AlertType",
@@ -72,7 +90,6 @@ namespace CUAchievements.Options
                 value => AlertType.Value = (AchievementAlertType)value
                 ));
 
-            bool isFirstLaunch = true;
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
                 $"{CUAchievementsPlugin.ModGUID}.DisplayType",
                 "Display type",
@@ -88,13 +105,11 @@ namespace CUAchievements.Options
                 value =>
                 {
                     DisplayType.Value = (AchievementDisplayType)value;
-                    if (!isFirstLaunch)
+                    if (!isLaunch)
                         AchievementPopupManager.DebugShow();
 
                     else if (EnabledGreetingMessage.Value)
                         AchievementPopupManager.DebugShow();
-
-                    isFirstLaunch = false;
                 }));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Float(
@@ -120,6 +135,8 @@ namespace CUAchievements.Options
                 value => UnlockVolume.Value = value,
                 value => Mathf.RoundToInt(value * 100f) + "%"
                 ));
+
+            isLaunch = false;
         }
     }
 }
