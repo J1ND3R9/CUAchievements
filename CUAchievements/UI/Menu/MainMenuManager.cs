@@ -38,10 +38,17 @@ namespace CUAchievements.UI
 
             anyRegistered = AchievementRegistry.GetAll().Count > 0;
             window.Opened += OnOpened;
+            window.Closed += OnClosed;
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
             AchievementEvents.UISettingsChanged += OnUISettingsChanged;
 
             window.Close();
+        }
+
+        private void OnClosed()
+        {
+            currentFilter = "";
+            AchievementCardView.HideRevealedAchievements();
         }
 
         private void OnUISettingsChanged() => needsRefresh = true;

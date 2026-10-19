@@ -11,13 +11,14 @@ namespace CUAchievements.UI
     // I struggled for a couple of hours, and then I just vibecoded it. Sorry about that.
     internal sealed class RevealCover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        private const float WipeDuration = 0.3f;
+        private const float AlphaDuration = 0.3f;
         private const float FlickerInterval = 0.08f;
         private const float NoiseCell = 3f;
         private const float IdleAlpha = 0.18f;
         private const float HoverAlpha = 0.32f;
 
         private static readonly HashSet<string> RevealedIds = [];
+        private static readonly List<RevealCover> Active = [];
         private static readonly System.Random Rng = new();
 
         public static bool IsRevealed(string fullId) => RevealedIds.Contains(fullId);
@@ -32,6 +33,7 @@ namespace CUAchievements.UI
         private bool revealing;
         private float timer;
         private float progress;
+        public bool IsFullyRevealed => revealing && progress >= 1f;
 
         public void Initialize(string fullId, RectMask2D rectMask, RawImage noiseImage)
         {
@@ -45,15 +47,38 @@ namespace CUAchievements.UI
 
             SetNoiseAlpha(IdleAlpha);
             Reroll();
+
+            if (!Active.Contains(this)) Active.Add(this);
         }
 
+        private void OnDestroy() => Active.Remove(this);
+        public static void ResetAll()
+        {
+            RevealedIds.Clear();
+            for (int i = Active.Count - 1; i >= 0; i--)
+                Active[i].Restore();
+        }
         public void Reveal()
         {
             if (revealing) return;
             revealing = true;
             RevealedIds.Add(id);
             group.blocksRaycasts = false;
+        }
+        public void Restore()
+        {
+            if (!revealing) return;
 
+            revealing = false;
+            progress = 0f;
+            hovered = false;
+            group.alpha = 1f;
+            group.blocksRaycasts = true;
+            gameObject.SetActive(true);
+
+            RevealedIds.Remove(id);
+            SetNoiseAlpha(IdleAlpha);
+            Reroll();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -81,12 +106,12 @@ namespace CUAchievements.UI
 
             if (revealing)
             {
-                progress += deltaTime / WipeDuration;
+                progress += deltaTime / AlphaDuration;
 
-                mask.padding = new Vector4(rect.rect.width * Mathf.Clamp01(progress), 0f, 0f, 0f);
+                group.alpha = 1f - progress;
 
                 if (progress >= 1f)
-                    Destroy(gameObject);
+                    gameObject.SetActive(false);
                 return;
             }
 

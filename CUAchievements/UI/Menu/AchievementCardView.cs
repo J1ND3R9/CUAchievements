@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace CUAchievements.UI.Menu
 {
+
     internal static class AchievementCardView
     {
         public static GameObject Create(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
@@ -34,14 +35,15 @@ namespace CUAchievements.UI.Menu
 
             return root;
         }
-
         public static GameObject CreateRevealableHidden(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
         {
+            model.Icon = AssetLoader.GetCachedSprite("achievement_default_hidden");
+
             RevealCover cover = null;
 
             GameObject root = Create(parent, model, font, a =>
             {
-                if (cover != null)
+                if (cover != null && !cover.IsFullyRevealed)
                 {
                     cover.Reveal();
                     return;
@@ -49,12 +51,14 @@ namespace CUAchievements.UI.Menu
                 onClick?.Invoke(a);
             });
 
-            //root.GetComponent<CanvasGroup>().alpha = 1f;
-
             if (!RevealCover.IsRevealed(model.Source.FullId))
                 cover = RevealCoverBuilder.Build(root.transform, model.Source.FullId, font);
-
             return root;
+        }
+
+        public static void HideRevealedAchievements()
+        {
+            RevealCover.ResetAll();
         }
 
         private static void BuildBackground(Transform parent, Sprite frame)
