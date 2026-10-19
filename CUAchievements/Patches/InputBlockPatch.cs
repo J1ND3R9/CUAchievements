@@ -1,5 +1,5 @@
-﻿using CUAchievements.UI.Menu.CustomButton;
-using CUAchievements.UI.Menu.Main;
+﻿using CUAchievements.UI.Menu;
+using CUAchievements.UI.Menu.CustomButton;
 using HarmonyLib;
 
 namespace CUAchievements.Patches
