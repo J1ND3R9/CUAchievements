@@ -114,3 +114,5 @@ For pixel art, use `FilterMode.Point`.
 
 ## Contributing
 Any contribution is welcome! Please adhere to C# coding styles and patterns. Extending existing components is preferable to adding new ones.
+
+Please submit all pull requests to the dev branch.
