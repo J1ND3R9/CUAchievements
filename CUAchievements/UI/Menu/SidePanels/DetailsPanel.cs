@@ -32,9 +32,13 @@ namespace CUAchievements.UI.Menu.SidePanels
         private TextMeshProUGUI aTitle;
         private TextMeshProUGUI aDescription;
         private TextMeshProUGUI aModSource;
+        private TextMeshProUGUI aScope;
         private TextMeshProUGUI aUnlocked;
         private TextMeshProUGUI aUnlockedAtDate;
         private TextMeshProUGUI aUnlockedAtTime;
+
+        private GameObject dataObject;
+        private GameObject squaresObject;
 
         //private string currentShowedId = string.Empty;
 
@@ -86,6 +90,9 @@ namespace CUAchievements.UI.Menu.SidePanels
             aDescription = UIUtility.CreateText(Content, "Description", "Description", GameFonts.Retro, 16f);
             UIUtility.CreateSeparator(parent: Content);
 
+            CreateScope(parent: Content);
+            UIUtility.CreateSeparator(parent: Content);
+
             CreateBottom(parent: Content);
         }
 
@@ -117,6 +124,28 @@ namespace CUAchievements.UI.Menu.SidePanels
             aModSource.alpha = 0.75f;
         }
 
+        private void CreateScope(Transform parent)
+        {
+            dataObject = UIUtility.Create("ProgressData", parent, typeof(VerticalLayoutGroup));
+            dataObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 8f, align: TextAnchor.MiddleCenter);
+            aScope = UIUtility.CreateText(dataObject.transform, "Scope", "Scope", GameFonts.Retro, 16f, TextAlignmentOptions.Center);
+        }
+
+        private void CreateProgressRow(int filledSquares, string progressText)
+        {
+            if (dataObject == null) return;
+            if (squaresObject != null)
+            {
+                Destroy(squaresObject);
+            }
+
+            squaresObject = UIUtility.Create("SquareProgress", dataObject.transform, typeof(VerticalLayoutGroup));
+            squaresObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 4f, align: TextAnchor.MiddleCenter);
+
+            UIUtility.CreateText(squaresObject.transform, "ProgressText", progressText, GameFonts.Retro, 18f, TextAlignmentOptions.Center);
+            UIUtility.CreateSquareProgress(squaresObject.transform, 24f, filledSquares);
+        }
+
         private void CreateBottom(Transform parent)
         {
             GameObject bottom = UIUtility.Create("Bottom", parent, typeof(VerticalLayoutGroup));
@@ -134,6 +163,14 @@ namespace CUAchievements.UI.Menu.SidePanels
             aTitle.text = card.Title;
             aDescription.text = card.Description;
             aModSource.text = AchievementRegistry.TryGetPluginName(card.Source.PluginGuid, out string pluginName) ? pluginName : card.Source.PluginGuid;
+            aScope.text = card.Scope == AchievementScope.Run ? LocaleRegistry.Get("achievements_scope_run", "MUST BE COMPLETED DURING A SINGLE RUN — PROGRESS RESETS ON DEATH") : LocaleRegistry.Get("achievements_scope_lifetime", "PROGRESS IS SAVED BETWEEN RUNS");
+
+            if (card.Counter != null)
+            {
+                CreateProgressRow(card.Counter.FilledSquares, card.Counter.Text);
+            }
+            else
+                Destroy(squaresObject);
 
             if (card.Source.IsUnlocked)
             {

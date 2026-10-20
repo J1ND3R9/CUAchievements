@@ -15,6 +15,7 @@ namespace CUAchievements.UI.Menu
         public Sprite Frame;
         public float Alpha = 1f;
         public CounterInfo Counter;
+        public AchievementScope Scope;
         public RegisteredAchievement Source;
 
         internal sealed class CounterInfo
@@ -34,6 +35,7 @@ namespace CUAchievements.UI.Menu
                 Icon = a.IsUnlocked ? def.Icon : def.LockedIcon,
                 Frame = a.Definition.CustomFrame ?? AchievementFrames.Get(def.Difficulty),
                 Alpha = a.IsUnlocked ? 1f : 0.35f,
+                Scope = a.Definition.Scope,
                 Source = a
             };
 
