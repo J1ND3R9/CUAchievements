@@ -16,10 +16,13 @@ namespace CUAchievements.UI
         private const float NoiseCell = 3f;
         private const float IdleAlpha = 0.18f;
         private const float HoverAlpha = 0.32f;
+        private const float RedStep = 0.33f;
 
         private static readonly HashSet<string> RevealedIds = [];
-        private static readonly List<RevealCover> Active = [];
+        private static readonly List<RevealCover> Revealed = [];
+        private static readonly List<RevealCover> Clicked = [];
         private static readonly System.Random Rng = new();
+        private static bool OneClickReveal = false;
 
         public static bool IsRevealed(string fullId) => RevealedIds.Contains(fullId);
 
@@ -33,37 +36,46 @@ namespace CUAchievements.UI
         private bool revealing;
         private float timer;
         private float progress;
+        private int timeClicked = 0;
+        private float redAmount = 0f;
+        private UITooltip tooltip;
         public bool IsFullyRevealed => revealing && progress >= 1f;
 
-        public void Initialize(string fullId, RectMask2D rectMask, RawImage noiseImage)
+        public void Initialize(string fullId, UITooltip uiTooltip, RectMask2D rectMask, RawImage noiseImage)
         {
             id = fullId;
             mask = rectMask;
             noise = noiseImage;
+            tooltip = uiTooltip;
             rect = (RectTransform)transform;
             group = GetComponent<CanvasGroup>();
             group.ignoreParentGroups = true;
             group.alpha = 1f;
 
-            SetNoiseAlpha(IdleAlpha);
+            SetNoiseAlpha();
             Reroll();
-
-            if (!Active.Contains(this)) Active.Add(this);
         }
 
-        private void OnDestroy() => Active.Remove(this);
+        private void OnDestroy() => Revealed.Remove(this);
         public static void ResetAll()
         {
             RevealedIds.Clear();
-            for (int i = Active.Count - 1; i >= 0; i--)
-                Active[i].Restore();
+            for (int i = Revealed.Count - 1; i >= 0; i--)
+                Revealed[i].Restore();
+            ResetClicks();
         }
         public void Reveal()
         {
+            if (!Click()) return;
             if (revealing) return;
+
+            PlayerCamera.PlayUISound("click");
+
             revealing = true;
             RevealedIds.Add(id);
             group.blocksRaycasts = false;
+            Revealed.Add(this);
+            tooltip.tipName = "";
         }
         public void Restore()
         {
@@ -76,21 +88,37 @@ namespace CUAchievements.UI
             group.blocksRaycasts = true;
             gameObject.SetActive(true);
 
+            ResetClicks();
+            ResolveStage();
+
             RevealedIds.Remove(id);
-            SetNoiseAlpha(IdleAlpha);
+            SetNoiseAlpha();
             Reroll();
+        }
+
+        public static void ResetClicks()
+        {
+            foreach (RevealCover cover in Clicked)
+            {
+                cover.redAmount = 0f;
+                cover.timeClicked = 0;
+                cover.SetNoiseAlpha();
+                cover.ResolveStage();
+            }
+
+            OneClickReveal = false;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             hovered = true;
-            SetNoiseAlpha(HoverAlpha);
+            SetNoiseAlpha();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             hovered = false;
-            SetNoiseAlpha(IdleAlpha);
+            SetNoiseAlpha();
         }
 
         private void OnRectTransformDimensionsChange()
@@ -136,9 +164,53 @@ namespace CUAchievements.UI
             noise.uvRect = new Rect(offset.x, offset.y, size.x / tile, size.y / tile);
         }
 
-        private void SetNoiseAlpha(float alpha)
+        private void SetNoiseAlpha()
         {
-            noise.color = new Color(1f, 1f, 1f, alpha);
+            float a = hovered ? HoverAlpha : IdleAlpha;
+            noise.color = new Color(1f, 1f - redAmount, 1f - redAmount, a);
+        }
+
+        private bool Click()
+        {
+            if (OneClickReveal) return true;
+
+
+            Clicked.Add(this);
+            timeClicked++;
+            redAmount += RedStep;
+            SetNoiseAlpha();
+
+            if (timeClicked >= 4)
+            {
+                OneClickReveal = true;
+                return true;
+            }
+
+            ResolveStage();
+
+            return false;
+        }
+
+        private void ResolveStage()
+        {
+            switch (timeClicked)
+            {
+                case 1:
+                    PlayerCamera.PlayUISound("selfharmtap", 1f);
+                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal_first", "Are you sure?");
+                    return;
+                case 2:
+                    PlayerCamera.PlayUISound("selfharmtap", 0.75f);
+                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal_second", "Are you ABSOLUTELY sure?");
+                    return;
+                case 3:
+                    PlayerCamera.PlayUISound("selfharmtap", 0.5f);
+                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal_third", "This decision cannot be changed!");
+                    return;
+                default:
+                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal", "Reveal");
+                    return;
+            }
         }
     }
 
@@ -146,7 +218,7 @@ namespace CUAchievements.UI
     {
         private const float Inset = 6f;
 
-        public static RevealCover Build(Transform card, string fullId, TMP_FontAsset font)
+        public static RevealCover Build(Transform card, string fullId, UITooltip tooltip, TMP_FontAsset font)
         {
             GameObject root = UIUtility.Create("Cover", card, typeof(RectMask2D), typeof(CanvasGroup), typeof(LayoutIgnorer), typeof(RevealCover));
             root.transform.Stretch(new Vector2(Inset, Inset), new Vector2(-Inset, -Inset));
@@ -160,6 +232,11 @@ namespace CUAchievements.UI
             noise.texture = NoiseTexture.Get();
             noise.raycastTarget = false;
 
+            Image tint = UIUtility.Create("Tint", root.transform, typeof(Image)).GetComponent<Image>();
+            tint.transform.Stretch();
+            tint.color = new Color(1f, 0f, 0f, 0f);
+            tint.raycastTarget = false;
+
             GameObject plate = UIUtility.CreatePanel("Plate", root.transform);
             RectTransform plateRect = (RectTransform)plate.transform;
             plateRect.anchorMin = plateRect.anchorMax = plateRect.pivot = new Vector2(0.5f, 0.5f);
@@ -171,12 +248,9 @@ namespace CUAchievements.UI
             mark.transform.Stretch();
             mark.raycastTarget = false;
 
-            UITooltip tooltip = root.AddComponent<UITooltip>();
-            tooltip.skipLocale = true;
-            tooltip.tipName = LocaleRegistry.Get("achievement_reveal", "Reveal");
-
             RevealCover cover = root.GetComponent<RevealCover>();
-            cover.Initialize(fullId, root.GetComponent<RectMask2D>(), noise);
+            cover.Initialize(fullId, tooltip, root.GetComponent<RectMask2D>(), noise);
+
             return cover;
         }
     }

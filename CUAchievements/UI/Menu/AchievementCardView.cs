@@ -1,6 +1,7 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
+using CUCoreLib.Registries;
 using System;
 using TMPro;
 using UnityEngine;
@@ -51,8 +52,15 @@ namespace CUAchievements.UI.Menu
                 onClick?.Invoke(a);
             });
 
+
+            UITooltip tooltip = root.AddComponent<UITooltip>();
+            tooltip.skipLocale = true;
+            tooltip.tipName = LocaleRegistry.Get("achievement_reveal", "Reveal");
+
             if (!RevealCover.IsRevealed(model.Source.FullId))
-                cover = RevealCoverBuilder.Build(root.transform, model.Source.FullId, font);
+                cover = RevealCoverBuilder.Build(root.transform, model.Source.FullId, tooltip, font);
+
+
             return root;
         }
 
