@@ -50,7 +50,7 @@ namespace CUAchievements.UI
 
         public static void Show(RegisteredAchievement achievement)
         {
-            var model = AchievementCardModel.From(achievement);
+            AchievementCardModel model = AchievementCardModel.From(achievement);
             AchievementAlertType alertType = AchievementConfig.AlertType.Value;
 
             if (alertType != AchievementAlertType.Popup)
