@@ -110,10 +110,10 @@ namespace CUAchievements.Persistence
 
             if (achievement.Definition.Scope == AchievementScope.Lifetime)
             {
-                achievement.Progress.Progress = progress.Progress;
+                achievement.ProgressData.Progress = progress.Progress;
             }
-            achievement.Progress.Unlocked = progress.Unlocked;
-            achievement.Progress.UnlockedAt = progress.UnlockedAt;
+            achievement.ProgressData.Unlocked = progress.Unlocked;
+            achievement.ProgressData.UnlockedAt = progress.UnlockedAt;
         }
 
         private static bool Save(string modGuid)
@@ -131,7 +131,7 @@ namespace CUAchievements.Persistence
                     if (achievement.PluginGuid != modGuid)
                         continue;
 
-                    save.Achievements[achievement.Definition.Id] = achievement.Progress;
+                    save.Achievements[achievement.Definition.Id] = achievement.ProgressData;
                 }
 
                 string json = JsonConvert.SerializeObject(save, Settings);

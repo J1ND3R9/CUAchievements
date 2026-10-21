@@ -62,7 +62,7 @@ namespace CUAchievements.Services
             if (RunIntegrity.Cheated)
                 return false;
 
-            AchievementProgressData progress = achievement.Progress;
+            AchievementProgressData progress = achievement.ProgressData;
 
             if (progress.Unlocked)
                 return false;
@@ -87,7 +87,7 @@ namespace CUAchievements.Services
 
         internal static bool UnlockInternal(RegisteredAchievement achievement)
         {
-            if (achievement.Progress.Unlocked) return false;
+            if (achievement.ProgressData.Unlocked) return false;
 
 #if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
@@ -99,9 +99,9 @@ namespace CUAchievements.Services
             if (RunIntegrity.Cheated)
                 return false;
 
-            achievement.Progress.Unlocked = true;
-            achievement.Progress.UnlockedAt = DateTime.UtcNow;
-            achievement.Progress.Progress = achievement.Definition.MaxProgress;
+            achievement.ProgressData.Unlocked = true;
+            achievement.ProgressData.UnlockedAt = DateTime.UtcNow;
+            achievement.ProgressData.Progress = achievement.Definition.MaxProgress;
 
             AchievementPopupManager.Show(achievement);
             AchievementPersistence.SaveNow(achievement.PluginGuid);
@@ -123,12 +123,12 @@ namespace CUAchievements.Services
 
                 if (achievement.Definition.Type == AchievementType.Counter)
                 {
-                    if (achievement.Progress.Progress != 0)
+                    if (achievement.ProgressData.Progress != 0)
                     {
-                        achievement.Progress.LastRunProgress = achievement.Progress.Progress;
+                        achievement.ProgressData.LastRunProgress = achievement.ProgressData.Progress;
                     }
 
-                    achievement.Progress.Progress = 0;
+                    achievement.ProgressData.Progress = 0;
                 }
 
                 achievement.ConditionalTracker?.Clear();

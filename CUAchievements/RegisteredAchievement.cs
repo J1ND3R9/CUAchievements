@@ -23,7 +23,7 @@ namespace CUAchievements.Registry
     {
         internal string PluginGuid { get; }
         internal string FullId => $"{PluginGuid}::{Definition.Id}";
-        internal AchievementProgressData Progress { get; }
+        internal AchievementProgressData ProgressData { get; }
         /// <summary>
         /// The definition this achievement was registered with.
         /// </summary>
@@ -31,7 +31,7 @@ namespace CUAchievements.Registry
         /// <summary>
         /// <see langword="true"/> once the achievement has been unlocked.
         /// </summary>
-        public bool IsUnlocked => Progress.Unlocked;
+        public bool IsUnlocked => ProgressData.Unlocked;
         /// <summary>
         /// Current progress of the achievement.
         /// </summary>
@@ -44,11 +44,11 @@ namespace CUAchievements.Registry
         /// before the achievement is unlocked.
         /// </para>
         /// </remarks>
-        public float CurrentProgress => Progress.Progress;
+        public float CurrentProgress => ProgressData.Progress;
         /// <summary>
         /// UTC date and time when the achievement was unlocked, or <see langword="null"/> if it is still locked.
         /// </summary>
-        public DateTime? UnlockedAt => Progress.UnlockedAt;
+        public DateTime? UnlockedAt => ProgressData.UnlockedAt;
         /// <summary>
         /// Named flags for achievements that depend on several conditions.
         /// </summary>
@@ -62,7 +62,7 @@ namespace CUAchievements.Registry
         {
             PluginGuid = pluginGuid;
             Definition = definition;
-            Progress = progress;
+            ProgressData = progress;
         }
 
         /// <summary>

@@ -41,11 +41,11 @@ namespace CUAchievements.UI.Menu
 
             if (def.Type == AchievementType.Counter)
             {
-                float value = a.Progress.Progress;
+                float value = a.ProgressData.Progress;
                 if (a.IsUnlocked)
                     value = def.MaxProgress;
-                else if (def.Scope == AchievementScope.Run && a.Progress.LastRunProgress > 0)
-                    value = a.Progress.LastRunProgress;
+                else if (def.Scope == AchievementScope.Run && a.ProgressData.LastRunProgress > 0)
+                    value = a.ProgressData.LastRunProgress;
 
                 string format = $"n{def.ProgressDecimals}";
                 model.Counter = new CounterInfo
