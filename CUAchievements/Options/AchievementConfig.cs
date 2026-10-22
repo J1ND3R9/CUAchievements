@@ -16,6 +16,7 @@ namespace CUAchievements.Options
         public static ConfigEntry<bool> AllowSandboxAchievements { get; private set; }
         public static ConfigEntry<bool> EnabledGreetingMessage { get; private set; }
         public static ConfigEntry<bool> RevealableHiddenAchievements { get; private set; }
+        public static ConfigEntry<bool> PrintScopeInAchievementList { get; private set; }
 
         public static ConfigEntry<AchievementAlertType> AlertType { get; private set; }
 
@@ -27,6 +28,8 @@ namespace CUAchievements.Options
         public static void Initialize(ConfigFile config)
         {
             RevealableHiddenAchievements = config.Bind("General", "RevealableHiddenAchievements", true, "Changes the appearance of hidden achievements: instead of a single panel showing a count, it displays multiple panels with hidden text that are revealed when clicked.");
+            PrintScopeInAchievementList = config.Bind("General", "PrintScopeInAchievementList", false, "Toggle information to the right-hand side of an achievement in list, indicating the scope within which it must be completed. Does not affect how the scope is displayed in the achievement details.");
+
 
             AnticheatEnabled = config.Bind("Anticheat", "AnticheatEnabled", true, "Toggles the command anti-cheat system – most commands are marked as \"unsafe,\" and executing any such command will disable unlocks and achievement progress for that save file.");
             AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", false, "Toggles the ability to earn achievements in the tutorial/sandbox, regardless of whether it permits the achievement.");
@@ -75,6 +78,20 @@ namespace CUAchievements.Options
                        AchievementEvents.RaiseUISettingsChanged();
                }
                ));
+
+            ModOptionsRegistry.Register(ModOptionDefinition.Bool(
+                $"{CUAchievementsPlugin.ModGUID}.PrintScopeInAchievementList",
+                "Scope in achievement list",
+                "Toggles the display of the scope in the achievements list.",
+                "Achievements",
+                false,
+                value =>
+                {
+                    PrintScopeInAchievementList.Value = value;
+                    if (!isLaunch)
+                        AchievementEvents.RaiseUISettingsChanged();
+                }
+                ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
                 $"{CUAchievementsPlugin.ModGUID}.AlertType",

@@ -1,4 +1,5 @@
-﻿using CUAchievements.Registry;
+﻿using CUAchievements.Options;
+using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
@@ -14,7 +15,7 @@ namespace CUAchievements.UI.Menu
     {
         public static GameObject Create(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
         {
-            GameObject root = UIUtility.Create("AchievementContainer", parent, typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup));
+            GameObject root = UIUtility.Create("Achievement", parent, typeof(HorizontalLayoutGroup), typeof(LayoutElement), typeof(CanvasGroup));
 
             root.GetComponent<LayoutElement>().preferredHeight = 140f;
             root.GetComponent<CanvasGroup>().alpha = model.Alpha;
@@ -34,8 +35,14 @@ namespace CUAchievements.UI.Menu
             BuildIcon(root.transform, model.Icon);
             BuildTexts(root.transform, model, font);
 
+            if (AchievementConfig.PrintScopeInAchievementList.Value && model.Scope == AchievementScope.Run)
+            {
+                BuildScopeText(root.transform, font);
+            }
+
             return root;
         }
+
         public static GameObject CreateRevealableHidden(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
         {
             model.Icon = AssetLoader.GetCachedSprite("achievement_default_hidden");
@@ -157,6 +164,13 @@ namespace CUAchievements.UI.Menu
             progressText.overflowMode = TextOverflowModes.Ellipsis;
 
             UIUtility.CreateSquareProgress(progressObject.transform, squareSize, counter.FilledSquares);
+        }
+
+        private static void BuildScopeText(Transform parent, TMP_FontAsset font)
+        {
+            GameObject scopeObject = UIUtility.CreateText(parent, "Scope", LocaleRegistry.Get("achievements_list_scope_run", "FOR RUN"), font, 20f, TextAlignmentOptions.Right).gameObject;
+            scopeObject.AddComponent<LayoutIgnorer>();
+            scopeObject.GetComponent<RectTransform>().Stretch(offsetMax: new Vector2(-25f, 0f));
         }
     }
 }
