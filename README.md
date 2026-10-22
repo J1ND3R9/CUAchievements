@@ -50,7 +50,7 @@ public class Plugin : BaseUnityPlugin
 		Achievements = AchievementsAPI.Create(ModGUID); // Create the API for your mod. The GUID ties achievements to your plugin, so IDs never conflict with other mods.
 
 		LocalizedText luminaryOfScienceName = new LocalizedText("achievement_luminary_of_science_name", "Luminary of science"); // If you want to localize an achievement, use LocalizedText instead of LocaleRegistry.Get().
-        LocalizedText luminaryOfScienceDesc = new LocalizedText("achievement_luminary_of_science_desc", "Keeping a light bulb in mouth was probably a bad idea.");
+		LocalizedText luminaryOfScienceDesc = new LocalizedText("achievement_luminary_of_science_desc", "Keeping a light bulb in mouth was probably a bad idea.");
 
 		Sprite luminaryOfScienceIcon = AssetLoader.LoadEmbeddedSprite("Assets.Images.luminary.png"); // CUCoreLib is also used here to load the sprite.
 		
@@ -65,7 +65,7 @@ public class Plugin : BaseUnityPlugin
 		    ));
 	
 		LocalizedText paintItYellowName = new LocalizedText("achievement_paint_it_yellow_name", "Paint It, Yellow");
-        LocalizedText paintItYellowDesc = new LocalizedText("achievement_paint_it_yellow_desc", "Lose 15 liters of blood in a single run.");
+		LocalizedText paintItYellowDesc = new LocalizedText("achievement_paint_it_yellow_desc", "Lose 15 liters of blood in a single run.");
 
 		Achievements.Register(AchievementDefinition.Counter( // --- Counter achievement: earned after reaching maxProgress ---
 		    id: "paint_it_yellow",
@@ -97,7 +97,7 @@ Read more: (a link to the documentation will be here)
 There is a mod here that makes use of almost everything CUAchievements has to offer: [Floydba Achievements](https://github.com/J1ND3R9/FloydbaAchievements)
 
 ## A small roadmap
-- [ ] Create documentation
+- [ ] Create documentation (at the moment, there is only some XML documentation)
 - [ ] Multiplayer support
 - [ ] Ability to add custom achievement unlock sounds
 - [ ] Sort settings
