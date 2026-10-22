@@ -131,7 +131,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             aScope = UIUtility.CreateText(dataObject.transform, "Scope", "Scope", GameFonts.Retro, 16f, TextAlignmentOptions.Center);
         }
 
-        private void CreateProgressRow(int filledSquares, string progressText)
+        private void CreateProgressRow(AchievementCardModel card)
         {
             if (dataObject == null) return;
             if (squaresObject != null)
@@ -142,8 +142,14 @@ namespace CUAchievements.UI.Menu.SidePanels
             squaresObject = UIUtility.Create("SquareProgress", dataObject.transform, typeof(VerticalLayoutGroup));
             squaresObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 4f, align: TextAnchor.MiddleCenter);
 
-            UIUtility.CreateText(squaresObject.transform, "ProgressText", progressText, GameFonts.Retro, 18f, TextAlignmentOptions.Center);
-            UIUtility.CreateSquareProgress(squaresObject.transform, 24f, filledSquares);
+            string lastProgress = "";
+            if (card.Scope == AchievementScope.Run && card.Source.ProgressData.LastRunProgress > 0 && card.Source.ProgressData.Progress != card.Source.Definition.MaxProgress)
+            {
+                lastProgress = LocaleRegistry.Get("achievement_last_progress", "LAST RUN PROGRESS:") + "\n";
+            }
+
+            UIUtility.CreateText(squaresObject.transform, "ProgressText", $"{lastProgress}{card.Counter.Text}", GameFonts.Retro, 18f, TextAlignmentOptions.Center);
+            UIUtility.CreateSquareProgress(squaresObject.transform, 24f, card.Counter.FilledSquares);
         }
 
         private void CreateBottom(Transform parent)
@@ -163,14 +169,20 @@ namespace CUAchievements.UI.Menu.SidePanels
             aTitle.text = card.Title;
             aDescription.text = card.Description;
             aModSource.text = AchievementRegistry.TryGetPluginName(card.Source.PluginGuid, out string pluginName) ? pluginName : card.Source.PluginGuid;
-            aScope.text = card.Scope == AchievementScope.Run ? LocaleRegistry.Get("achievements_scope_run", "MUST BE COMPLETED DURING A SINGLE RUN — PROGRESS RESETS ON DEATH") : LocaleRegistry.Get("achievements_scope_lifetime", "PROGRESS IS SAVED BETWEEN RUNS");
+            aScope.text = card.Scope == AchievementScope.Run ?
+                LocaleRegistry.Get("achievements_scope_run", "MUST BE COMPLETED DURING A SINGLE RUN — PROGRESS RESETS ON DEATH") :
+                card.Counter != null ?
+                LocaleRegistry.Get("achievements_scope_lifetime", "PROGRESS IS SAVED BETWEEN RUNS") :
+                "------";
 
             if (card.Counter != null)
             {
-                CreateProgressRow(card.Counter.FilledSquares, card.Counter.Text);
+                CreateProgressRow(card);
             }
             else
+            {
                 Destroy(squaresObject);
+            }
 
             if (card.Source.IsUnlocked)
             {
