@@ -18,7 +18,7 @@ namespace CUAchievements.Plugin
     {
         public const string ModGUID = "com.cuachievements";
         public const string ModName = "CUAchievements";
-        public const string ModVersion = "1.0.1";
+        public const string ModVersion = "1.1.0";
 
         internal static new ManualLogSource Logger;
 
