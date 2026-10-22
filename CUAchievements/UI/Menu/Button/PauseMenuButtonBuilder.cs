@@ -1,4 +1,5 @@
-﻿using CUAchievements.Anticheat;
+﻿using BepInEx.Bootstrap;
+using CUAchievements.Anticheat;
 using CUAchievements.Plugin;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
@@ -32,8 +33,9 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             RectTransform rect = (RectTransform)buttonObject.transform;
             rect.anchoredPosition = new Vector2(380f, -180f);
-            rect.offsetMax = new Vector2(440, -120f);
-            rect.offsetMin = new Vector2(320, -240f);
+
+            if (Chainloader.PluginInfos.ContainsKey("org.bepinex.plugins.qol_unknown"))
+                rect.anchoredPosition = new Vector2(480f, -300f);
 
             buttonTooltip = buttonObject.GetComponent<UITooltip>();
 
