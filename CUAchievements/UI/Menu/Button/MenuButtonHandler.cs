@@ -70,7 +70,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             if (!RectTransformUtility.RectangleContainsScreenPoint(clickRect, Input.mousePosition, camera))
                 return false;
 
-            var pointerData = new PointerEventData(EventSystem.current)
+            PointerEventData pointerData = new PointerEventData(EventSystem.current)
             {
                 position = Input.mousePosition
             };
