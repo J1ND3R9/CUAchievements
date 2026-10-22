@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 namespace CUAchievements.UI
 {
-    // I struggled for a couple of hours, and then I just vibecoded it. Sorry about that.
     internal sealed class RevealCover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private const float AlphaDuration = 0.3f;
@@ -255,6 +254,7 @@ namespace CUAchievements.UI
         }
     }
 
+    // I struggled for a couple of hours, and then I just vibecoded it. Sorry about that.
     internal static class NoiseTexture
     {
         public const int Size = 64;
