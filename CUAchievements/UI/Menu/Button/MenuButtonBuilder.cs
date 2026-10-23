@@ -47,13 +47,13 @@ namespace CUAchievements.UI.Menu.CustomButton
 
         private static void AddToParallax(RectTransform rect)
         {
-            var parallax = MenuParallax.instance?.parallax;
+            MenuParallax.ParallaxImage parallax = MenuParallax.instance?.parallax;
 
             if (parallax == null) return;
 
             float scale = 0.22f;
 
-            var experimentLayer = parallax.layers.FirstOrDefault(l => l.reference.transform.name == "Experiment");
+            MenuParallax.ParallaxLayerInfo experimentLayer = parallax.layers.FirstOrDefault(l => l.reference.transform.name == "Experiment");
             if (experimentLayer != null)
             {
                 scale = experimentLayer.mouseMoveScale;

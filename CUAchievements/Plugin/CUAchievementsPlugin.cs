@@ -30,9 +30,9 @@ namespace CUAchievements.Plugin
             Logger = base.Logger;
 
             SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunIntegritySaveProvider());
+            AchievementConfig.Initialize(Config);
             PluginAssetLoader.LoadAssets();
             ConsoleCommands.RegisterCUCommands();
-            AchievementConfig.Initialize(Config);
 #if DEBUG
             AchievementDebug.Register();
 #endif

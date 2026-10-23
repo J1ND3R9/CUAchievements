@@ -127,6 +127,9 @@ namespace CUAchievements.Assets
                 new("Assets.Images.UI.achievement_frame_normal.png", "achievement_frame_normal", border: 6f)
             ];
 
+            //if (AchievementConfig.)
+
+
             foreach (SpriteEntry entry in spriteEntries)
             {
                 Sprite sprite = AssetLoader.LoadEmbeddedSprite(entry.Path, entry.PixelsPerUnit);
