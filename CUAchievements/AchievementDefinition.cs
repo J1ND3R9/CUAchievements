@@ -133,7 +133,7 @@ namespace CUAchievements
                 CUAchievementsPlugin.Logger.LogWarning($"Achievement sprite with ID '{id}' is null. Using default sprite.");
                 sprite = AssetLoader.GetCachedSprite("achievement_default_sprite");
             }
-            if (lockedSprite == null || hidden)
+            if (lockedSprite == null)
             {
                 lockedSprite = AssetLoader.GetCachedSprite("achievement_default_locked");
             }

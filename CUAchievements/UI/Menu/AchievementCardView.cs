@@ -45,7 +45,8 @@ namespace CUAchievements.UI.Menu
 
         public static GameObject CreateRevealableHidden(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
         {
-            model.Icon = AssetLoader.GetCachedSprite("achievement_default_hidden");
+            if (model.Source.Definition.LockedIcon == null)
+                model.Icon = AssetLoader.GetCachedSprite("achievement_default_hidden");
 
             RevealCover cover = null;
 
