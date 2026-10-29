@@ -36,12 +36,12 @@ namespace CUAchievements.Options
             AnticheatEnabled = config.Bind("Anticheat", "AnticheatEnabled", true, "Toggles the command anti-cheat system – most commands are marked as \"unsafe,\" and executing any such command will disable unlocks and achievement progress for that save file.");
             AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", false, "Toggles the ability to earn achievements in the tutorial/sandbox, regardless of whether it permits the achievement.");
 
-            EnabledGreetingMessage = config.Bind("Alert", "EnabledGreetingMessage", true, "Toggles the initial pop-up message");
-            AlertType = config.Bind("Alert", "AlertType", AchievementAlertType.Popup, "Achievement notification type\n" +
+            EnabledGreetingMessage = config.Bind("Notifications", "EnabledGreetingMessage", true, "Toggles the initial pop-up message");
+            AlertType = config.Bind("Notifications", "AlertType", AchievementAlertType.Popup, "Achievement notification type\n" +
                 "0 - Pop-up\n" +
                 "1 - Standard in-game Alert\n" +
                 "2 - Hidden");
-            DisplayType = config.Bind("Alert", "DisplayType", AchievementDisplayType.BottomToUp, "Pop-up notification display type\n" +
+            DisplayType = config.Bind("Notifications", "DisplayType", AchievementDisplayType.BottomToUp, "Pop-up notification display type\n" +
                 "0 - From bottom to top\n" +
                 "1 - From the bottom-left corner to the right\n" +
                 "2 - From top to bottom\n" +
