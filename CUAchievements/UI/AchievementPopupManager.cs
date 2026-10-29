@@ -12,12 +12,14 @@ using UnityEngine.UI;
 
 namespace CUAchievements.UI
 {
+    // TODO: Рефактор
     internal sealed class AchievementPopupManager : MonoBehaviour
     {
         public static AchievementPopupManager Instance { get; private set; }
         private static float ShowDuration = 5f;
         private static AchievementDisplayType DisplayType = AchievementDisplayType.BottomToUp;
         private static AudioSource audioSource;
+        private static bool isPrecentageShow = false;
 
         private const float PanelWidth = 460f;
         private const float PanelHeight = 120f;
@@ -32,6 +34,9 @@ namespace CUAchievements.UI
         private Image frameImage;
         private TextMeshProUGUI titleText;
         private TextMeshProUGUI descText;
+
+        private GameObject textSection;
+        private GameObject progressRow;
 
         private GameObject canvasObject;
 
@@ -48,7 +53,7 @@ namespace CUAchievements.UI
             Instance.Build();
         }
 
-        public static void Show(RegisteredAchievement achievement)
+        public static void Show(RegisteredAchievement achievement, bool precentageShow = false)
         {
             AchievementCardModel model = AchievementCardModel.From(achievement);
             AchievementAlertType alertType = AchievementConfig.AlertType.Value;
@@ -63,13 +68,16 @@ namespace CUAchievements.UI
                 }
             }
 
-            BuildOnConfig();
+            BuildOnConfig(precentageShow);
 
             Instance.AchievementsQueue.Enqueue(model);
 
-            float volume = AchievementConfig.UnlockVolume.Value;
-            AudioClip unlockSound = AssetLoader.GetCachedAudioClip("achievement_sound_unlock_0");
-            audioSource.PlayOneShot(unlockSound, volume);
+            if (!precentageShow)
+            {
+                float volume = AchievementConfig.UnlockVolume.Value;
+                AudioClip unlockSound = AssetLoader.GetCachedAudioClip("achievement_sound_unlock_0");
+                audioSource.PlayOneShot(unlockSound, volume);
+            }
 
             if (!Instance.isShowing)
             {
@@ -207,31 +215,47 @@ namespace CUAchievements.UI
             iconFrameImage.type = Image.Type.Simple;
             iconFrameImage.raycastTarget = false;
 
-            GameObject textObject = UIUtility.Create("Text", achObject.transform, typeof(VerticalLayoutGroup), typeof(LayoutElement));
-            textObject.GetComponent<LayoutElement>().flexibleWidth = 1f;
-            textObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 4f, expandW: true);
+            textSection = UIUtility.Create("Text", achObject.transform, typeof(VerticalLayoutGroup), typeof(LayoutElement));
+            textSection.GetComponent<LayoutElement>().flexibleWidth = 1f;
+            textSection.GetComponent<VerticalLayoutGroup>().Configure(spacing: 4f, expandW: true);
 
-            titleText = UIUtility.CreateText(textObject.transform, "Title", "Title", GameFonts.Retro, 20f);
+            titleText = UIUtility.CreateText(textSection.transform, "Title", "Title", GameFonts.Retro, 20f);
             titleText.enableWordWrapping = true;
             titleText.overflowMode = TextOverflowModes.Ellipsis;
             titleText.maxVisibleLines = 2;
 
-            descText = UIUtility.CreateText(textObject.transform, "Description", "Desc", GameFonts.Retro, 16f);
+            descText = UIUtility.CreateText(textSection.transform, "Description", "Desc", GameFonts.Retro, 16f);
             descText.enableWordWrapping = true;
             descText.overflowMode = TextOverflowModes.Ellipsis;
             descText.maxVisibleLines = 2;
             descText.color = new Color(1f, 1f, 1f, 0.7f);
 
+            BuildProgressRow("Progress", 0);
+
             LayoutElement descLayout = descText.gameObject.AddComponent<LayoutElement>();
             descLayout.preferredHeight = 45f;
         }
 
-        private static void BuildOnConfig()
+        private static void BuildProgressRow(string text, int filledSquares)
+        {
+            if (Instance == null) return;
+            if (Instance.progressRow != null) Destroy(Instance.progressRow);
+            if (isPrecentageShow)
+            {
+                Instance.progressRow = UIUtility.Create("PopupProgress", Instance.textSection.transform, typeof(HorizontalLayoutGroup));
+                Instance.progressRow.GetComponent<HorizontalLayoutGroup>().Configure(spacing: 10f, align: TextAnchor.MiddleLeft);
+                UIUtility.CreateText(Instance.progressRow.transform, "ProgressText", text, GameFonts.Retro, 16f);
+                UIUtility.CreateSquareProgress(Instance.progressRow.transform, 14f, filledSquares);
+            }
+        }
+
+        private static void BuildOnConfig(bool precentageShow)
         {
             AchievementDisplayType displayType = AchievementConfig.DisplayType.Value;
-            bool needsRebuild = Instance != null && (displayType != DisplayType);
+            bool needsRebuild = Instance != null && displayType != DisplayType && precentageShow != isPrecentageShow;
             DisplayType = displayType;
             ShowDuration = AchievementConfig.PopUpTime.Value;
+            isPrecentageShow = precentageShow;
 
             Initialize();
 
@@ -265,14 +289,20 @@ namespace CUAchievements.UI
             iconImage.sprite = model.Icon;
             titleText.text = model.Title;
             descText.text = model.ShortDescription;
+
+            if (model.Counter != null)
+                BuildProgressRow(model.Counter.Text, model.Counter.FilledSquares);
+            else if (progressRow != null)
+                Destroy(progressRow);
+
             yield return AnimationUtility.SlideTo(ShownPos, popupRect);
             yield return new WaitForSecondsRealtime(ShowDuration);
             yield return AnimationUtility.SlideTo(HiddenPos, popupRect);
         }
 
-        internal static void DebugShow()
+        internal static void DebugShow(bool precentageShow = false)
         {
-            BuildOnConfig();
+            BuildOnConfig(precentageShow);
             if (Instance == null) return;
             if (Instance.debugShowCoroutine != null)
                 Instance.StopCoroutine(Instance.debugShowCoroutine);

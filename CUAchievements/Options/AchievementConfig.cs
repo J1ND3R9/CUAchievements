@@ -27,6 +27,7 @@ namespace CUAchievements.Options
         public static ConfigEntry<int> PopUpTime { get; private set; }
 
         public static ConfigEntry<float> UnlockVolume { get; private set; }
+        public static ConfigEntry<int> ProgressPopupPrecentage { get; private set; }
         public static void Initialize(ConfigFile config)
         {
             RevealableHiddenAchievements = config.Bind("General", "RevealableHiddenAchievements", true, "Changes the appearance of hidden achievements: instead of a single panel showing a count, it displays multiple panels with hidden text that are revealed when clicked.");
@@ -49,6 +50,7 @@ namespace CUAchievements.Options
 
             PopUpTime = config.Bind("Notifications", "PopUpTime", 5, new ConfigDescription("Duration for which the achievement notification is displayed. (from 1 to 15 seconds)", new AcceptableValueRange<int>(1, 15)));
             UnlockVolume = config.Bind("Notifications", "UnlockVolume", 1f, new ConfigDescription("Volume for the achievement unlock sound (0 = muted)", new AcceptableValueRange<float>(0f, 1f)));
+            ProgressPopupPrecentage = config.Bind("Notifications", "ProgressPopupPrecentage", 25, new ConfigDescription("Achievement progress percentages at which a pop-up notification will appear (0 = do not notify)", new AcceptableValueRange<int>(0, 99)));
 
             Verbose = config.Bind("Debug", "Verbose", false, "Toggles verbose logging");
 
@@ -164,6 +166,18 @@ namespace CUAchievements.Options
                 1f,
                 value => UnlockVolume.Value = value,
                 value => Mathf.RoundToInt(value * 100f) + "%"
+                ));
+
+            ModOptionsRegistry.Register(ModOptionDefinition.Float(
+                $"{CUAchievementsInfo.GUID}.ProgressPopupPrecentage",
+                "Percentage for the pop-up",
+                "Achievement progress percentages at which a pop-up notification will appear. 0 = disabled.",
+                "Achievements",
+                ProgressPopupPrecentage.Value,
+                0f,
+                99f,
+                value => ProgressPopupPrecentage.Value = (int)value,
+                value => Mathf.RoundToInt(value) + "%" // TODO: Шаг в 5%
                 ));
 
             isLaunch = false;

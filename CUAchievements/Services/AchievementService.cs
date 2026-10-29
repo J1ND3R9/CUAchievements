@@ -1,4 +1,5 @@
 ﻿using CUAchievements.Anticheat;
+using CUAchievements.Options;
 using CUAchievements.Persistence;
 using CUAchievements.Plugin;
 using CUAchievements.Registry;
@@ -62,24 +63,40 @@ namespace CUAchievements.Services
             if (RunIntegrity.Cheated)
                 return false;
 
-            AchievementProgressData progress = achievement.ProgressData;
+            AchievementProgressData progressData = achievement.ProgressData;
 
-            if (progress.Unlocked)
+            if (progressData.Unlocked)
                 return false;
 
-            progress.Progress += amount;
+            float oldProgress = progressData.Progress;
 
-            if (progress.Progress >= achievement.Definition.MaxProgress)
+            progressData.Progress += amount;
+
+            if (progressData.Progress >= achievement.Definition.MaxProgress)
             {
-                progress.Progress = achievement.Definition.MaxProgress;
+                progressData.Progress = achievement.Definition.MaxProgress;
                 UnlockInternal(achievement);
+                return true;
             }
 
-            else
+            int progressStep = AchievementConfig.ProgressPopupPrecentage.Value;
+
+            if (progressStep > 0)
             {
-                AchievementPersistence.MarkDirty(achievement.PluginGuid);
+                double oldPercent = (double)oldProgress / achievement.Definition.MaxProgress * 100;
+                double newPercent = (double)progressData.Progress / achievement.Definition.MaxProgress * 100;
+
+                int oldStepIndex = (int)Math.Floor(oldPercent / progressStep);
+                int newStepIndex = (int)Math.Floor(newPercent / progressStep);
+
+                if (newStepIndex > oldStepIndex)
+                {
+                    if (newStepIndex > 0)
+                        AchievementPopupManager.Show(achievement, precentageShow: true);
+                }
             }
 
+            AchievementPersistence.MarkDirty(achievement.PluginGuid);
             AchievementEvents.RaiseAchievementsChanged();
 
             return true;
