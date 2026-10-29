@@ -12,17 +12,17 @@ namespace CUAchievements.UI.Utility
         public static GameObject ButtonTemplate { get; set; }
         public static GameObject Create(string name, Transform parent, params Type[] components)
         {
-            var types = new Type[components.Length + 1];
+            Type[] types = new Type[components.Length + 1];
             types[0] = typeof(RectTransform);
             components.CopyTo(types, 1);
 
-            var gameObject = new GameObject(name, types);
+            GameObject gameObject = new GameObject(name, types);
             gameObject.transform.SetParent(parent, false);
             return gameObject;
         }
         public static RectTransform Stretch(this Transform transform, Vector2 offsetMin = default, Vector2 offsetMax = default)
         {
-            var rect = (RectTransform)transform;
+            RectTransform rect = (RectTransform)transform;
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
             rect.offsetMin = offsetMin;
@@ -57,7 +57,7 @@ namespace CUAchievements.UI.Utility
             GameObject inputObject = Create(name, parent, typeof(Image));
             inputObject.SetActive(false);
 
-            var inputImage = inputObject.GetComponent<Image>();
+            Image inputImage = inputObject.GetComponent<Image>();
             inputImage.type = Image.Type.Sliced;
             inputImage.sprite = ButtonTemplate?.GetComponent<Image>().sprite;
 
@@ -75,7 +75,7 @@ namespace CUAchievements.UI.Utility
             hint.fontStyle = FontStyles.Italic;
             hint.raycastTarget = false;
 
-            var input = inputObject.AddComponent<TMP_InputField>();
+            TMP_InputField input = inputObject.AddComponent<TMP_InputField>();
             input.textViewport = viewportRect;
             input.interactable = interactable;
             input.textComponent = text;
@@ -202,7 +202,7 @@ namespace CUAchievements.UI.Utility
         {
             if (panel == null) return;
             Button[] buttons = panel.GetComponentsInChildren<Button>(true);
-            foreach (var b in buttons)
+            foreach (Button b in buttons)
             {
                 UnityEngine.Object.Destroy(b.gameObject);
             }
@@ -261,7 +261,7 @@ namespace CUAchievements.UI.Utility
             {
                 TextMeshProUGUI textTmp = CreateText(progressObject.transform, "Precentage", $"{precentage}%", font, 18f, alignment: TextAlignmentOptions.Midline);
                 textTmp.color = Color.black;
-                var textRect = Stretch(textTmp.transform);
+                RectTransform textRect = Stretch(textTmp.transform);
 
                 if (precentage < 50)
                 {
@@ -307,7 +307,7 @@ namespace CUAchievements.UI.Utility
                                                  float fontSize = 12f,
                                                  TextAlignmentOptions alignment = TextAlignmentOptions.Left)
         {
-            var tmp = Create(name, parent, typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI tmp = Create(name, parent, typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
             tmp.text = text;
             tmp.font = font;
             tmp.fontSize = fontSize;

@@ -20,7 +20,7 @@ namespace CUAchievements.Registry
         {
             return new AchievementRegistry(pluginGuid);
         }
-        
+
         public RegisteredAchievement Register(AchievementDefinition achievement)
         {
             if (string.IsNullOrEmpty(_pluginGuid))
@@ -104,16 +104,16 @@ namespace CUAchievements.Registry
         {
             Dictionary<string, List<RegisteredAchievement>> pluginAchievements = [];
 
-            var registeredAchievements = RegisteredAchievements.Values.ToList();
+            List<RegisteredAchievement> registeredAchievements = RegisteredAchievements.Values.ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 registeredAchievements = [.. registeredAchievements
-                    .Where(a => a.Definition.Name.ToLower().Contains(search.ToLower()) 
+                    .Where(a => a.Definition.Name.ToLower().Contains(search.ToLower())
                     || a.Definition.Description.ToLower().Contains(search.ToLower()))];
             }
 
-            foreach (var achievement in registeredAchievements)
+            foreach (RegisteredAchievement achievement in registeredAchievements)
             {
                 string plugin = achievement.PluginGuid;
                 if (nameInsteadGuid)
