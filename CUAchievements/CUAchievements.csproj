@@ -110,6 +110,7 @@
     <Compile Include="ConditionalAchievementTracker.cs" />
     <Compile Include="AchievementsAPI.cs" />
     <Compile Include="Plugin\CUAchievementsInfo.cs" />
+    <Compile Include="Plugin\Log.cs" />
     <Compile Include="Registry\AchievementRegistry.cs" />
     <Compile Include="Persistence\AchievementSaveFile.cs" />
     <Compile Include="Services\AchievementService.cs" />
