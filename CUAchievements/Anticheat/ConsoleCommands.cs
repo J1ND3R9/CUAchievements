@@ -73,6 +73,7 @@ namespace CUAchievements.Anticheat
                 return;
             }
             RegisteredCommands[commandName] = CommandSafety.Safe;
+            Log.Debug($"Console command '{commandName}' is registered as SAFE.");
         }
 
         /// <summary>
@@ -112,6 +113,7 @@ namespace CUAchievements.Anticheat
                 return;
             }
             RegisteredCommands[commandName] = CommandSafety.Unsafe;
+            Log.Debug($"Console command '{commandName}' is registered as UNSAFE.");
         }
 
         /// <summary>

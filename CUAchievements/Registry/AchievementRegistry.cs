@@ -47,6 +47,7 @@ namespace CUAchievements.Registry
 
             AchievementPersistence.Restore(registeredAchievement);
 
+            Log.Debug($"Achievement '{fullId}' has been registered");
             return registeredAchievement;
         }
 

@@ -99,6 +99,7 @@ namespace CUAchievements.Services
             AchievementPersistence.MarkDirty(achievement.PluginGuid);
             AchievementEvents.RaiseAchievementsChanged();
 
+            Log.Debug($"Progress added to achievement '{achievement.FullId}': {amount}");
             return true;
         }
 
@@ -150,6 +151,7 @@ namespace CUAchievements.Services
 
                 achievement.ConditionalTracker?.Clear();
             }
+            Log.Debug("The run has ended. The character is either dead, or the player has exited the Sandbox/Tutorial mode.");
         }
     }
 }

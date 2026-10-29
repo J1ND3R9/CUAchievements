@@ -1,4 +1,5 @@
-﻿using CUAchievements.UI;
+﻿using CUAchievements.Plugin;
+using CUAchievements.UI;
 using CUCoreLib.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
@@ -141,6 +142,7 @@ namespace CUAchievements.Assets
                 if (entry.AplhaIsTransparency)
                     sprite.texture.ApplyAlphaIsTransparency();
                 LoadedSprites[entry.CacheKey] = sprite;
+                Log.Debug($"Sprite '{entry.CacheKey}' loaded");
             }
 
 
@@ -153,6 +155,7 @@ namespace CUAchievements.Assets
             {
                 AudioClip clip = AssetLoader.LoadEmbeddedAudio(entry.Path);
                 LoadedAudioClips[entry.CacheKey] = clip;
+                Log.Debug($"Audio '{entry.CacheKey}' loaded");
             }
 
             CacheAssets();

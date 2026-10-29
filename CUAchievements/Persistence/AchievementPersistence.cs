@@ -24,6 +24,7 @@ namespace CUAchievements.Persistence
         public static void MarkDirty(string modGuid)
         {
             DirtyPlugins.Add(modGuid);
+            Log.Debug($"The '{modGuid}' plugin is marked as 'dirty' and will be automatically saved to a file");
         }
 
         public static void EnsureLoaded(string modGuid)
@@ -62,6 +63,7 @@ namespace CUAchievements.Persistence
             save ??= CreateSave(modGuid, 1);
 
             Saves[modGuid] = save;
+            Log.Debug($"Save for the '{modGuid}' plugin has been loaded");
         }
 
         private static AchievementSaveFile TryLoadSaveFile(string path, string modGuid)
@@ -142,12 +144,12 @@ namespace CUAchievements.Persistence
                 if (!SaveFile(compressed, saveFile))
                     return false;
 
+                Log.Debug($"Save for the '{modGuid}' plugin has been loaded");
                 return true;
             }
             catch (Exception ex)
             {
                 Log.Error($"Failed to save achievements for plugin {modGuid}: {ex}");
-
                 return false;
             }
         }
@@ -227,6 +229,7 @@ namespace CUAchievements.Persistence
 
         private static AchievementSaveFile CreateSave(string modGuid, int version)
         {
+            Log.Debug($"Save for the '{modGuid}' plugin has been created");
             return new AchievementSaveFile
             {
                 Version = version,

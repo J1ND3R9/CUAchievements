@@ -40,7 +40,7 @@ namespace CUAchievements.Plugin
 
         void OnApplicationQuit()
         {
-            AchievementService.EndRun();
+            AchievementService.EndRun(); // FIXME: Нужно переделать - Достижения со Scope = Run будут очищены даже при сейве и просто выходе из игры.
             AchievementPersistence.SaveDirty();
         }
 

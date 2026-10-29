@@ -1,4 +1,5 @@
 ﻿using CUAchievements.Options;
+using CUAchievements.Plugin;
 using CUAchievements.UI.Menu.CustomButton;
 using CUCoreLib.Saving;
 using Newtonsoft.Json.Linq;
@@ -34,6 +35,7 @@ namespace CUAchievements.Anticheat
             {
                 PauseMenuButtonBuilder.SetTooltip();
                 RunIntegrity.MarkCheated();
+                Log.Debug("The run is loaded and classified as 'cheated'");
             }
         }
     }

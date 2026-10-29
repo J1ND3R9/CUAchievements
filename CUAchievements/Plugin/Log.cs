@@ -12,7 +12,9 @@ namespace CUAchievements.Plugin
         public static void Error(string message) { _source?.LogError(message); }
         public static void Debug(string message)
         {
+#if !DEBUG
             if (AchievementConfig.Verbose != null && AchievementConfig.Verbose.Value)
+#endif
                 _source?.LogInfo($"[DEBUG] {message}");
         }
     }
