@@ -10,29 +10,21 @@ namespace CUAchievements.Persistence
         {
             byte[] data = Encoding.UTF8.GetBytes(text);
 
-            using (MemoryStream output = new())
+            using MemoryStream output = new();
+            using (GZipStream gzip = new(output, CompressionLevel.Optimal))
             {
-                using (GZipStream gzip = new(output, CompressionLevel.Optimal))
-                {
-                    gzip.Write(data, 0, data.Length);
-                }
-
-                return output.ToArray();
+                gzip.Write(data, 0, data.Length);
             }
+
+            return output.ToArray();
         }
 
         public static string Decompress(byte[] data)
         {
-            using (MemoryStream input = new(data))
-            {
-                using (GZipStream gzip = new(input, CompressionMode.Decompress))
-                {
-                    using (StreamReader reader = new(gzip, Encoding.UTF8))
-                    {
-                        return reader.ReadToEnd();
-                    }
-                }
-            }
+            using MemoryStream input = new(data);
+            using GZipStream gzip = new(input, CompressionMode.Decompress);
+            using StreamReader reader = new(gzip, Encoding.UTF8);
+            return reader.ReadToEnd();
         }
     }
 }
