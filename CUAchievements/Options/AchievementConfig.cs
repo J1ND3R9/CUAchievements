@@ -18,6 +18,7 @@ namespace CUAchievements.Options
         public static ConfigEntry<bool> RevealableHiddenAchievements { get; private set; }
         public static ConfigEntry<bool> PrintScopeInAchievementList { get; private set; }
         public static ConfigEntry<bool> EasterEggsEnabled { get; private set; }
+        public static ConfigEntry<bool> Verbose { get; private set; }
 
         public static ConfigEntry<AchievementAlertType> AlertType { get; private set; }
 
@@ -48,6 +49,8 @@ namespace CUAchievements.Options
 
             PopUpTime = config.Bind("Notifications", "PopUpTime", 5, new ConfigDescription("Duration for which the achievement notification is displayed. (from 1 to 15 seconds)", new AcceptableValueRange<int>(1, 15)));
             UnlockVolume = config.Bind("Notifications", "UnlockVolume", 1f, new ConfigDescription("Volume for the achievement unlock sound (0 = muted)", new AcceptableValueRange<float>(0f, 1f)));
+
+            Verbose = config.Bind("Debug", "Verbose", false, "Toggles verbose logging");
 
             AnticheatPatches.AnticheatDisabled = !AnticheatEnabled.Value;
             RegisterOptions();
