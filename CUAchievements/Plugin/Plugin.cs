@@ -12,17 +12,13 @@ using UnityEngine;
 
 namespace CUAchievements.Plugin
 {
-    [BepInPlugin(ModGUID, ModName, ModVersion)]
+    [BepInPlugin(CUAchievementsInfo.GUID, CUAchievementsInfo.Name, CUAchievementsInfo.Version)]
     [BepInDependency("net.cucorelib", BepInDependency.DependencyFlags.HardDependency)]
-    internal class CUAchievementsPlugin : BaseUnityPlugin
+    internal class Plugin : BaseUnityPlugin
     {
-        public const string ModGUID = "com.cuachievements";
-        public const string ModName = "CUAchievements";
-        public const string ModVersion = "1.1.0";
-
         internal static new ManualLogSource Logger;
 
-        private readonly Harmony _harmony = new(ModGUID);
+        private readonly Harmony _harmony = new(CUAchievementsInfo.GUID);
 
         private const float AutoSaveInterval = 10f;
         void Awake()
