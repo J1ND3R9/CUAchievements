@@ -43,7 +43,7 @@ namespace CUAchievements.Persistence
 
             if (save == null && File.Exists(backupFile))
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Main save for {modGuid} is corrupted or missing. Trying to load from backup...");
+                Log.Warn($"Main save for {modGuid} is corrupted or missing. Trying to load from backup...");
                 save = TryLoadSaveFile(backupFile, modGuid);
 
                 if (save != null)
@@ -54,7 +54,7 @@ namespace CUAchievements.Persistence
                     }
                     catch (Exception ex)
                     {
-                        CUAchievementsPlugin.Logger.LogWarning($"Failed to restore backup for {modGuid}: {ex.Message}");
+                        Log.Error($"Failed to restore backup for {modGuid}: {ex.Message}");
                     }
                 }
             }
@@ -91,7 +91,7 @@ namespace CUAchievements.Persistence
             }
             catch (Exception ex)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed to load achievements for plugin {modGuid}: {ex}");
+                Log.Error($"Failed to load achievements for plugin {modGuid}: {ex}");
             }
 
             return null;
@@ -146,7 +146,7 @@ namespace CUAchievements.Persistence
             }
             catch (Exception ex)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed to save achievements for plugin {modGuid}: {ex}");
+                Log.Error($"Failed to save achievements for plugin {modGuid}: {ex}");
 
                 return false;
             }
@@ -197,7 +197,7 @@ namespace CUAchievements.Persistence
             }
             catch (Exception ex)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed to write save file {saveFilePath}: {ex}");
+                Log.Error($"Failed to write save file {saveFilePath}: {ex}");
                 return false;
             }
         }

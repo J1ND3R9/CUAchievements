@@ -26,7 +26,7 @@ namespace CUAchievements.Services
         {
             if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} does not exists.");
+                Log.Error($"Failed add progress to achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace CUAchievements.Services
         {
             if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
+                Log.Error($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
@@ -48,7 +48,7 @@ namespace CUAchievements.Services
         {
             if (achievement.Definition.Type != AchievementType.Counter)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {achievement.Definition.Id} is not a counter type.");
+                Log.Error($"Failed add progress to achievement. Error: Achievement with id {achievement.Definition.Id} is not a counter type.");
                 return false;
             }
 

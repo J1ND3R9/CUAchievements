@@ -46,7 +46,7 @@ namespace CUAchievements.UI.Menu
             GameObject template = Resources.Load<GameObject>("Special/SettingsMenu");
             if (template == null)
             {
-                CUAchievementsPlugin.Logger.LogError("SettingsMenu template not found.");
+                Log.Error("SettingsMenu template not found.");
                 return;
             }
 

@@ -42,7 +42,7 @@ namespace CUAchievements.Anticheat
             List<string> safeCommands =
             [
                 "skiptext", "help", "log", "talk", "framerate", "alert", "saveandquit", "resetskills", "fucklore", "setconsoleheight", "setconsolecolor", "copylog",
-                "clear", "loglocale", "nukeplayerprefs", "openfolder", "music", "bind", "echo", "ui", "errorlogging", "modlist", "bug-report", "reloadcontent", 
+                "clear", "loglocale", "nukeplayerprefs", "openfolder", "music", "bind", "echo", "ui", "errorlogging", "modlist", "bug-report", "reloadcontent",
                 "autohotreload", "debugwatch"
             ];
 
@@ -69,7 +69,7 @@ namespace CUAchievements.Anticheat
             if (string.IsNullOrEmpty(commandName)) return;
             if (RegisteredCommands.ContainsKey(commandName))
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Command \"{commandName}\" already registered. Ignored duplicate.");
+                Log.Warn($"Command \"{commandName}\" already registered. Ignored duplicate.");
                 return;
             }
             RegisteredCommands[commandName] = CommandSafety.Safe;
@@ -87,7 +87,7 @@ namespace CUAchievements.Anticheat
         public static void RegisterSafe(IEnumerable<string> commandNames)
         {
             if (commandNames == null) return;
-            foreach (var commandName in commandNames)
+            foreach (string commandName in commandNames)
             {
                 RegisterSafe(commandName);
             }
@@ -108,7 +108,7 @@ namespace CUAchievements.Anticheat
             if (string.IsNullOrEmpty(commandName)) return;
             if (RegisteredCommands.ContainsKey(commandName))
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Command \"{commandName}\" already registered. Ignored duplicate.");
+                Log.Warn($"Command \"{commandName}\" already registered. Ignored duplicate.");
                 return;
             }
             RegisteredCommands[commandName] = CommandSafety.Unsafe;
@@ -126,11 +126,11 @@ namespace CUAchievements.Anticheat
         public static void RegisterCheat(IEnumerable<string> commandNames)
         {
             if (commandNames == null) return;
-            foreach (var commandName in commandNames)
+            foreach (string commandName in commandNames)
             {
                 if (RegisteredCommands.ContainsKey(commandName))
                 {
-                    CUAchievementsPlugin.Logger.LogWarning($"Command \"{commandName}\" already registered. Ignored duplicate.");
+                    Log.Warn($"Command \"{commandName}\" already registered. Ignored duplicate.");
                     return;
                 }
                 RegisterCheat(commandName);

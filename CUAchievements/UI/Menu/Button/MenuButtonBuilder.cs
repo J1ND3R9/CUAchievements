@@ -21,7 +21,7 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             if (baseSprite == null)
             {
-                CUAchievementsPlugin.Logger.LogError("achievement_button sprite not found.");
+                Log.Error("achievement_button sprite not found.");
                 return;
             }
 

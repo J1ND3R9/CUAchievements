@@ -105,7 +105,7 @@ namespace CUAchievements.UI.Utility
         {
             if (ButtonTemplate == null)
             {
-                CUAchievementsPlugin.Logger.LogError("UIUtility.ButtonTemplate is not set.");
+                Log.Error("UIUtility.ButtonTemplate is not set.");
                 return null;
             }
 

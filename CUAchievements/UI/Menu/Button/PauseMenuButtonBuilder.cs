@@ -20,7 +20,7 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             if (sprite == null)
             {
-                CUAchievementsPlugin.Logger.LogError("achievement_pause_button sprite not found.");
+                Log.Error("achievement_pause_button sprite not found.");
                 return null;
             }
 

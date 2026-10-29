@@ -25,19 +25,19 @@ namespace CUAchievements.Registry
         {
             if (string.IsNullOrEmpty(_pluginGuid))
             {
-                CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: AchievementRegistry was not created.");
+                Log.Error($"Achievement registration failed. Error: AchievementRegistry was not created.");
                 return null;
             }
             string errorText = Validate(achievement);
             if (!string.IsNullOrEmpty(errorText))
             {
-                CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: {errorText}");
+                Log.Error($"Achievement registration failed. Error: {errorText}");
                 return null;
             }
             string fullId = $"{_pluginGuid}::{achievement.Id}";
             if (RegisteredAchievements.ContainsKey(fullId))
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Achievement {achievement.Id} already registered. Ignored duplicate.");
+                Log.Warn($"Achievement {achievement.Id} already registered. Ignored duplicate.");
                 return null;
             }
 

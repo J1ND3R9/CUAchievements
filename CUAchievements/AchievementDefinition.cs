@@ -130,7 +130,7 @@ namespace CUAchievements
         {
             if (sprite == null)
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Achievement sprite with ID '{id}' is null. Using default sprite.");
+                Log.Warn($"Achievement sprite with ID '{id}' is null. Using default sprite.");
                 sprite = AssetLoader.GetCachedSprite("achievement_default_sprite");
             }
             if (lockedSprite == null)
