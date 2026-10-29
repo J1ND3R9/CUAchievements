@@ -60,7 +60,7 @@ namespace CUAchievements.Options
             bool isLaunch = true;
 
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-                $"{CUAchievementsPlugin.ModGUID}.GreetingsMessage",
+                $"{CUAchievementsInfo.GUID}.GreetingsMessage",
                 "Greetings message",
                 "Displays a pop-up initial message",
                 "Achievements",
@@ -69,7 +69,7 @@ namespace CUAchievements.Options
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-               $"{CUAchievementsPlugin.ModGUID}.RevealableHiddenAchievements",
+               $"{CUAchievementsInfo.GUID}.RevealableHiddenAchievements",
                "Revealable hidden achievements",
                "Changes the appearance of hidden achievements: " +
                "instead of a single panel showing a count, it displays multiple panels with hidden text that are revealed when clicked.",
@@ -84,7 +84,7 @@ namespace CUAchievements.Options
                ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-                $"{CUAchievementsPlugin.ModGUID}.PrintScopeInAchievementList",
+                $"{CUAchievementsInfo.GUID}.PrintScopeInAchievementList",
                 "Scope in achievement list",
                 "Toggles the display of the scope in the achievements list.",
                 "Achievements",
@@ -98,7 +98,7 @@ namespace CUAchievements.Options
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-                $"{CUAchievementsPlugin.ModGUID}.EasterEggsEnabled",
+                $"{CUAchievementsInfo.GUID}.EasterEggsEnabled",
                 "Easter eggs",
                 "Toggles the appearance of Easter eggs. Easter eggs do not affect gameplay in any way and are purely visual in nature.",
                 "Achievements",
@@ -107,7 +107,7 @@ namespace CUAchievements.Options
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-                $"{CUAchievementsPlugin.ModGUID}.AlertType",
+                $"{CUAchievementsInfo.GUID}.AlertType",
                 "Alert type",
                 "How unlocked achievements are announced",
                 "Achievements",
@@ -121,7 +121,7 @@ namespace CUAchievements.Options
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-                $"{CUAchievementsPlugin.ModGUID}.DisplayType",
+                $"{CUAchievementsInfo.GUID}.DisplayType",
                 "Display type",
                 "How to display a pop-up notification",
                 "Achievements",
@@ -143,7 +143,7 @@ namespace CUAchievements.Options
                 }));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Float(
-                $"{CUAchievementsPlugin.ModGUID}.PopUpTime",
+                $"{CUAchievementsInfo.GUID}.PopUpTime",
                 "Pop-up duration",
                 "Duration of the pop-up notification",
                 "Achievements",
@@ -155,7 +155,7 @@ namespace CUAchievements.Options
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Float(
-                $"{CUAchievementsPlugin.ModGUID}.UnlockVolume",
+                $"{CUAchievementsInfo.GUID}.UnlockVolume",
                 "Unlock volume",
                 "Achievement unlock notification volume",
                 "Achievements",

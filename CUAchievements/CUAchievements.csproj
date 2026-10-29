@@ -109,11 +109,12 @@
     <Compile Include="LocalizedText.cs" />
     <Compile Include="ConditionalAchievementTracker.cs" />
     <Compile Include="AchievementsAPI.cs" />
+    <Compile Include="Plugin\CUAchievementsInfo.cs" />
     <Compile Include="Registry\AchievementRegistry.cs" />
     <Compile Include="Persistence\AchievementSaveFile.cs" />
     <Compile Include="Services\AchievementService.cs" />
     <Compile Include="Persistence\AchievementProgressData.cs" />
-    <Compile Include="Plugin\CUAchievementsPlugin.cs" />
+    <Compile Include="Plugin\Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisteredAchievement.cs" />
     <Compile Include="Patches\MenuButtonPatches.cs" />

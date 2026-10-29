@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Номер сборки
 //      Редакция
 //
-[assembly: AssemblyVersion(CUAchievementsPlugin.ModVersion)]
-[assembly: AssemblyFileVersion(CUAchievementsPlugin.ModVersion)]
+[assembly: AssemblyVersion(CUAchievementsInfo.Version)]
+[assembly: AssemblyFileVersion(CUAchievementsInfo.Version)]
