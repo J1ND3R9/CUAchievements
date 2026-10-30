@@ -73,6 +73,7 @@ namespace CUAchievements.UI
         }
         private void OnStatisticClick()
         {
+            PlayerCamera.PlayUISound("miniclick", 1f);
             if (StatsPanel.IsOpen)
                 statsPanel.Close();
             else
@@ -99,8 +100,11 @@ namespace CUAchievements.UI
             needsRefresh = false;
         }
 
-        private void ShowDetails(RegisteredAchievement achievement) =>
+        private void ShowDetails(RegisteredAchievement achievement)
+        {
+            PlayerCamera.PlayUISound("miniclick", 1f);
             detailsPanel.Open(achievement);
+        }
 
         private void BuildTabs()
         {
