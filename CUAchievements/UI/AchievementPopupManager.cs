@@ -56,7 +56,7 @@ namespace CUAchievements.UI
         public static void Show(RegisteredAchievement achievement, bool precentageShow = false)
         {
             AchievementCardModel model = AchievementCardModel.From(achievement);
-            AchievementAlertType alertType = AchievementConfig.AlertType.Value;
+            AchievementAlertType alertType = Config.AlertType.Value;
 
             if (alertType != AchievementAlertType.Popup)
             {
@@ -74,7 +74,7 @@ namespace CUAchievements.UI
 
             if (!precentageShow)
             {
-                float volume = AchievementConfig.UnlockVolume.Value;
+                float volume = Config.UnlockVolume.Value;
                 AudioClip unlockSound = AssetLoader.GetCachedAudioClip("achievement_sound_unlock_0");
                 audioSource.PlayOneShot(unlockSound, volume);
             }
@@ -128,7 +128,7 @@ namespace CUAchievements.UI
 
         private void DisplayTypeAnchors(RectTransform rect)
         {
-            DisplayType = AchievementConfig.DisplayType.Value;
+            DisplayType = Config.DisplayType.Value;
 
             Vector2 minMax = new(0.5f, 0f);
             Vector2 hiddenPos = new(0f, -(-PanelHeight + Margin));
@@ -251,10 +251,10 @@ namespace CUAchievements.UI
 
         private static void BuildOnConfig(bool precentageShow)
         {
-            AchievementDisplayType displayType = AchievementConfig.DisplayType.Value;
+            AchievementDisplayType displayType = Config.DisplayType.Value;
             bool needsRebuild = Instance != null && displayType != DisplayType && precentageShow != isPrecentageShow;
             DisplayType = displayType;
-            ShowDuration = AchievementConfig.PopUpTime.Value;
+            ShowDuration = Config.PopUpTime.Value;
             isPrecentageShow = precentageShow;
 
             Initialize();

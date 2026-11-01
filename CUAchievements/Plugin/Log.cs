@@ -13,7 +13,7 @@ namespace CUAchievements.Plugin
         public static void Debug(string message)
         {
 #if !DEBUG
-            if (AchievementConfig.Verbose != null && AchievementConfig.Verbose.Value)
+            if (Config.Verbose != null && Config.Verbose.Value)
 #endif
                 _source?.LogInfo($"[DEBUG] {message}");
         }

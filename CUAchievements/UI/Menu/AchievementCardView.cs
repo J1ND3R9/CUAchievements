@@ -35,7 +35,7 @@ namespace CUAchievements.UI.Menu
             BuildIcon(root.transform, model.Icon);
             BuildTexts(root.transform, model, font);
 
-            if (AchievementConfig.PrintScopeInAchievementList.Value && model.Scope == AchievementScope.Run)
+            if (Config.PrintScopeInAchievementList.Value && model.Scope == AchievementScope.Run)
             {
                 BuildScopeText(root.transform, font);
             }

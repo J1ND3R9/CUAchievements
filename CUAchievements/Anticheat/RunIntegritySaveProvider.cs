@@ -29,7 +29,7 @@ namespace CUAchievements.Anticheat
 
             RunIntegrity.Reset();
 
-            if (!AchievementConfig.AnticheatEnabled.Value) return;
+            if (!Config.AnticheatEnabled.Value) return;
 
             if (cheated)
             {

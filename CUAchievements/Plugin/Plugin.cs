@@ -23,7 +23,7 @@ namespace CUAchievements.Plugin
             Log.Init(base.Logger);
 
             SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunIntegritySaveProvider());
-            AchievementConfig.Initialize(Config);
+            Options.Config.Initialize(Config);
             PluginAssetLoader.LoadAssets();
             ConsoleCommands.RegisterCUCommands();
 #if DEBUG

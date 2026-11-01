@@ -69,7 +69,7 @@ namespace CUAchievements.UI.Menu
 
             if (hidden.Count > 0)
             {
-                if (AchievementConfig.RevealableHiddenAchievements.Value)
+                if (Config.RevealableHiddenAchievements.Value)
                 {
                     foreach (RegisteredAchievement a in hidden)
                     {

@@ -131,7 +131,7 @@
     <Compile Include="UI\Menu\MainMenuManager.cs" />
     <Compile Include="UI\Menu\MainMenuWindow.cs" />
     <Compile Include="Patches\InputBlockPatch.cs" />
-    <Compile Include="Options\AchievementConfig.cs" />
+    <Compile Include="Options\Config.cs" />
     <Compile Include="UI\Menu\AchievementPluginUI.cs" />
     <Compile Include="UI\AchievementPopupManager.cs" />
     <Compile Include="UI\Menu\SidePanels\StatsPanel.cs" />

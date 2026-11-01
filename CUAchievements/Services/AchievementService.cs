@@ -79,7 +79,7 @@ namespace CUAchievements.Services
                 return true;
             }
 
-            int progressStep = AchievementConfig.ProgressPopupPrecentage.Value;
+            int progressStep = Config.ProgressPopupPrecentage.Value;
 
             if (progressStep > 0)
             {

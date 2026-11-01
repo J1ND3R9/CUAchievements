@@ -10,7 +10,7 @@ namespace CUAchievements.Options
 {
     internal enum AchievementAlertType { Popup = 0, Default = 1, Hidden = 2 }
     internal enum AchievementDisplayType { BottomToUp = 0, LeftToRight = 1, UpToBottom = 2, SteamLike = 3 }
-    internal static class AchievementConfig
+    internal static class Config
     {
         public static ConfigEntry<bool> AnticheatEnabled { get; private set; }
         public static ConfigEntry<bool> AllowSandboxAchievements { get; private set; }
