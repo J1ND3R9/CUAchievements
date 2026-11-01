@@ -4,7 +4,7 @@
 
 .EXAMPLE
     .\build-release.ps1
-    Builds the version from the .csproj -> dist\CUAchievements-<version>.zip
+    Builds the version from CUAchievementsInfo.cs -> dist\CUAchievements-<version>.zip
 
 .EXAMPLE
     .\build-release.ps1 -Suffix beta.1
@@ -12,7 +12,7 @@
 #>
 [CmdletBinding()]
 param(
-    # Mod version. If omitted, <Version> from the .csproj is used.
+    # Mod version. If omitted, Version from CUAchievementsInfo.cs is used.
     [string]$Version,
 
     # Optional label added ONLY to the zip name (e.g. "beta.1").
@@ -27,6 +27,7 @@ $ErrorActionPreference = 'Stop'
 # ---- Settings: adjust once ---------------------------------------------------
 $AssemblyName = 'CUAchievements'
 $ProjectPath  = Join-Path $PSScriptRoot 'CUAchievements\CUAchievements.csproj'
+$InfoPath     = Join-Path $PSScriptRoot 'CUAchievements\Plugin\CUAchievementsInfo.cs'
 
 # Extra files/folders (relative to the repo root) that are shipped inside the
 # mod folder next to the DLL. Add locale files etc. here if they are not
@@ -41,13 +42,13 @@ if (-not (Test-Path $ProjectPath)) {
     throw "Project not found: $ProjectPath"
 }
 
-# Version: parameter > <Version> in the .csproj
+# Version: parameter > Version in CUAchievementsInfo.cs
 if (-not $Version) {
-    [xml]$csproj = Get-Content $ProjectPath
-    $Version = @($csproj.Project.PropertyGroup.Version) | Where-Object { $_ } | Select-Object -First 1
+    $match = Select-String -Path $InfoPath -Pattern 'const string Version\s*=\s*"([^"]+)"'
+    if ($match) { $Version = $match.Matches[0].Groups[1].Value }
 }
 if (-not $Version) {
-    throw "Version not found. Pass -Version 1.2.3 or add <Version> to the .csproj."
+    throw "Version not found. Pass -Version 1.2.3 or check Version in $InfoPath."
 }
 $label = if ($Suffix) { "$Version-$Suffix" } else { $Version }
 
