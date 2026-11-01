@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using CUAchievements.Anticheat;
 using CUAchievements.Assets;
-using CUAchievements.Options;
 using CUAchievements.Persistence;
 using CUAchievements.Services;
 using CUCoreLib.Registries;
@@ -27,7 +26,7 @@ namespace CUAchievements.Plugin
             PluginAssetLoader.LoadAssets();
             ConsoleCommands.RegisterCUCommands();
 #if DEBUG
-            AchievementDebug.Register();
+            CUAchievements.Debug.AchievementDebug.Register();
 #endif
             _harmony.PatchAll();
             Log.Info("Plugin loaded!");
