@@ -175,9 +175,9 @@ namespace CUAchievements.Options
                 "Achievements",
                 ProgressPopupPrecentage.Value,
                 0f,
-                99f,
-                value => ProgressPopupPrecentage.Value = (int)value,
-                value => Mathf.RoundToInt(value) + "%" // TODO: Шаг в 5%
+                95f,
+                value => ProgressPopupPrecentage.Value = (int)(Mathf.Round(value / 5) * 5),
+                value => (int)(Mathf.Round(value / 5) * 5) + "%"
                 ));
 
             isLaunch = false;
