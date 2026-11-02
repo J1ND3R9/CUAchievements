@@ -24,7 +24,6 @@ namespace CUAchievements.Persistence
         public static void MarkDirty(string modGuid)
         {
             DirtyPlugins.Add(modGuid);
-            Log.Debug($"The '{modGuid}' plugin is marked as 'dirty' and will be automatically saved to a file");
         }
 
         public static void EnsureLoaded(string modGuid)

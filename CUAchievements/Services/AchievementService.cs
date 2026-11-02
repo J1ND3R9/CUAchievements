@@ -1,10 +1,8 @@
-﻿using CUAchievements.Anticheat;
-using CUAchievements.Options;
+﻿using CUAchievements.Options;
 using CUAchievements.Persistence;
 using CUAchievements.Plugin;
 using CUAchievements.Registry;
 using CUAchievements.UI;
-using CUAchievements.UI.Utility;
 using System;
 
 namespace CUAchievements.Services
@@ -56,7 +54,7 @@ namespace CUAchievements.Services
 #if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
-                if (GameUtility.IsTutorialOrSandbox()) return false;
+                if (CUAchievements.UI.Utility.GameUtility.IsTutorialOrSandbox()) return false;
             }
 #endif
 
@@ -110,7 +108,7 @@ namespace CUAchievements.Services
 #if !DEBUG
             if (!achievement.Definition.CanGetInTutorial)
             {
-                if (GameUtility.IsTutorialOrSandbox()) return false;
+                if (CUAchievements.UI.Utility.GameUtility.IsTutorialOrSandbox()) return false;
             }
 #endif
 
@@ -130,6 +128,12 @@ namespace CUAchievements.Services
 
         internal static void EndRun()
         {
+            ResetRunState(rememberProgress: true);
+            Log.Debug("The run has ended. The character is dead.");
+        }
+
+        internal static void ResetRunState(bool rememberProgress = false)
+        {
             RunIntegrity.Reset();
             foreach (RegisteredAchievement achievement in AchievementRegistry.GetAll().Values)
             {
@@ -141,7 +145,9 @@ namespace CUAchievements.Services
 
                 if (achievement.Definition.Type == AchievementType.Counter)
                 {
-                    if (achievement.ProgressData.Progress != 0)
+                    achievement.ProgressData.LastRunProgress = 0;
+
+                    if (rememberProgress && achievement.ProgressData.Progress != 0)
                     {
                         achievement.ProgressData.LastRunProgress = achievement.ProgressData.Progress;
                     }
@@ -151,7 +157,7 @@ namespace CUAchievements.Services
 
                 achievement.ConditionalTracker?.Clear();
             }
-            Log.Debug("The run has ended. The character is either dead, or the player has exited the Sandbox/Tutorial mode.");
+            Log.Debug("The run state has been reset.");
         }
     }
 }

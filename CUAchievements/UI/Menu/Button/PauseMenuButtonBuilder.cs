@@ -1,5 +1,5 @@
 ﻿using BepInEx.Bootstrap;
-using CUAchievements.Anticheat;
+using CUAchievements.Persistence;
 using CUAchievements.Plugin;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;

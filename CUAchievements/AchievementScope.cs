@@ -13,12 +13,17 @@ namespace CUAchievements
         /// </summary>
         Lifetime,
         /// <summary>
-        /// The achievement has to be earned within a single run. When the character dies without the achievement
-        /// being unlocked, <see cref="RegisteredAchievement.CurrentProgress"/> and
+        /// The achievement has to be earned within a single run. When the character dies or a new run starts without
+        /// the achievement being unlocked, <see cref="RegisteredAchievement.CurrentProgress"/> and
         /// <see cref="RegisteredAchievement.ConditionalTracker"/> are cleared.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Both are stored in the game save, so they are restored when the player continues the run.
+        /// </para>
+        /// <para>
         /// An achievement that is already unlocked stays unlocked.
+        /// </para>
         /// </remarks>
         Run
     }

@@ -14,7 +14,8 @@ namespace CUAchievements.Services
     /// The whole tracker is reset according to the achievement's <see cref="AchievementScope"/>.
     /// </para>
     /// <para>
-    /// The entire tracker resides solely in memory. All flags will be cleared when the game is restarted.
+    /// With <see cref="AchievementScope.Run"/>, flags are stored in the game save together with the run. With
+    /// <see cref="AchievementScope.Lifetime"/>, they reside solely in memory and are cleared when the game is restarted.
     /// </para>
     /// <para>
     /// Not thread-safe: use it from the Unity main thread only.
@@ -56,7 +57,7 @@ namespace CUAchievements.Services
         public bool GetFlag(string flagName)
         {
             if (string.IsNullOrEmpty(flagName)) return false;
-            return flags.TryGetValue(flagName, out var v) && v;
+            return flags.TryGetValue(flagName, out bool v) && v;
         }
 
         /// <summary>
@@ -73,5 +74,7 @@ namespace CUAchievements.Services
         /// Removes all flags.
         /// </summary>
         public void Clear() => flags.Clear();
+
+        internal IReadOnlyDictionary<string, bool> Snapshot() => flags;
     }
 }

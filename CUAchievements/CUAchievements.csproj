@@ -94,7 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Anticheat\CommandSafety.cs" />
-    <Compile Include="Anticheat\RunIntegritySaveProvider.cs" />
+    <Compile Include="Persistence\RunSaveProvider.cs" />
     <Compile Include="Assets\PluginAssetLoader.cs" />
     <Compile Include="Debug\AchievementDebug.cs" />
     <Compile Include="AchievementDefinition.cs" />
@@ -103,6 +103,7 @@
     <Compile Include="AchievementType.cs" />
     <Compile Include="Patches\AnticheatPatches.cs" />
     <Compile Include="Patches\EndSequencePatch.cs" />
+    <Compile Include="Patches\TryLoadGamePatch.cs" />
     <Compile Include="Persistence\AchievementPersistence.cs" />
     <Compile Include="Persistence\SaveCompression.cs" />
     <Compile Include="Anticheat\ConsoleCommands.cs" />

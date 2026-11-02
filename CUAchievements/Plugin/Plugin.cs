@@ -2,7 +2,6 @@
 using CUAchievements.Anticheat;
 using CUAchievements.Assets;
 using CUAchievements.Persistence;
-using CUAchievements.Services;
 using CUCoreLib.Registries;
 using HarmonyLib;
 using System.Collections;
@@ -21,7 +20,7 @@ namespace CUAchievements.Plugin
         {
             Log.Init(base.Logger);
 
-            SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunIntegritySaveProvider());
+            SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunSaveProvider());
             Options.Config.Initialize(Config);
             PluginAssetLoader.LoadAssets();
             ConsoleCommands.RegisterCUCommands();
@@ -39,7 +38,6 @@ namespace CUAchievements.Plugin
 
         void OnApplicationQuit()
         {
-            AchievementService.EndRun(); // FIXME: Нужно переделать - Достижения со Scope = Run будут очищены даже при сейве и просто выходе из игры.
             AchievementPersistence.SaveDirty();
         }
 

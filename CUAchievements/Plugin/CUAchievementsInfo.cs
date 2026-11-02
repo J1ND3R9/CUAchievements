@@ -4,6 +4,6 @@
     {
         public const string GUID = "com.cuachievements";
         public const string Name = "CUAchievements";
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
     }
 }
