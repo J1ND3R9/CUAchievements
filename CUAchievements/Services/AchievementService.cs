@@ -51,14 +51,7 @@ namespace CUAchievements.Services
                 return false;
             }
 
-#if !DEBUG
-            if (!achievement.Definition.CanGetInTutorial)
-            {
-                if (CUAchievements.UI.Utility.GameUtility.IsTutorialOrSandbox()) return false;
-            }
-#endif
-
-            if (RunIntegrity.Cheated)
+            if (IsBlocked(achievement))
                 return false;
 
             AchievementProgressData progressData = achievement.ProgressData;
@@ -105,14 +98,7 @@ namespace CUAchievements.Services
         {
             if (achievement.ProgressData.Unlocked) return false;
 
-#if !DEBUG
-            if (!achievement.Definition.CanGetInTutorial)
-            {
-                if (CUAchievements.UI.Utility.GameUtility.IsTutorialOrSandbox()) return false;
-            }
-#endif
-
-            if (RunIntegrity.Cheated)
+            if (IsBlocked(achievement))
                 return false;
 
             achievement.ProgressData.Unlocked = true;
@@ -124,6 +110,18 @@ namespace CUAchievements.Services
             AchievementEvents.RaiseAchievementsChanged();
 
             return true;
+        }
+
+        internal static bool IsBlocked(RegisteredAchievement achievement)
+        {
+#if !DEBUG
+            if (!achievement.Definition.CanGetInTutorial)
+            {
+                if (CUAchievements.UI.Utility.GameUtility.IsTutorialOrSandbox()) return true;
+            }
+#endif
+
+            return RunIntegrity.Cheated;
         }
 
         internal static void EndRun()

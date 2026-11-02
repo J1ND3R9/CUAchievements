@@ -8,8 +8,9 @@ namespace CUAchievements
     public enum AchievementScope
     {
         /// <summary>
-        /// Progress and conditions are kept between runs: neither <see cref="RegisteredAchievement.CurrentProgress"/>
-        /// nor <see cref="RegisteredAchievement.ConditionalTracker"/> is ever reset.
+        /// Progress and conditions are kept between runs and game restarts: neither
+        /// <see cref="RegisteredAchievement.CurrentProgress"/> nor <see cref="RegisteredAchievement.ConditionalTracker"/>
+        /// is reset by CUAchievements.
         /// </summary>
         Lifetime,
         /// <summary>

@@ -17,7 +17,10 @@ namespace CUAchievements.Persistence
 
         private static readonly JsonSerializerSettings Settings = new()
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy { ProcessDictionaryKeys = false, OverrideSpecifiedNames = true }
+            },
             Formatting = Formatting.None
         };
 
@@ -112,6 +115,7 @@ namespace CUAchievements.Persistence
             if (achievement.Definition.Scope == AchievementScope.Lifetime)
             {
                 achievement.ProgressData.Progress = progress.Progress;
+                achievement.ConditionalTracker.Load(progress.Flags);
             }
             achievement.ProgressData.Unlocked = progress.Unlocked;
             achievement.ProgressData.UnlockedAt = progress.UnlockedAt;
@@ -131,6 +135,11 @@ namespace CUAchievements.Persistence
 
                     if (achievement.PluginGuid != modGuid)
                         continue;
+
+                    if (achievement.Definition.Scope == AchievementScope.Lifetime)
+                    {
+                        achievement.ProgressData.Flags = achievement.ConditionalTracker.Snapshot().ToDictionary(flag => flag.Key, flag => flag.Value);
+                    }
 
                     save.Achievements[achievement.Definition.Id] = achievement.ProgressData;
                 }

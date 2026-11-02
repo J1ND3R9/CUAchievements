@@ -62,6 +62,12 @@ namespace CUAchievements.Registry
             PluginGuid = pluginGuid;
             Definition = definition;
             ProgressData = progress;
+
+            if (definition.Scope == AchievementScope.Lifetime)
+            {
+                ConditionalTracker.CanChange = () => !AchievementService.IsBlocked(this);
+                ConditionalTracker.Changed = () => AchievementPersistence.MarkDirty(pluginGuid);
+            }
         }
 
         /// <summary>
