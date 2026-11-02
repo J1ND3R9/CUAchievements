@@ -124,6 +124,7 @@
     <Compile Include="UI\Menu\AchievementCardModel.cs" />
     <Compile Include="UI\Menu\SidePanels\DetailsPanel.cs" />
     <Compile Include="AchievementEvents.cs" />
+    <Compile Include="UI\Menu\TextLinkHandler.cs" />
     <Compile Include="UI\RevealCover.cs" />
     <Compile Include="UI\Utility\AchievementFrames.cs" />
     <Compile Include="UI\Menu\AchievementItemUI.cs" />

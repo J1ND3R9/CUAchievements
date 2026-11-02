@@ -74,7 +74,7 @@ namespace CUAchievements.UI.Menu
             if (noRegisteredAchievements)
             {
                 noAchievementsTitle = LocaleRegistry.Get("achievements_list_no_achievements_title", "No achievements :(");
-                noAchievementsDesc = LocaleRegistry.Get("achievements_list_no_achievements_desc", "You don't have any mods installed that add achievements.\nFix this by installing, for example, <color=\"yellow\">Floydba's Achievements</color>!"); // TODO: Кликабельная ссылка
+                noAchievementsDesc = string.Format(LocaleRegistry.Get("achievements_list_no_achievements_desc", "You don't have any mods installed that add achievements.\nFix this by installing, for example, {0}!"), "<link=https://www.nexusmods.com/scavprototype/mods/807><color=\"yellow\">Floydba's Achievements</color></link>");
             }
 
             GameObject root = UIUtility.Create("AchievementsPluginContainer", parent, typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
@@ -92,6 +92,8 @@ namespace CUAchievements.UI.Menu
             UIUtility.CreateText(header.transform, "Title", noAchievementsTitle, font, 24f, TextAlignmentOptions.Center);
             TextMeshProUGUI descTmp = UIUtility.CreateText(header.transform, "Description", noAchievementsDesc, font, 18f, TextAlignmentOptions.Center);
             descTmp.color = new Color(1f, 1f, 1f, 0.7f);
+
+            descTmp.gameObject.AddComponent<TextLinkHandler>();
 
             return new PluginSectionView { Root = root, Body = null };
         }
