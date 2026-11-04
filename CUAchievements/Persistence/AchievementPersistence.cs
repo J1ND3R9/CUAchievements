@@ -152,7 +152,6 @@ namespace CUAchievements.Persistence
                 if (!SaveFile(compressed, saveFile))
                     return false;
 
-                Log.Debug($"Save for the '{modGuid}' plugin has been loaded");
                 return true;
             }
             catch (Exception ex)
