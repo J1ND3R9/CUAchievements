@@ -173,7 +173,6 @@ namespace CUAchievements.UI
         {
             if (OneClickReveal) return true;
 
-
             Clicked.Add(this);
             timeClicked++;
             redAmount += RedStep;
