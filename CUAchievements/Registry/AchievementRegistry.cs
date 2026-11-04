@@ -41,6 +41,11 @@ namespace CUAchievements.Registry
                 return null;
             }
 
+            achievement.OwnerGuid = _pluginGuid;
+            achievement.NameText.Register(_pluginGuid);
+            achievement.DescriptionText.Register(_pluginGuid);
+            achievement.ShortDescriptionText.Register(_pluginGuid);
+
             AchievementProgressData progress = new(fullId);
             RegisteredAchievement registeredAchievement = new(_pluginGuid, achievement, progress);
             RegisteredAchievements[fullId] = registeredAchievement;

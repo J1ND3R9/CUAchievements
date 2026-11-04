@@ -15,6 +15,7 @@ namespace CUAchievements
     /// </remarks>
     public sealed class AchievementDefinition
     {
+        internal string OwnerGuid { get; set; }
         /// <summary>
         /// How this achievement is earned. See <see cref="AchievementType"/> for the behaviour of each kind.
         /// </summary>
@@ -34,8 +35,8 @@ namespace CUAchievements
         /// Resolved with <see cref="LocalizedText.Resolve"/> every time it is read,
         /// so it always reflects the currently active language.
         /// </remarks>
-        public string Name => NameText.Resolve();
-        private LocalizedText NameText;
+        public string Name => NameText.Resolve(OwnerGuid);
+        internal LocalizedText NameText;
         /// <summary>
         /// Full description of the achievement, shown in the details panel.
         /// </summary>
@@ -43,8 +44,8 @@ namespace CUAchievements
         /// Resolved with <see cref="LocalizedText.Resolve"/> every time it is read,
         /// so it always reflects the currently active language.
         /// </remarks>
-        public string Description => DescriptionText.Resolve();
-        private LocalizedText DescriptionText;
+        public string Description => DescriptionText.Resolve(OwnerGuid);
+        internal LocalizedText DescriptionText;
         /// <summary>
         /// Short description of the achievement, shown in the achievements list.
         /// Equals <see cref="Description"/> if no short description was provided.
@@ -53,8 +54,8 @@ namespace CUAchievements
         /// Resolved with <see cref="LocalizedText.Resolve"/> every time it is read,
         /// so it always reflects the currently active language.
         /// </remarks>
-        public string ShortDescription => ShortDescriptionText.Resolve();
-        private LocalizedText ShortDescriptionText;
+        public string ShortDescription => ShortDescriptionText.Resolve(OwnerGuid);
+        internal LocalizedText ShortDescriptionText;
         /// <summary>
         /// Subjective difficulty of the achievement. Selects the default frame drawn around it.
         /// </summary>

@@ -74,5 +74,18 @@ namespace CUAchievements
         /// <see langword="null"/> or is not present in <see cref="LocaleRegistry"/>.
         /// </returns>
         public string Resolve() => key == null ? fallback : LocaleRegistry.Get(key, fallback);
+        internal void Register(string ownerId)
+        {
+            if (key == null || string.IsNullOrWhiteSpace(fallback)) return;
+            using (LocaleRegistry.BeginOwnerRegistration(ownerId))
+                LocaleRegistry.Register("other", key, fallback);
+        }
+
+        internal string Resolve(string ownerId)
+        {
+            if (key == null || ownerId == null) return Resolve();
+            using (LocaleRegistry.BeginOwnerRegistration(ownerId))
+                return LocaleRegistry.Get(key, fallback);
+        }
     }
 }
