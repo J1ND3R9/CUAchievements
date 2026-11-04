@@ -1,7 +1,6 @@
 ﻿using CUAchievements.Plugin;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using System;
 using System.Linq;
 using TMPro;
@@ -21,7 +20,7 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             if (baseSprite == null)
             {
-                CUAchievementsPlugin.Logger.LogError("achievement_button sprite not found.");
+                Log.Error("achievement_button sprite not found.");
                 return;
             }
 
@@ -47,13 +46,13 @@ namespace CUAchievements.UI.Menu.CustomButton
 
         private static void AddToParallax(RectTransform rect)
         {
-            var parallax = MenuParallax.instance?.parallax;
+            MenuParallax.ParallaxImage parallax = MenuParallax.instance?.parallax;
 
             if (parallax == null) return;
 
             float scale = 0.22f;
 
-            var experimentLayer = parallax.layers.FirstOrDefault(l => l.reference.transform.name == "Experiment");
+            MenuParallax.ParallaxLayerInfo experimentLayer = parallax.layers.FirstOrDefault(l => l.reference.transform.name == "Experiment");
             if (experimentLayer != null)
             {
                 scale = experimentLayer.mouseMoveScale;
@@ -78,7 +77,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             labelRect.localScale = Vector3.one;
             labelRect.SetAsLastSibling();
 
-            string achievementsLocale = LocaleRegistry.Get("achievements_button", "Achievements");
+            string achievementsLocale = UIText.Achievements.Resolve();
 
             TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
             label.text = achievementsLocale;

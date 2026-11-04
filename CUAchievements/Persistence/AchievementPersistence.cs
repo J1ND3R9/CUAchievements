@@ -17,7 +17,10 @@ namespace CUAchievements.Persistence
 
         private static readonly JsonSerializerSettings Settings = new()
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy { ProcessDictionaryKeys = false, OverrideSpecifiedNames = true }
+            },
             Formatting = Formatting.None
         };
 
@@ -43,7 +46,7 @@ namespace CUAchievements.Persistence
 
             if (save == null && File.Exists(backupFile))
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Main save for {modGuid} is corrupted or missing. Trying to load from backup...");
+                Log.Warn($"Main save for {modGuid} is corrupted or missing. Trying to load from backup...");
                 save = TryLoadSaveFile(backupFile, modGuid);
 
                 if (save != null)
@@ -54,7 +57,7 @@ namespace CUAchievements.Persistence
                     }
                     catch (Exception ex)
                     {
-                        CUAchievementsPlugin.Logger.LogWarning($"Failed to restore backup for {modGuid}: {ex.Message}");
+                        Log.Error($"Failed to restore backup for {modGuid}: {ex.Message}");
                     }
                 }
             }
@@ -62,6 +65,7 @@ namespace CUAchievements.Persistence
             save ??= CreateSave(modGuid, 1);
 
             Saves[modGuid] = save;
+            Log.Debug($"Save for the '{modGuid}' plugin has been loaded");
         }
 
         private static AchievementSaveFile TryLoadSaveFile(string path, string modGuid)
@@ -91,7 +95,7 @@ namespace CUAchievements.Persistence
             }
             catch (Exception ex)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed to load achievements for plugin {modGuid}: {ex}");
+                Log.Error($"Failed to load achievements for plugin {modGuid}: {ex}");
             }
 
             return null;
@@ -111,6 +115,7 @@ namespace CUAchievements.Persistence
             if (achievement.Definition.Scope == AchievementScope.Lifetime)
             {
                 achievement.ProgressData.Progress = progress.Progress;
+                achievement.ConditionalTracker.Load(progress.Flags);
             }
             achievement.ProgressData.Unlocked = progress.Unlocked;
             achievement.ProgressData.UnlockedAt = progress.UnlockedAt;
@@ -131,6 +136,11 @@ namespace CUAchievements.Persistence
                     if (achievement.PluginGuid != modGuid)
                         continue;
 
+                    if (achievement.Definition.Scope == AchievementScope.Lifetime)
+                    {
+                        achievement.ProgressData.Flags = achievement.ConditionalTracker.Snapshot().ToDictionary(flag => flag.Key, flag => flag.Value);
+                    }
+
                     save.Achievements[achievement.Definition.Id] = achievement.ProgressData;
                 }
 
@@ -146,8 +156,7 @@ namespace CUAchievements.Persistence
             }
             catch (Exception ex)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed to save achievements for plugin {modGuid}: {ex}");
-
+                Log.Error($"Failed to save achievements for plugin {modGuid}: {ex}");
                 return false;
             }
         }
@@ -197,7 +206,7 @@ namespace CUAchievements.Persistence
             }
             catch (Exception ex)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed to write save file {saveFilePath}: {ex}");
+                Log.Error($"Failed to write save file {saveFilePath}: {ex}");
                 return false;
             }
         }
@@ -227,6 +236,7 @@ namespace CUAchievements.Persistence
 
         private static AchievementSaveFile CreateSave(string modGuid, int version)
         {
+            Log.Debug($"Save for the '{modGuid}' plugin has been created");
             return new AchievementSaveFile
             {
                 Version = version,
@@ -235,5 +245,11 @@ namespace CUAchievements.Persistence
             };
         }
 
+        public static void Reset(string modGuid)
+        {
+            EnsureLoaded(modGuid);
+            Saves[modGuid].Achievements.Clear();
+            if (Save(modGuid)) DirtyPlugins.Remove(modGuid);
+        }
     }
 }

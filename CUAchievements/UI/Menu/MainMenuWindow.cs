@@ -1,6 +1,5 @@
 ﻿using CUAchievements.Plugin;
 using CUAchievements.UI.Utility;
-using CUCoreLib.Registries;
 using System;
 using TMPro;
 using UnityEngine;
@@ -46,7 +45,7 @@ namespace CUAchievements.UI.Menu
             GameObject template = Resources.Load<GameObject>("Special/SettingsMenu");
             if (template == null)
             {
-                CUAchievementsPlugin.Logger.LogError("SettingsMenu template not found.");
+                Log.Error("SettingsMenu template not found.");
                 return;
             }
 
@@ -62,7 +61,7 @@ namespace CUAchievements.UI.Menu
             CreateHeaderAndBottom(out GameObject header, out GameObject bottom);
 
             TextMeshProUGUI descriptionComponent = Root.GetComponentInChildren<TextMeshProUGUI>();
-            descriptionComponent.text = LocaleRegistry.Get("achievements_button", "Achievements");
+            descriptionComponent.text = UIText.Achievements.Resolve();
             descriptionComponent.gameObject.AddComponent<LayoutIgnorer>();
             descriptionComponent.transform.SetParent(bottom.transform, false);
             descriptionComponent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;

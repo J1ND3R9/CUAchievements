@@ -1,7 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -68,13 +67,13 @@ namespace CUAchievements.UI.Menu
 
         public static PluginSectionView CreateNoAchievement(Transform parent, TMP_FontAsset font, bool noRegisteredAchievements)
         {
-            string noAchievementsTitle = LocaleRegistry.Get("achievements_list_no_results_title", "No achievements found!");
-            string noAchievementsDesc = LocaleRegistry.Get("achievements_list_no_results_desc", "We didn't find any achievements with those filters.");
+            string noAchievementsTitle = UIText.ListNoResultsTitle.Resolve();
+            string noAchievementsDesc = UIText.ListNoResultsDescription.Resolve();
 
             if (noRegisteredAchievements)
             {
-                noAchievementsTitle = LocaleRegistry.Get("achievements_list_no_achievements_title", "No achievements :(");
-                noAchievementsDesc = LocaleRegistry.Get("achievements_list_no_achievements_desc", "You don't have any mods installed that add achievements.\nFix this by installing, for example, <color=\"yellow\">Floydba's Achievements</color>!"); // TODO: Кликабельная ссылка
+                noAchievementsTitle = UIText.ListNoAchievementsTitle.Resolve();
+                noAchievementsDesc = string.Format(UIText.ListNoAchievementsDescription.Resolve(), "<link=https://www.nexusmods.com/scavprototype/mods/807><color=\"yellow\">Floydba's Achievements</color></link>");
             }
 
             GameObject root = UIUtility.Create("AchievementsPluginContainer", parent, typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
@@ -92,6 +91,8 @@ namespace CUAchievements.UI.Menu
             UIUtility.CreateText(header.transform, "Title", noAchievementsTitle, font, 24f, TextAlignmentOptions.Center);
             TextMeshProUGUI descTmp = UIUtility.CreateText(header.transform, "Description", noAchievementsDesc, font, 18f, TextAlignmentOptions.Center);
             descTmp.color = new Color(1f, 1f, 1f, 0.7f);
+
+            descTmp.gameObject.AddComponent<TextLinkHandler>();
 
             return new PluginSectionView { Root = root, Body = null };
         }

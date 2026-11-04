@@ -1,8 +1,8 @@
 ﻿using CUAchievements.Registry;
+using CUAchievements.Services;
 using CUAchievements.UI.Menu;
 using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;
-using CUCoreLib.Registries;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -32,7 +32,7 @@ namespace CUAchievements.UI
             window.Initialize();
 
             BuildTabs();
-            statsPanel = StatsPanel.Create(window.Root.transform, window.Panel);
+            statsPanel = StatsPanel.Create(window.Root.transform, window.Panel, OnResetProgress);
             detailsPanel = DetailsPanel.Create(window.Root.transform, window.Panel);
             list = new AchievementListView(window.Content, font, ShowDetails);
 
@@ -42,6 +42,14 @@ namespace CUAchievements.UI
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
             AchievementEvents.UISettingsChanged += OnUISettingsChanged;
 
+            window.Close();
+        }
+
+        private void OnResetProgress()
+        {
+            AchievementService.ResetAllProgress();
+            detailsPanel.Close();
+            statsPanel.Close();
             window.Close();
         }
 
@@ -73,6 +81,7 @@ namespace CUAchievements.UI
         }
         private void OnStatisticClick()
         {
+            PlayerCamera.PlayUISound("miniclick", 1f);
             if (StatsPanel.IsOpen)
                 statsPanel.Close();
             else
@@ -99,21 +108,24 @@ namespace CUAchievements.UI
             needsRefresh = false;
         }
 
-        private void ShowDetails(RegisteredAchievement achievement) =>
+        private void ShowDetails(RegisteredAchievement achievement)
+        {
+            PlayerCamera.PlayUISound("miniclick", 1f);
             detailsPanel.Open(achievement);
+        }
 
         private void BuildTabs()
         {
-            string searchLocale = LocaleRegistry.Get("achievements_panel_search_placeholder", "Search...");
-            TMP_InputField search = UIUtility.CreateInputField("SearchField", window.Header, searchLocale, GameFonts.Retro, true, true ? OnSearchChanged : null);
+            string searchLocale = UIText.ModalSearchPlaceholder.Resolve();
+            TMP_InputField search = UIUtility.CreateInputField("SearchField", window.Header, searchLocale, GameFonts.Retro, true, OnSearchChanged);
 
             LayoutElement searchLe = search.gameObject.AddComponent<LayoutElement>();
             searchLe.flexibleWidth = 1f;
             searchLe.minHeight = 48f;
             searchLe.preferredWidth = 600f;
 
-            string statsLocale = LocaleRegistry.Get("achievements_panel_stats_button", "Stats");
-            Button stats = UIUtility.CreateButton(window.Header, "StatsButton", statsLocale, true, true ? OnStatisticClick : null);
+            string statsLocale = UIText.ModalStatsButton.Resolve();
+            Button stats = UIUtility.CreateButton(window.Header, "StatsButton", statsLocale, true, OnStatisticClick);
 
             LayoutElement statsLe = stats.gameObject.AddComponent<LayoutElement>();
             statsLe.minHeight = 48f;

@@ -1,5 +1,4 @@
-﻿using CUAchievements.Anticheat;
-using CUAchievements.Persistence;
+﻿using CUAchievements.Persistence;
 using CUAchievements.Services;
 using System;
 
@@ -40,8 +39,8 @@ namespace CUAchievements.Registry
         /// If <see cref="AchievementDefinition.Type"/> is <see cref="AchievementType.Instant"/>, it returns 0.
         /// </para>
         /// <para>
-        /// With <see cref="AchievementScope.Run"/>, the progress is cleared when the character dies
-        /// before the achievement is unlocked.
+        /// With <see cref="AchievementScope.Run"/>, the progress is cleared when the character dies or a new
+        /// run starts before the achievement is unlocked.
         /// </para>
         /// </remarks>
         public float CurrentProgress => ProgressData.Progress;
@@ -63,6 +62,12 @@ namespace CUAchievements.Registry
             PluginGuid = pluginGuid;
             Definition = definition;
             ProgressData = progress;
+
+            if (definition.Scope == AchievementScope.Lifetime)
+            {
+                ConditionalTracker.CanChange = () => !AchievementService.IsBlocked(this);
+                ConditionalTracker.Changed = () => AchievementPersistence.MarkDirty(pluginGuid);
+            }
         }
 
         /// <summary>

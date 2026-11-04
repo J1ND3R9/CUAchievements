@@ -8,7 +8,7 @@ namespace CUAchievements.UI
     {
         public static List<RegisteredAchievement> Sort(IEnumerable<RegisteredAchievement> source)
         {
-            List<RegisteredAchievement> all = source.ToList();
+            List<RegisteredAchievement> all = [.. source];
 
             IOrderedEnumerable<RegisteredAchievement> unlocked = all.Where(a => a.IsUnlocked).OrderByDescending(a => a.UnlockedAt);
 

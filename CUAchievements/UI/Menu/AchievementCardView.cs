@@ -2,7 +2,6 @@
 using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using System;
 using TMPro;
 using UnityEngine;
@@ -35,7 +34,7 @@ namespace CUAchievements.UI.Menu
             BuildIcon(root.transform, model.Icon);
             BuildTexts(root.transform, model, font);
 
-            if (AchievementConfig.PrintScopeInAchievementList.Value && model.Scope == AchievementScope.Run)
+            if (Config.PrintScopeInAchievementList.Value && model.Scope == AchievementScope.Run)
             {
                 BuildScopeText(root.transform, font);
             }
@@ -45,7 +44,8 @@ namespace CUAchievements.UI.Menu
 
         public static GameObject CreateRevealableHidden(Transform parent, AchievementCardModel model, TMP_FontAsset font, Action<RegisteredAchievement> onClick = null)
         {
-            model.Icon = AssetLoader.GetCachedSprite("achievement_default_hidden");
+            if (model.Source.Definition.LockedIcon == null)
+                model.Icon = AssetLoader.GetCachedSprite("achievement_default_hidden");
 
             RevealCover cover = null;
 
@@ -62,7 +62,7 @@ namespace CUAchievements.UI.Menu
 
             UITooltip tooltip = root.AddComponent<UITooltip>();
             tooltip.skipLocale = true;
-            tooltip.tipName = LocaleRegistry.Get("achievement_reveal", "Reveal");
+            tooltip.tipName = UIText.CardHiddenRevealDefault.Resolve();
 
             if (!RevealCover.IsRevealed(model.Source.FullId))
                 cover = RevealCoverBuilder.Build(root.transform, model.Source.FullId, tooltip, font);
@@ -168,7 +168,7 @@ namespace CUAchievements.UI.Menu
 
         private static void BuildScopeText(Transform parent, TMP_FontAsset font)
         {
-            GameObject scopeObject = UIUtility.CreateText(parent, "Scope", LocaleRegistry.Get("achievements_list_scope_run", "FOR RUN"), font, 20f, TextAlignmentOptions.Right).gameObject;
+            GameObject scopeObject = UIUtility.CreateText(parent, "Scope", UIText.CardRunScope.Resolve(), font, 20f, TextAlignmentOptions.Right).gameObject;
             scopeObject.AddComponent<LayoutIgnorer>();
             scopeObject.GetComponent<RectTransform>().Stretch(offsetMax: new Vector2(-25f, 0f));
         }

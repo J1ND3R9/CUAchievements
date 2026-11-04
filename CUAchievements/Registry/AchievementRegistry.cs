@@ -20,26 +20,31 @@ namespace CUAchievements.Registry
         {
             return new AchievementRegistry(pluginGuid);
         }
-        
+
         public RegisteredAchievement Register(AchievementDefinition achievement)
         {
             if (string.IsNullOrEmpty(_pluginGuid))
             {
-                CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: AchievementRegistry was not created.");
+                Log.Error($"Achievement registration failed. Error: AchievementRegistry was not created.");
                 return null;
             }
             string errorText = Validate(achievement);
             if (!string.IsNullOrEmpty(errorText))
             {
-                CUAchievementsPlugin.Logger.LogError($"Achievement registration failed. Error: {errorText}");
+                Log.Error($"Achievement registration failed. Error: {errorText}");
                 return null;
             }
             string fullId = $"{_pluginGuid}::{achievement.Id}";
             if (RegisteredAchievements.ContainsKey(fullId))
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Achievement {achievement.Id} already registered. Ignored duplicate.");
+                Log.Warn($"Achievement {achievement.Id} already registered. Ignored duplicate.");
                 return null;
             }
+
+            achievement.OwnerGuid = _pluginGuid;
+            achievement.NameText.Register(_pluginGuid);
+            achievement.DescriptionText.Register(_pluginGuid);
+            achievement.ShortDescriptionText.Register(_pluginGuid);
 
             AchievementProgressData progress = new(fullId);
             RegisteredAchievement registeredAchievement = new(_pluginGuid, achievement, progress);
@@ -47,6 +52,7 @@ namespace CUAchievements.Registry
 
             AchievementPersistence.Restore(registeredAchievement);
 
+            Log.Debug($"Achievement '{fullId}' has been registered");
             return registeredAchievement;
         }
 
@@ -104,16 +110,16 @@ namespace CUAchievements.Registry
         {
             Dictionary<string, List<RegisteredAchievement>> pluginAchievements = [];
 
-            var registeredAchievements = RegisteredAchievements.Values.ToList();
+            List<RegisteredAchievement> registeredAchievements = RegisteredAchievements.Values.ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 registeredAchievements = [.. registeredAchievements
-                    .Where(a => a.Definition.Name.ToLower().Contains(search.ToLower()) 
+                    .Where(a => a.Definition.Name.ToLower().Contains(search.ToLower())
                     || a.Definition.Description.ToLower().Contains(search.ToLower()))];
             }
 
-            foreach (var achievement in registeredAchievements)
+            foreach (RegisteredAchievement achievement in registeredAchievements)
             {
                 string plugin = achievement.PluginGuid;
                 if (nameInsteadGuid)

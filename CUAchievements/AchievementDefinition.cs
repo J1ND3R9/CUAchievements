@@ -15,6 +15,7 @@ namespace CUAchievements
     /// </remarks>
     public sealed class AchievementDefinition
     {
+        internal string OwnerGuid { get; set; }
         /// <summary>
         /// How this achievement is earned. See <see cref="AchievementType"/> for the behaviour of each kind.
         /// </summary>
@@ -34,8 +35,8 @@ namespace CUAchievements
         /// Resolved with <see cref="LocalizedText.Resolve"/> every time it is read,
         /// so it always reflects the currently active language.
         /// </remarks>
-        public string Name => NameText.Resolve();
-        private LocalizedText NameText;
+        public string Name => NameText.Resolve(OwnerGuid);
+        internal LocalizedText NameText;
         /// <summary>
         /// Full description of the achievement, shown in the details panel.
         /// </summary>
@@ -43,8 +44,8 @@ namespace CUAchievements
         /// Resolved with <see cref="LocalizedText.Resolve"/> every time it is read,
         /// so it always reflects the currently active language.
         /// </remarks>
-        public string Description => DescriptionText.Resolve();
-        private LocalizedText DescriptionText;
+        public string Description => DescriptionText.Resolve(OwnerGuid);
+        internal LocalizedText DescriptionText;
         /// <summary>
         /// Short description of the achievement, shown in the achievements list.
         /// Equals <see cref="Description"/> if no short description was provided.
@@ -53,8 +54,8 @@ namespace CUAchievements
         /// Resolved with <see cref="LocalizedText.Resolve"/> every time it is read,
         /// so it always reflects the currently active language.
         /// </remarks>
-        public string ShortDescription => ShortDescriptionText.Resolve();
-        private LocalizedText ShortDescriptionText;
+        public string ShortDescription => ShortDescriptionText.Resolve(OwnerGuid);
+        internal LocalizedText ShortDescriptionText;
         /// <summary>
         /// Subjective difficulty of the achievement. Selects the default frame drawn around it.
         /// </summary>
@@ -130,10 +131,10 @@ namespace CUAchievements
         {
             if (sprite == null)
             {
-                CUAchievementsPlugin.Logger.LogWarning($"Achievement sprite with ID '{id}' is null. Using default sprite.");
+                Log.Warn($"Achievement sprite with ID '{id}' is null. Using default sprite.");
                 sprite = AssetLoader.GetCachedSprite("achievement_default_sprite");
             }
-            if (lockedSprite == null || hidden)
+            if (lockedSprite == null)
             {
                 lockedSprite = AssetLoader.GetCachedSprite("achievement_default_locked");
             }
@@ -175,7 +176,7 @@ namespace CUAchievements
         /// <param name="progressDecimals">Number of digits after the decimal point when the progress is displayed.</param>
         /// <returns>A new <see cref="AchievementDefinition"/>.</returns>
         /// <remarks>
-        /// If <paramref name="hidden"/> is <see langword="true"/> and <see cref="AchievementConfig.RevealableHiddenAchievements"/> is <see langword="false"/>, <paramref name="lockedIcon"/> is ignored and
+        /// If <paramref name="hidden"/> is <see langword="true"/> and <see cref="Config.RevealableHiddenAchievements"/> is <see langword="false"/>, <paramref name="lockedIcon"/> is ignored and
         /// <paramref name="customFrame"/> is not shown until the achievement is unlocked.
         /// </remarks>
         /// <example>
@@ -228,7 +229,7 @@ namespace CUAchievements
         /// <param name="canGetInTutorial">Whether the achievement can be earned during the tutorial.</param>
         /// <returns>A new <see cref="AchievementDefinition"/>.</returns>
         /// <remarks>
-        /// If <paramref name="hidden"/> is <see langword="true"/> and <see cref="AchievementConfig.RevealableHiddenAchievements"/> is <see langword="false"/>, <paramref name="lockedIcon"/> is ignored and
+        /// If <paramref name="hidden"/> is <see langword="true"/> and <see cref="Config.RevealableHiddenAchievements"/> is <see langword="false"/>, <paramref name="lockedIcon"/> is ignored and
         /// <paramref name="customFrame"/> is not shown until the achievement is unlocked.
         /// </remarks>
         /// <example>

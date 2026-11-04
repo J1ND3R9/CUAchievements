@@ -1,10 +1,8 @@
 ﻿using BepInEx;
-using BepInEx.Logging;
 using CUAchievements.Anticheat;
 using CUAchievements.Assets;
-using CUAchievements.Options;
 using CUAchievements.Persistence;
-using CUAchievements.Services;
+using CUAchievements.UI;
 using CUCoreLib.Registries;
 using HarmonyLib;
 using System.Collections;
@@ -12,32 +10,28 @@ using UnityEngine;
 
 namespace CUAchievements.Plugin
 {
-    [BepInPlugin(ModGUID, ModName, ModVersion)]
+    [BepInPlugin(CUAchievementsInfo.GUID, CUAchievementsInfo.Name, CUAchievementsInfo.Version)]
     [BepInDependency("net.cucorelib", BepInDependency.DependencyFlags.HardDependency)]
-    internal class CUAchievementsPlugin : BaseUnityPlugin
+    internal class Plugin : BaseUnityPlugin
     {
-        public const string ModGUID = "com.cuachievements";
-        public const string ModName = "CUAchievements";
-        public const string ModVersion = "1.1.1";
-
-        internal static new ManualLogSource Logger;
-
-        private readonly Harmony _harmony = new(ModGUID);
+        private readonly Harmony _harmony = new(CUAchievementsInfo.GUID);
 
         private const float AutoSaveInterval = 10f;
         void Awake()
         {
-            Logger = base.Logger;
+            Log.Init(base.Logger);
 
-            SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunIntegritySaveProvider());
+            UIText.Register(CUAchievementsInfo.GUID);
+
+            SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunSaveProvider());
+            Options.Config.Initialize(Config);
             PluginAssetLoader.LoadAssets();
             ConsoleCommands.RegisterCUCommands();
-            AchievementConfig.Initialize(Config);
 #if DEBUG
-            AchievementDebug.Register();
+            CUAchievements.Debug.AchievementDebug.Register();
 #endif
             _harmony.PatchAll();
-            Logger.LogInfo("Plugin loaded!");
+            Log.Info("Plugin loaded!");
         }
 
         void Start()
@@ -47,7 +41,6 @@ namespace CUAchievements.Plugin
 
         void OnApplicationQuit()
         {
-            AchievementService.EndRun();
             AchievementPersistence.SaveDirty();
         }
 

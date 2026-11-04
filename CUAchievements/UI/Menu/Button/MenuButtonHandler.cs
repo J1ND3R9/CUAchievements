@@ -52,7 +52,7 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             if (hovering && Input.GetMouseButtonDown(0))
             {
-                PlayerCamera.PlayUISound("click", 1f);
+                PlayerCamera.PlayUISound("miniclick", 1f);
                 onClicked?.Invoke();
             }
         }

@@ -43,7 +43,7 @@ namespace CUAchievements
                 try { ((Action)d)(); }
                 catch (Exception e)
                 {
-                    CUAchievementsPlugin.Logger.LogError($"AchievementsChanged subscriber failed: {e}");
+                    Log.Error($"AchievementsChanged subscriber failed: {e}");
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace CUAchievements
                 try { ((Action)d)(); }
                 catch (Exception e)
                 {
-                    CUAchievementsPlugin.Logger.LogError($"UISettingsChanged subscriber failed: {e}");
+                    Log.Error($"UISettingsChanged subscriber failed: {e}");
                 }
             }
         }

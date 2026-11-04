@@ -1,10 +1,10 @@
-﻿using CUAchievements.Anticheat;
+﻿using CUAchievements.Options;
 using CUAchievements.Persistence;
 using CUAchievements.Plugin;
 using CUAchievements.Registry;
 using CUAchievements.UI;
-using CUAchievements.UI.Utility;
 using System;
+using System.Collections.Generic;
 
 namespace CUAchievements.Services
 {
@@ -26,7 +26,7 @@ namespace CUAchievements.Services
         {
             if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {id} does not exists.");
+                Log.Error($"Failed add progress to achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace CUAchievements.Services
         {
             if (!AchievementRegistry.TryGet(_pluginGuid, id, out RegisteredAchievement achievement))
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
+                Log.Error($"Failed unlock achievement. Error: Achievement with id {id} does not exists.");
                 return false;
             }
 
@@ -48,40 +48,50 @@ namespace CUAchievements.Services
         {
             if (achievement.Definition.Type != AchievementType.Counter)
             {
-                CUAchievementsPlugin.Logger.LogError($"Failed add progress to achievement. Error: Achievement with id {achievement.Definition.Id} is not a counter type.");
+                Log.Error($"Failed add progress to achievement. Error: Achievement with id {achievement.Definition.Id} is not a counter type.");
                 return false;
             }
 
-#if !DEBUG
-            if (!achievement.Definition.CanGetInTutorial)
-            {
-                if (GameUtility.IsTutorialOrSandbox()) return false;
-            }
-#endif
-
-            if (RunIntegrity.Cheated)
+            if (IsBlocked(achievement))
                 return false;
 
-            AchievementProgressData progress = achievement.ProgressData;
+            AchievementProgressData progressData = achievement.ProgressData;
 
-            if (progress.Unlocked)
+            if (progressData.Unlocked)
                 return false;
 
-            progress.Progress += amount;
+            float oldProgress = progressData.Progress;
 
-            if (progress.Progress >= achievement.Definition.MaxProgress)
+            progressData.Progress += amount;
+
+            if (progressData.Progress >= achievement.Definition.MaxProgress)
             {
-                progress.Progress = achievement.Definition.MaxProgress;
+                progressData.Progress = achievement.Definition.MaxProgress;
                 UnlockInternal(achievement);
+                return true;
             }
 
-            else
+            int progressStep = Config.ProgressPopupPrecentage.Value;
+
+            if (progressStep > 0)
             {
-                AchievementPersistence.MarkDirty(achievement.PluginGuid);
+                double oldPercent = (double)oldProgress / achievement.Definition.MaxProgress * 100;
+                double newPercent = (double)progressData.Progress / achievement.Definition.MaxProgress * 100;
+
+                int oldStepIndex = (int)Math.Floor(oldPercent / progressStep);
+                int newStepIndex = (int)Math.Floor(newPercent / progressStep);
+
+                if (newStepIndex > oldStepIndex)
+                {
+                    if (newStepIndex > 0)
+                        AchievementPopupManager.Show(achievement, precentageShow: true);
+                }
             }
 
+            AchievementPersistence.MarkDirty(achievement.PluginGuid);
             AchievementEvents.RaiseAchievementsChanged();
 
+            Log.Debug($"Progress added to achievement '{achievement.FullId}': {amount}");
             return true;
         }
 
@@ -89,14 +99,7 @@ namespace CUAchievements.Services
         {
             if (achievement.ProgressData.Unlocked) return false;
 
-#if !DEBUG
-            if (!achievement.Definition.CanGetInTutorial)
-            {
-                if (GameUtility.IsTutorialOrSandbox()) return false;
-            }
-#endif
-
-            if (RunIntegrity.Cheated)
+            if (IsBlocked(achievement))
                 return false;
 
             achievement.ProgressData.Unlocked = true;
@@ -110,7 +113,25 @@ namespace CUAchievements.Services
             return true;
         }
 
+        internal static bool IsBlocked(RegisteredAchievement achievement)
+        {
+#if !DEBUG
+            if (!achievement.Definition.CanGetInTutorial)
+            {
+                if (CUAchievements.UI.Utility.GameUtility.IsTutorialOrSandbox()) return true;
+            }
+#endif
+
+            return RunIntegrity.Cheated;
+        }
+
         internal static void EndRun()
+        {
+            ResetRunState(rememberProgress: true);
+            Log.Debug("The run has ended. The character is dead.");
+        }
+
+        internal static void ResetRunState(bool rememberProgress = false)
         {
             RunIntegrity.Reset();
             foreach (RegisteredAchievement achievement in AchievementRegistry.GetAll().Values)
@@ -123,7 +144,9 @@ namespace CUAchievements.Services
 
                 if (achievement.Definition.Type == AchievementType.Counter)
                 {
-                    if (achievement.ProgressData.Progress != 0)
+                    achievement.ProgressData.LastRunProgress = 0;
+
+                    if (rememberProgress && achievement.ProgressData.Progress != 0)
                     {
                         achievement.ProgressData.LastRunProgress = achievement.ProgressData.Progress;
                     }
@@ -133,6 +156,21 @@ namespace CUAchievements.Services
 
                 achievement.ConditionalTracker?.Clear();
             }
+            Log.Debug("The run state has been reset.");
+        }
+
+        internal static void ResetAllProgress()
+        {
+            foreach (KeyValuePair<string, List<RegisteredAchievement>> pluginAchievements in AchievementRegistry.GetAchievementsPerPlugin(nameInsteadGuid: false))
+            {
+                foreach (RegisteredAchievement achievement in pluginAchievements.Value)
+                {
+                    achievement.ProgressData.Reset();
+                    achievement.ConditionalTracker.Clear();
+                }
+                AchievementPersistence.Reset(pluginAchievements.Key);
+            }
+            AchievementEvents.RaiseAchievementsChanged();
         }
     }
 }

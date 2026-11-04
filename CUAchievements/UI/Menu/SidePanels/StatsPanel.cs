@@ -1,6 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
-using CUCoreLib.Registries;
+using CUCoreLib.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,16 +35,20 @@ namespace CUAchievements.UI.Menu.SidePanels
         private TextMeshProUGUI unlockedText;
 
         private GameObject modifications;
-
+        private Button resetButton;
+        private TMP_Text resetButtonText;
         private bool needsRefresh = true;
 
-        public static StatsPanel Create(Transform parent, Transform panel)
+        private int resetProgressClicks = 0;
+        private Action onResetConfirmed;
+        public static StatsPanel Create(Transform parent, Transform panel, Action progressReset)
         {
             GameObject statsPanel = Instantiate(panel, parent).gameObject;
             statsPanel.name = "Stats";
 
             StatsPanel panelComponent = statsPanel.AddComponent<StatsPanel>();
 
+            panelComponent.onResetConfirmed = progressReset;
             panelComponent.Initialize();
             return panelComponent;
         }
@@ -95,10 +99,6 @@ namespace CUAchievements.UI.Menu.SidePanels
             RectTransform scrollRect = scroll.GetComponent<RectTransform>();
             scrollRect.sizeDelta = new Vector2(ScrollWidth, ScrollHeight);
 
-            //TextMeshProUGUI description = transform.GetComponentInChildren<TextMeshProUGUI>();
-            //description.text = LocaleRegistry.Get("achievements_stats_title", "Statistic");
-            //description.transform.SetAsLastSibling();
-
             RectTransform rect = GetComponent<RectTransform>();
             rect.anchorMax = new Vector2(1f, 0.5f);
             rect.anchorMin = new Vector2(1f, 0.5f);
@@ -115,6 +115,9 @@ namespace CUAchievements.UI.Menu.SidePanels
             UIUtility.CreateSeparator(parent: Content);
 
             CreateByMod(parent: Content);
+            UIUtility.CreateSeparator(parent: Content);
+
+            CreateDanger(parent: Content);
         }
 
         private void CreateByMod(Transform parent)
@@ -122,13 +125,77 @@ namespace CUAchievements.UI.Menu.SidePanels
             GameObject byModObject = UIUtility.Create("ByMod", parent, typeof(VerticalLayoutGroup));
             byModObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 24f);
 
-            string byModLocale = LocaleRegistry.Get("achievements_stats_by_mod", "BY MOD");
+            string byModLocale = UIText.StatsByMod.Resolve();
             UIUtility.CreateText(byModObject.transform, "ByModText", byModLocale, GameFonts.Retro, 18f);
 
             modifications = UIUtility.Create("ModificationList", byModObject.transform, typeof(VerticalLayoutGroup));
 
             IReadOnlyDictionary<string, List<RegisteredAchievement>> achievementsPerPlugin = AchievementRegistry.GetAchievementsPerPlugin(nameInsteadGuid: true);
             FillModifications(parent: modifications.transform, achievements: achievementsPerPlugin);
+        }
+
+        private void CreateDanger(Transform parent)
+        {
+            GameObject dangerObject = UIUtility.Create("Danger", parent, typeof(VerticalLayoutGroup));
+            dangerObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 24f);
+
+            string dangerSectionLocale = UIText.StatsDangerSection.Resolve();
+            UIUtility.CreateText(dangerObject.transform, "DangetText", dangerSectionLocale, GameFonts.Retro, 18f);
+
+            GameObject dangerActivites = UIUtility.Create("Activities", dangerObject.transform, typeof(VerticalLayoutGroup));
+            dangerActivites.GetComponent<VerticalLayoutGroup>().Configure(spacing: 6f, expandW: true);
+
+            FillDangerActivities(dangerActivites.transform);
+        }
+
+        private void FillDangerActivities(Transform parent)
+        {
+            string resetProgressLocale = UIText.StatsResetButtonDefault.Resolve();
+            resetButton = UIUtility.CreateButton(parent, "ResetProgress", resetProgressLocale, true, OnResetProgressClick);
+            resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f);
+            resetButtonText = resetButton.GetComponentInChildren<TMP_Text>(true);
+            resetButtonText.color = new Color(1f, 0.75f, 0.75f);
+        }
+
+        private void OnResetProgressClick()
+        {
+            if (CUCoreUtils.IsInWorld()) return;
+            resetProgressClicks++;
+            if (resetProgressClicks == 4)
+            {
+                onResetConfirmed?.Invoke();
+            }
+            ResolveStage();
+        }
+
+        private void ResolveStage()
+        {
+            switch (resetProgressClicks)
+            {
+                case 1:
+                    PlayerCamera.PlayUISound("selfharmtap", 1f);
+                    resetButtonText.text = UIText.StatsResetButtonFirst.Resolve();
+                    resetButtonText.color = new Color(1f, 0.65f, 0.65f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.65f, 0.65f);
+                    return;
+                case 2:
+                    PlayerCamera.PlayUISound("selfharmtap", 0.75f);
+                    resetButtonText.text = UIText.StatsResetButtonSecond.Resolve();
+                    resetButtonText.color = new Color(1f, 0.5f, 0.5f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.5f, 0.5f);
+                    return;
+                case 3:
+                    PlayerCamera.PlayUISound("selfharmtap", 0.5f);
+                    resetButtonText.text = UIText.StatsResetButtonThird.Resolve();
+                    resetButtonText.color = new Color(1f, 0.35f, 0.35f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.35f, 0.35f);
+                    return;
+                default:
+                    resetButtonText.text = UIText.StatsResetButtonDefault.Resolve();
+                    resetButtonText.color = new Color(1f, 0.75f, 0.75f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f);
+                    return;
+            }
         }
 
         private void FillModifications(Transform parent, IReadOnlyDictionary<string, List<RegisteredAchievement>> achievements)
@@ -149,9 +216,9 @@ namespace CUAchievements.UI.Menu.SidePanels
         {
             GameObject statisticObject = UIUtility.Create("Statistic", parent, typeof(VerticalLayoutGroup));
 
-            string totalLocale = LocaleRegistry.Get("achievements_stats_total", "TOTAL");
-            string unlockedLocale = LocaleRegistry.Get("achievements_unlocked", "UNLOCKED");
-            string lockedLocale = LocaleRegistry.Get("achievements_locked", "LOCKED");
+            string totalLocale = UIText.Total.Resolve();
+            string unlockedLocale = UIText.Unlocked.Resolve();
+            string lockedLocale = UIText.Locked.Resolve();
 
             UIUtility.CreateStatisticRow(parent: statisticObject.transform, name: "Total", label: $"{totalLocale}:", $"{total}");
             (_, unlockedText) = UIUtility.CreateStatisticRow(statisticObject.transform, "Unlocked", $"{unlockedLocale}:", $"{unlocked}");
@@ -173,7 +240,7 @@ namespace CUAchievements.UI.Menu.SidePanels
 
             UIUtility.CreateSquareProgress(headerObject.transform, 24f, filledSquares);
 
-            string achievedLocale = LocaleRegistry.Get("achievements_stats_achieved", "ACHIEVED");
+            string achievedLocale = UIText.Achieved.Resolve();
 
             UIUtility.CreateText(headerObject.transform, "Achieved", achievedLocale, GameFonts.Retro, 20f, TextAlignmentOptions.Center);
 
@@ -183,6 +250,15 @@ namespace CUAchievements.UI.Menu.SidePanels
         private void SetVisible(bool show)
         {
             IsOpen = show;
+
+            resetProgressClicks = 0;
+            resetButton.interactable = !CUCoreUtils.IsInWorld();
+            ResolveStage();
+            if (!resetButton.IsInteractable())
+            {
+                resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f, 0.5f);
+                resetButtonText.color = new Color(1f, 0.75f, 0.75f, 0.5f);
+            }
 
             if (show)
                 OnOpen();

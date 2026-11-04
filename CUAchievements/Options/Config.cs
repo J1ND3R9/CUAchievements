@@ -10,13 +10,15 @@ namespace CUAchievements.Options
 {
     internal enum AchievementAlertType { Popup = 0, Default = 1, Hidden = 2 }
     internal enum AchievementDisplayType { BottomToUp = 0, LeftToRight = 1, UpToBottom = 2, SteamLike = 3 }
-    internal static class AchievementConfig
+    internal static class Config
     {
         public static ConfigEntry<bool> AnticheatEnabled { get; private set; }
         public static ConfigEntry<bool> AllowSandboxAchievements { get; private set; }
         public static ConfigEntry<bool> EnabledGreetingMessage { get; private set; }
         public static ConfigEntry<bool> RevealableHiddenAchievements { get; private set; }
         public static ConfigEntry<bool> PrintScopeInAchievementList { get; private set; }
+        public static ConfigEntry<bool> EasterEggsEnabled { get; private set; }
+        public static ConfigEntry<bool> Verbose { get; private set; }
 
         public static ConfigEntry<AchievementAlertType> AlertType { get; private set; }
 
@@ -25,21 +27,22 @@ namespace CUAchievements.Options
         public static ConfigEntry<int> PopUpTime { get; private set; }
 
         public static ConfigEntry<float> UnlockVolume { get; private set; }
+        public static ConfigEntry<int> ProgressPopupPrecentage { get; private set; }
         public static void Initialize(ConfigFile config)
         {
             RevealableHiddenAchievements = config.Bind("General", "RevealableHiddenAchievements", true, "Changes the appearance of hidden achievements: instead of a single panel showing a count, it displays multiple panels with hidden text that are revealed when clicked.");
             PrintScopeInAchievementList = config.Bind("General", "PrintScopeInAchievementList", false, "Toggle information to the right-hand side of an achievement in list, indicating the scope within which it must be completed. Does not affect how the scope is displayed in the achievement details.");
-
+            EasterEggsEnabled = config.Bind("General", "EnableEasterEggs", true, "Toggles the appearance of Easter eggs. Easter eggs do not affect gameplay in any way and are purely visual in nature.");
 
             AnticheatEnabled = config.Bind("Anticheat", "AnticheatEnabled", true, "Toggles the command anti-cheat system – most commands are marked as \"unsafe,\" and executing any such command will disable unlocks and achievement progress for that save file.");
             AllowSandboxAchievements = config.Bind("Anticheat", "AllowSandboxAchievements", false, "Toggles the ability to earn achievements in the tutorial/sandbox, regardless of whether it permits the achievement.");
 
-            EnabledGreetingMessage = config.Bind("Alert", "EnabledGreetingMessage", true, "Toggles the initial pop-up message");
-            AlertType = config.Bind("Alert", "AlertType", AchievementAlertType.Popup, "Achievement notification type\n" +
+            EnabledGreetingMessage = config.Bind("Notifications", "EnabledGreetingMessage", true, "Toggles the initial pop-up message");
+            AlertType = config.Bind("Notifications", "AlertType", AchievementAlertType.Popup, "Achievement notification type\n" +
                 "0 - Pop-up\n" +
                 "1 - Standard in-game Alert\n" +
                 "2 - Hidden");
-            DisplayType = config.Bind("Alert", "DisplayType", AchievementDisplayType.BottomToUp, "Pop-up notification display type\n" +
+            DisplayType = config.Bind("Notifications", "DisplayType", AchievementDisplayType.BottomToUp, "Pop-up notification display type\n" +
                 "0 - From bottom to top\n" +
                 "1 - From the bottom-left corner to the right\n" +
                 "2 - From top to bottom\n" +
@@ -47,6 +50,9 @@ namespace CUAchievements.Options
 
             PopUpTime = config.Bind("Notifications", "PopUpTime", 5, new ConfigDescription("Duration for which the achievement notification is displayed. (from 1 to 15 seconds)", new AcceptableValueRange<int>(1, 15)));
             UnlockVolume = config.Bind("Notifications", "UnlockVolume", 1f, new ConfigDescription("Volume for the achievement unlock sound (0 = muted)", new AcceptableValueRange<float>(0f, 1f)));
+            ProgressPopupPrecentage = config.Bind("Notifications", "ProgressPopupPrecentage", 25, new ConfigDescription("Achievement progress percentages at which a pop-up notification will appear (0 = do not notify)", new AcceptableValueRange<int>(0, 99)));
+
+            Verbose = config.Bind("Debug", "Verbose", false, "Toggles verbose logging");
 
             AnticheatPatches.AnticheatDisabled = !AnticheatEnabled.Value;
             RegisterOptions();
@@ -56,7 +62,7 @@ namespace CUAchievements.Options
             bool isLaunch = true;
 
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-                $"{CUAchievementsPlugin.ModGUID}.GreetingsMessage",
+                $"{CUAchievementsInfo.GUID}.GreetingsMessage",
                 "Greetings message",
                 "Displays a pop-up initial message",
                 "Achievements",
@@ -65,7 +71,7 @@ namespace CUAchievements.Options
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-               $"{CUAchievementsPlugin.ModGUID}.RevealableHiddenAchievements",
+               $"{CUAchievementsInfo.GUID}.RevealableHiddenAchievements",
                "Revealable hidden achievements",
                "Changes the appearance of hidden achievements: " +
                "instead of a single panel showing a count, it displays multiple panels with hidden text that are revealed when clicked.",
@@ -80,7 +86,7 @@ namespace CUAchievements.Options
                ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Bool(
-                $"{CUAchievementsPlugin.ModGUID}.PrintScopeInAchievementList",
+                $"{CUAchievementsInfo.GUID}.PrintScopeInAchievementList",
                 "Scope in achievement list",
                 "Toggles the display of the scope in the achievements list.",
                 "Achievements",
@@ -93,8 +99,17 @@ namespace CUAchievements.Options
                 }
                 ));
 
+            ModOptionsRegistry.Register(ModOptionDefinition.Bool(
+                $"{CUAchievementsInfo.GUID}.EasterEggsEnabled",
+                "Easter eggs",
+                "Toggles the appearance of Easter eggs. Easter eggs do not affect gameplay in any way and are purely visual in nature.",
+                "Achievements",
+                true,
+                value => EasterEggsEnabled.Value = value
+                ));
+
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-                $"{CUAchievementsPlugin.ModGUID}.AlertType",
+                $"{CUAchievementsInfo.GUID}.AlertType",
                 "Alert type",
                 "How unlocked achievements are announced",
                 "Achievements",
@@ -108,7 +123,7 @@ namespace CUAchievements.Options
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Dropdown(
-                $"{CUAchievementsPlugin.ModGUID}.DisplayType",
+                $"{CUAchievementsInfo.GUID}.DisplayType",
                 "Display type",
                 "How to display a pop-up notification",
                 "Achievements",
@@ -130,7 +145,7 @@ namespace CUAchievements.Options
                 }));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Float(
-                $"{CUAchievementsPlugin.ModGUID}.PopUpTime",
+                $"{CUAchievementsInfo.GUID}.PopUpTime",
                 "Pop-up duration",
                 "Duration of the pop-up notification",
                 "Achievements",
@@ -138,11 +153,11 @@ namespace CUAchievements.Options
                 1f,
                 15f,
                 value => PopUpTime.Value = (int)value,
-                value => Mathf.RoundToInt(value) + LocaleRegistry.Get("achievements_sec", "s")
+                value => Mathf.RoundToInt(value) + UIText.SettingsSeconds.Resolve()
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Float(
-                $"{CUAchievementsPlugin.ModGUID}.UnlockVolume",
+                $"{CUAchievementsInfo.GUID}.UnlockVolume",
                 "Unlock volume",
                 "Achievement unlock notification volume",
                 "Achievements",
@@ -151,6 +166,18 @@ namespace CUAchievements.Options
                 1f,
                 value => UnlockVolume.Value = value,
                 value => Mathf.RoundToInt(value * 100f) + "%"
+                ));
+
+            ModOptionsRegistry.Register(ModOptionDefinition.Float(
+                $"{CUAchievementsInfo.GUID}.ProgressPopupPrecentage",
+                "Percentage for the pop-up",
+                "Achievement progress percentages at which a pop-up notification will appear. 0 = disabled.",
+                "Achievements",
+                ProgressPopupPrecentage.Value,
+                0f,
+                95f,
+                value => ProgressPopupPrecentage.Value = (int)(Mathf.Round(value / 5) * 5),
+                value => (int)(Mathf.Round(value / 5) * 5) + "%"
                 ));
 
             isLaunch = false;
