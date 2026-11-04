@@ -2,6 +2,7 @@
 using CUAchievements.Anticheat;
 using CUAchievements.Assets;
 using CUAchievements.Persistence;
+using CUAchievements.UI;
 using CUCoreLib.Registries;
 using HarmonyLib;
 using System.Collections;
@@ -19,6 +20,8 @@ namespace CUAchievements.Plugin
         void Awake()
         {
             Log.Init(base.Logger);
+
+            UIText.Register(CUAchievementsInfo.GUID);
 
             SaveRegistry.RegisterGlobalProvider("cuachievements.runIntegrity", new RunSaveProvider());
             Options.Config.Initialize(Config);

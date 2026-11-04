@@ -1,7 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -100,10 +99,6 @@ namespace CUAchievements.UI.Menu.SidePanels
             RectTransform scrollRect = scroll.GetComponent<RectTransform>();
             scrollRect.sizeDelta = new Vector2(ScrollWidth, ScrollHeight);
 
-            //TextMeshProUGUI description = transform.GetComponentInChildren<TextMeshProUGUI>();
-            //description.text = LocaleRegistry.Get("achievements_stats_title", "Statistic");
-            //description.transform.SetAsLastSibling();
-
             RectTransform rect = GetComponent<RectTransform>();
             rect.anchorMax = new Vector2(1f, 0.5f);
             rect.anchorMin = new Vector2(1f, 0.5f);
@@ -130,7 +125,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             GameObject byModObject = UIUtility.Create("ByMod", parent, typeof(VerticalLayoutGroup));
             byModObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 24f);
 
-            string byModLocale = LocaleRegistry.Get("achievements_stats_by_mod", "BY MOD");
+            string byModLocale = UIText.StatsByMod.Resolve();
             UIUtility.CreateText(byModObject.transform, "ByModText", byModLocale, GameFonts.Retro, 18f);
 
             modifications = UIUtility.Create("ModificationList", byModObject.transform, typeof(VerticalLayoutGroup));
@@ -144,7 +139,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             GameObject dangerObject = UIUtility.Create("Danger", parent, typeof(VerticalLayoutGroup));
             dangerObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 24f);
 
-            string dangerSectionLocale = LocaleRegistry.Get("achievements_stats_danger_section", "DANGER SECTION");
+            string dangerSectionLocale = UIText.StatsDangerSection.Resolve();
             UIUtility.CreateText(dangerObject.transform, "DangetText", dangerSectionLocale, GameFonts.Retro, 18f);
 
             GameObject dangerActivites = UIUtility.Create("Activities", dangerObject.transform, typeof(VerticalLayoutGroup));
@@ -155,7 +150,7 @@ namespace CUAchievements.UI.Menu.SidePanels
 
         private void FillDangerActivities(Transform parent)
         {
-            string resetProgressLocale = LocaleRegistry.Get("achievements_reset_progress", "RESET PROGRESS");
+            string resetProgressLocale = UIText.StatsResetButtonDefault.Resolve();
             resetButton = UIUtility.CreateButton(parent, "ResetProgress", resetProgressLocale, true, OnResetProgressClick);
             resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f);
             resetButtonText = resetButton.GetComponentInChildren<TMP_Text>(true);
@@ -179,24 +174,24 @@ namespace CUAchievements.UI.Menu.SidePanels
             {
                 case 1:
                     PlayerCamera.PlayUISound("selfharmtap", 1f);
-                    resetButtonText.text = LocaleRegistry.Get("achievement_reset_progress_first", "Are you sure?");
+                    resetButtonText.text = UIText.StatsResetButtonFirst.Resolve();
                     resetButtonText.color = new Color(1f, 0.65f, 0.65f);
                     resetButton.GetComponent<Image>().color = new Color(1f, 0.65f, 0.65f);
                     return;
                 case 2:
                     PlayerCamera.PlayUISound("selfharmtap", 0.75f);
-                    resetButtonText.text = LocaleRegistry.Get("achievement_reset_progress_second", "Are you ABSOLUTELY sure?");
+                    resetButtonText.text = UIText.StatsResetButtonSecond.Resolve();
                     resetButtonText.color = new Color(1f, 0.5f, 0.5f);
                     resetButton.GetComponent<Image>().color = new Color(1f, 0.5f, 0.5f);
                     return;
                 case 3:
                     PlayerCamera.PlayUISound("selfharmtap", 0.5f);
-                    resetButtonText.text = LocaleRegistry.Get("achievement_reset_progress_third", "This decision cannot be changed!");
+                    resetButtonText.text = UIText.StatsResetButtonThird.Resolve();
                     resetButtonText.color = new Color(1f, 0.35f, 0.35f);
                     resetButton.GetComponent<Image>().color = new Color(1f, 0.35f, 0.35f);
                     return;
                 default:
-                    resetButtonText.text = LocaleRegistry.Get("achievements_reset_progress", "RESET PROGRESS");
+                    resetButtonText.text = UIText.StatsResetButtonDefault.Resolve();
                     resetButtonText.color = new Color(1f, 0.75f, 0.75f);
                     resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f);
                     return;
@@ -221,9 +216,9 @@ namespace CUAchievements.UI.Menu.SidePanels
         {
             GameObject statisticObject = UIUtility.Create("Statistic", parent, typeof(VerticalLayoutGroup));
 
-            string totalLocale = LocaleRegistry.Get("achievements_stats_total", "TOTAL");
-            string unlockedLocale = LocaleRegistry.Get("achievements_unlocked", "UNLOCKED");
-            string lockedLocale = LocaleRegistry.Get("achievements_locked", "LOCKED");
+            string totalLocale = UIText.Total.Resolve();
+            string unlockedLocale = UIText.Unlocked.Resolve();
+            string lockedLocale = UIText.Locked.Resolve();
 
             UIUtility.CreateStatisticRow(parent: statisticObject.transform, name: "Total", label: $"{totalLocale}:", $"{total}");
             (_, unlockedText) = UIUtility.CreateStatisticRow(statisticObject.transform, "Unlocked", $"{unlockedLocale}:", $"{unlocked}");
@@ -245,7 +240,7 @@ namespace CUAchievements.UI.Menu.SidePanels
 
             UIUtility.CreateSquareProgress(headerObject.transform, 24f, filledSquares);
 
-            string achievedLocale = LocaleRegistry.Get("achievements_stats_achieved", "ACHIEVED");
+            string achievedLocale = UIText.Achieved.Resolve();
 
             UIUtility.CreateText(headerObject.transform, "Achieved", achievedLocale, GameFonts.Retro, 20f, TextAlignmentOptions.Center);
 

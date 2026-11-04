@@ -3,7 +3,6 @@ using CUAchievements.Persistence;
 using CUAchievements.Plugin;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,8 +45,8 @@ namespace CUAchievements.UI.Menu.CustomButton
 
         public static void SetTooltip()
         {
-            string tipName = LocaleRegistry.Get("achievements_button", "Achievements");
-            string tipDesc = LocaleRegistry.Get("achievements_pause_button_tip_desc", "Show my achievements!");
+            string tipName = UIText.Achievements.Resolve();
+            string tipDesc = UIText.PauseButtonDefaultTipDescription.Resolve();
 
             buttonTooltip.skipLocale = true;
             buttonTooltip.tipName = tipName;
@@ -55,12 +54,12 @@ namespace CUAchievements.UI.Menu.CustomButton
 
             if (GameUtility.IsTutorialOrSandbox())
             {
-                string tipDescAdditional = LocaleRegistry.Get("achievements_pause_button_tip_desc_tutorial", "<color=\"orange\">ATTENTION!</color> Achievements will not be unlocked in the tutorial or sandbox!");
+                string tipDescAdditional = UIText.PauseButtonTutorialTipDescription.Resolve();
                 buttonTooltip.tipDesc += $"\n\n{tipDescAdditional}";
             }
             else if (RunIntegrity.Cheated)
             {
-                string tipDescAdditional = LocaleRegistry.Get("achievements_pause_button_tip_desc_cheated", "<color=\"orange\">ATTENTION!</color> Achievements will not be unlocked because this run is marked as \"cheated\"!");
+                string tipDescAdditional = UIText.PauseButtonCheatedTipDescription.Resolve();
                 buttonTooltip.tipDesc += $"\n\n{tipDescAdditional}";
             }
         }

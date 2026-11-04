@@ -2,7 +2,6 @@
 using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using System;
 using TMPro;
 using UnityEngine;
@@ -63,7 +62,7 @@ namespace CUAchievements.UI.Menu
 
             UITooltip tooltip = root.AddComponent<UITooltip>();
             tooltip.skipLocale = true;
-            tooltip.tipName = LocaleRegistry.Get("achievement_reveal", "Reveal");
+            tooltip.tipName = UIText.CardHiddenRevealDefault.Resolve();
 
             if (!RevealCover.IsRevealed(model.Source.FullId))
                 cover = RevealCoverBuilder.Build(root.transform, model.Source.FullId, tooltip, font);
@@ -169,7 +168,7 @@ namespace CUAchievements.UI.Menu
 
         private static void BuildScopeText(Transform parent, TMP_FontAsset font)
         {
-            GameObject scopeObject = UIUtility.CreateText(parent, "Scope", LocaleRegistry.Get("achievements_list_scope_run", "FOR RUN"), font, 20f, TextAlignmentOptions.Right).gameObject;
+            GameObject scopeObject = UIUtility.CreateText(parent, "Scope", UIText.CardRunScope.Resolve(), font, 20f, TextAlignmentOptions.Right).gameObject;
             scopeObject.AddComponent<LayoutIgnorer>();
             scopeObject.GetComponent<RectTransform>().Stretch(offsetMax: new Vector2(-25f, 0f));
         }

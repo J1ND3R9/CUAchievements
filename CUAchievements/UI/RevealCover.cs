@@ -1,5 +1,4 @@
 ﻿using CUAchievements.UI.Utility;
-using CUCoreLib.Registries;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -195,18 +194,18 @@ namespace CUAchievements.UI
             {
                 case 1:
                     PlayerCamera.PlayUISound("selfharmtap", 1f);
-                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal_first", "Are you sure?");
+                    tooltip.tipName = UIText.CardHiddenRevealFirst.Resolve();
                     return;
                 case 2:
                     PlayerCamera.PlayUISound("selfharmtap", 0.75f);
-                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal_second", "Are you ABSOLUTELY sure?");
+                    tooltip.tipName = UIText.CardHiddenRevealSecond.Resolve();
                     return;
                 case 3:
                     PlayerCamera.PlayUISound("selfharmtap", 0.5f);
-                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal_third", "This decision cannot be changed!");
+                    tooltip.tipName = UIText.CardHiddenRevealThird.Resolve();
                     return;
                 default:
-                    tooltip.tipName = LocaleRegistry.Get("achievement_reveal", "Reveal");
+                    tooltip.tipName = UIText.CardHiddenRevealDefault.Resolve();
                     return;
             }
         }

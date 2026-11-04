@@ -126,6 +126,7 @@
     <Compile Include="AchievementEvents.cs" />
     <Compile Include="UI\Menu\TextLinkHandler.cs" />
     <Compile Include="UI\RevealCover.cs" />
+    <Compile Include="UI\UIText.cs" />
     <Compile Include="UI\Utility\AchievementFrames.cs" />
     <Compile Include="UI\Menu\AchievementItemUI.cs" />
     <Compile Include="UI\Menu\AchievementCardView.cs" />
@@ -188,10 +189,11 @@
     <EmbeddedResource Include="Assets\Images\UI\statusarrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Locales\ru-RU.json" />
+    <Content Include="Assets\Images\EasterEggs\Polaroid096.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Images\EasterEggs\Polaroid096.png" />
+    <None Include="Locales\ru-RU.json" />
+    <None Include="Locales\EN.json" />
   </ItemGroup>
   <Target Name="CopyToPluginsFolder" AfterTargets="Build">
     <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />

@@ -153,7 +153,7 @@ namespace CUAchievements.Options
                 1f,
                 15f,
                 value => PopUpTime.Value = (int)value,
-                value => Mathf.RoundToInt(value) + LocaleRegistry.Get("achievements_sec", "s")
+                value => Mathf.RoundToInt(value) + UIText.SettingsSeconds.Resolve()
                 ));
 
             ModOptionsRegistry.Register(ModOptionDefinition.Float(

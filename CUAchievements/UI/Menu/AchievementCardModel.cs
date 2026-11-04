@@ -1,7 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using UnityEngine;
 
 namespace CUAchievements.UI.Menu
@@ -62,19 +61,17 @@ namespace CUAchievements.UI.Menu
 
         public static AchievementCardModel Hidden(int count) => new()
         {
-            Title = string.Format(LocaleRegistry.Get("achievements_panel_hidden_achievements_title",
-            "Hidden achievements remaining: {0}"), count),
-            ShortDescription = LocaleRegistry.Get("achievements_panel_hidden_achievements_description",
-            "Information about each achievement will be available after it is obtained"),
+            Title = string.Format(UIText.CardHiddenTitle.Resolve(), count),
+            ShortDescription = UIText.CardHiddenDescription.Resolve(),
             Icon = AssetLoader.GetCachedSprite("achievement_default_hidden"),
             Frame = AchievementFrames.Get(AchievementDifficulty.Normal),
             Alpha = 0.35f
         };
 
-        internal static AchievementCardModel Debug() => new()
+        internal static AchievementCardModel Greetings() => new()
         {
-            Title = LocaleRegistry.Get("achievement_debug_title", "Thanks for using CUAchievements!"),
-            ShortDescription = LocaleRegistry.Get("achievement_debug_description", "oh my god! Hello!! Hi!!! hii!!! HEEELlOOO!!!"),
+            Title = UIText.GreetingsAchievementTitle.Resolve(),
+            ShortDescription = UIText.GreetingsAchievementDescription.Resolve(),
             Icon = AssetLoader.GetCachedSprite("achievement_preview"),
             Frame = AchievementFrames.Get(AchievementDifficulty.Normal)
         };

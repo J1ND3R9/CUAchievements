@@ -37,7 +37,8 @@ namespace CUAchievements
         /// <see cref="LocaleRegistry"/>, or falls back to <paramref name="fallback"/>.
         /// </summary>
         /// <param name="key">
-        /// Key in <see cref="LocaleRegistry"/>. Pass <see langword="null"/> to treat
+        /// Key in <see cref="
+        /// "/>. Pass <see langword="null"/> to treat
         /// <paramref name="fallback"/> as a literal that is never localized.
         /// </param>
         /// <param name="fallback">

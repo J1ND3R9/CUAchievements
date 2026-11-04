@@ -1,6 +1,5 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
-using CUCoreLib.Registries;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -73,10 +72,6 @@ namespace CUAchievements.UI.Menu.SidePanels
             RectTransform scrollRect = scroll.GetComponent<RectTransform>();
             scrollRect.sizeDelta = new Vector2(ScrollWidth, ScrollHeight);
 
-            //var description = transform.GetComponentInChildren<TextMeshProUGUI>();
-            //description.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(ScrollWidth, 50f);
-            //description.text = LocaleRegistry.Get("achievements_details_panel_title", "Details");
-
             RectTransform rect = GetComponent<RectTransform>();
             rect.anchorMax = new Vector2(0f, 0.5f);
             rect.anchorMin = new Vector2(0f, 0.5f);
@@ -145,7 +140,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             string lastProgress = "";
             if (card.Scope == AchievementScope.Run && card.Source.ProgressData.LastRunProgress > 0 && card.Source.ProgressData.Progress != card.Source.Definition.MaxProgress)
             {
-                lastProgress = LocaleRegistry.Get("achievement_last_progress", "LAST RUN PROGRESS:") + "\n";
+                lastProgress = UIText.DetailsLastProgress.Resolve() + "\n";
             }
 
             UIUtility.CreateText(squaresObject.transform, "ProgressText", $"{lastProgress}{card.Counter.Text}", GameFonts.Retro, 18f, TextAlignmentOptions.Center);
@@ -170,10 +165,10 @@ namespace CUAchievements.UI.Menu.SidePanels
             aDescription.text = card.Description;
             aModSource.text = AchievementRegistry.TryGetPluginName(card.Source.PluginGuid, out string pluginName) ? pluginName : card.Source.PluginGuid;
             aScope.text = card.Scope == AchievementScope.Run ?
-                LocaleRegistry.Get("achievements_scope_run", "MUST BE COMPLETED DURING A SINGLE RUN — PROGRESS RESETS ON DEATH") :
+                UIText.DetailsRunScope.Resolve() :
                 card.Counter != null ?
-                LocaleRegistry.Get("achievements_scope_lifetime", "PROGRESS IS SAVED BETWEEN RUNS") :
-                "------";
+                UIText.DetailsLifetimeScope.Resolve() :
+                "[------]";
 
             if (card.Counter != null)
             {
@@ -186,7 +181,7 @@ namespace CUAchievements.UI.Menu.SidePanels
 
             if (card.Source.IsUnlocked)
             {
-                string unlockedLocale = LocaleRegistry.Get("achievements_earned", "EARNED");
+                string unlockedLocale = UIText.Earned.Resolve();
                 aUnlocked.text = unlockedLocale;
                 aUnlocked.color = Color.green;
 
@@ -195,7 +190,7 @@ namespace CUAchievements.UI.Menu.SidePanels
             }
             else
             {
-                string lockedLocale = LocaleRegistry.Get("achievements_locked", "LOCKED");
+                string lockedLocale = UIText.Locked.Resolve();
                 aUnlocked.text = lockedLocale;
                 aUnlocked.color = Color.red;
 

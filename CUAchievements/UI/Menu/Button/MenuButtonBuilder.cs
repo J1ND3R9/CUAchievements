@@ -1,7 +1,6 @@
 ﻿using CUAchievements.Plugin;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using System;
 using System.Linq;
 using TMPro;
@@ -78,7 +77,7 @@ namespace CUAchievements.UI.Menu.CustomButton
             labelRect.localScale = Vector3.one;
             labelRect.SetAsLastSibling();
 
-            string achievementsLocale = LocaleRegistry.Get("achievements_button", "Achievements");
+            string achievementsLocale = UIText.Achievements.Resolve();
 
             TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
             label.text = achievementsLocale;

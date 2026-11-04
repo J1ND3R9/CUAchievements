@@ -3,7 +3,6 @@ using CUAchievements.Services;
 using CUAchievements.UI.Menu;
 using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;
-using CUCoreLib.Registries;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -117,7 +116,7 @@ namespace CUAchievements.UI
 
         private void BuildTabs()
         {
-            string searchLocale = LocaleRegistry.Get("achievements_panel_search_placeholder", "Search...");
+            string searchLocale = UIText.ModalSearchPlaceholder.Resolve();
             TMP_InputField search = UIUtility.CreateInputField("SearchField", window.Header, searchLocale, GameFonts.Retro, true, OnSearchChanged);
 
             LayoutElement searchLe = search.gameObject.AddComponent<LayoutElement>();
@@ -125,7 +124,7 @@ namespace CUAchievements.UI
             searchLe.minHeight = 48f;
             searchLe.preferredWidth = 600f;
 
-            string statsLocale = LocaleRegistry.Get("achievements_panel_stats_button", "Stats");
+            string statsLocale = UIText.ModalStatsButton.Resolve();
             Button stats = UIUtility.CreateButton(window.Header, "StatsButton", statsLocale, true, OnStatisticClick);
 
             LayoutElement statsLe = stats.gameObject.AddComponent<LayoutElement>();

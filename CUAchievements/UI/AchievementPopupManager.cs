@@ -3,7 +3,6 @@ using CUAchievements.Registry;
 using CUAchievements.UI.Menu;
 using CUAchievements.UI.Utility;
 using CUCoreLib.Helpers;
-using CUCoreLib.Registries;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -87,7 +86,7 @@ namespace CUAchievements.UI
 
         public static void ShowAlert(AchievementCardModel model)
         {
-            string alertLocale = LocaleRegistry.Get("achievement_alert_unlocked", "Achievement \"{0}\" unlocked!");
+            string alertLocale = UIText.AlertUnlock.Resolve();
             string alertMessage = string.Format(alertLocale, model.Title);
             CUCoreUtils.ShowAlert(alertMessage);
         }
@@ -306,7 +305,7 @@ namespace CUAchievements.UI
             if (Instance == null) return;
             if (Instance.debugShowCoroutine != null)
                 Instance.StopCoroutine(Instance.debugShowCoroutine);
-            Instance.debugShowCoroutine = Instance.StartCoroutine(Instance.DebugShowCoroutine(AchievementCardModel.Debug()));
+            Instance.debugShowCoroutine = Instance.StartCoroutine(Instance.DebugShowCoroutine(AchievementCardModel.Greetings()));
         }
 
         internal IEnumerator DebugShowCoroutine(AchievementCardModel model)
