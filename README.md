@@ -16,7 +16,7 @@ An achievement framework for **Casualties: Unknown**. Mods use it to add their o
 - Hidden achievements that the player can reveal, or that are shown as a single counter card.
 - Three difficulty levels, each with its own frame.
 - Anti-cheat that blocks achievements for the rest of the run after an unsafe console command.
-- The option to reset progress in the statistics menu.
+- Option to reset progress in the statistics menu.
 
 <table>
   <tr>
