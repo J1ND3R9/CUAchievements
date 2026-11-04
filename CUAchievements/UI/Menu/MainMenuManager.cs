@@ -109,7 +109,7 @@ namespace CUAchievements.UI
         private void BuildTabs()
         {
             string searchLocale = LocaleRegistry.Get("achievements_panel_search_placeholder", "Search...");
-            TMP_InputField search = UIUtility.CreateInputField("SearchField", window.Header, searchLocale, GameFonts.Retro, true, true ? OnSearchChanged : null);
+            TMP_InputField search = UIUtility.CreateInputField("SearchField", window.Header, searchLocale, GameFonts.Retro, true, OnSearchChanged);
 
             LayoutElement searchLe = search.gameObject.AddComponent<LayoutElement>();
             searchLe.flexibleWidth = 1f;
@@ -117,7 +117,7 @@ namespace CUAchievements.UI
             searchLe.preferredWidth = 600f;
 
             string statsLocale = LocaleRegistry.Get("achievements_panel_stats_button", "Stats");
-            Button stats = UIUtility.CreateButton(window.Header, "StatsButton", statsLocale, true, true ? OnStatisticClick : null);
+            Button stats = UIUtility.CreateButton(window.Header, "StatsButton", statsLocale, true, OnStatisticClick);
 
             LayoutElement statsLe = stats.gameObject.AddComponent<LayoutElement>();
             statsLe.minHeight = 48f;
