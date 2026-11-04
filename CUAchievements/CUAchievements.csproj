@@ -1,204 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AF6B4801-77D0-487B-BF1B-3F4C1A701796}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CUAchievements</RootNamespace>
-    <AssemblyName>CUAchievements</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <LangVersion>Latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\CUAchievements.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ProjectName>CUAchievements</ProjectName>
-    <BaseGamePath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo</BaseGamePath>
-    <BepInExDir>$(BaseGamePath)/BepInEx</BepInExDir>
-    <GameAssembliesDir>$(BaseGamePath)/CasualtiesUnknown_Data/Managed</GameAssembliesDir>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\core\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\core\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="CUCoreLib, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\plugins\CUCoreLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.UIModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Anticheat\CommandSafety.cs" />
-    <Compile Include="Persistence\RunSaveProvider.cs" />
-    <Compile Include="Assets\PluginAssetLoader.cs" />
-    <Compile Include="Debug\AchievementDebug.cs" />
-    <Compile Include="AchievementDefinition.cs" />
-    <Compile Include="AchievementDifficulty.cs" />
-    <Compile Include="AchievementScope.cs" />
-    <Compile Include="AchievementType.cs" />
-    <Compile Include="Patches\AnticheatPatches.cs" />
-    <Compile Include="Patches\EndSequencePatch.cs" />
-    <Compile Include="Patches\TryLoadGamePatch.cs" />
-    <Compile Include="Persistence\AchievementPersistence.cs" />
-    <Compile Include="Persistence\SaveCompression.cs" />
-    <Compile Include="Anticheat\ConsoleCommands.cs" />
-    <Compile Include="LocalizedText.cs" />
-    <Compile Include="ConditionalAchievementTracker.cs" />
-    <Compile Include="AchievementsAPI.cs" />
-    <Compile Include="Plugin\CUAchievementsInfo.cs" />
-    <Compile Include="Plugin\Log.cs" />
-    <Compile Include="Registry\AchievementRegistry.cs" />
-    <Compile Include="Persistence\AchievementSaveFile.cs" />
-    <Compile Include="Services\AchievementService.cs" />
-    <Compile Include="Persistence\AchievementProgressData.cs" />
-    <Compile Include="Plugin\Plugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegisteredAchievement.cs" />
-    <Compile Include="Patches\MenuButtonPatches.cs" />
-    <Compile Include="UI\Menu\Button\PauseMenuButtonBuilder.cs" />
-    <Compile Include="UI\Menu\AchievementCardModel.cs" />
-    <Compile Include="UI\Menu\SidePanels\DetailsPanel.cs" />
-    <Compile Include="AchievementEvents.cs" />
-    <Compile Include="UI\Menu\TextLinkHandler.cs" />
-    <Compile Include="UI\RevealCover.cs" />
-    <Compile Include="UI\UIText.cs" />
-    <Compile Include="UI\Utility\AchievementFrames.cs" />
-    <Compile Include="UI\Menu\AchievementItemUI.cs" />
-    <Compile Include="UI\Menu\AchievementCardView.cs" />
-    <Compile Include="UI\Menu\AchievementListView.cs" />
-    <Compile Include="UI\Menu\MainMenuManager.cs" />
-    <Compile Include="UI\Menu\MainMenuWindow.cs" />
-    <Compile Include="Patches\InputBlockPatch.cs" />
-    <Compile Include="Options\Config.cs" />
-    <Compile Include="UI\Menu\AchievementPluginUI.cs" />
-    <Compile Include="UI\AchievementPopupManager.cs" />
-    <Compile Include="UI\Menu\SidePanels\StatsPanel.cs" />
-    <Compile Include="UI\Menu\Button\MenuButtonBuilder.cs" />
-    <Compile Include="UI\Menu\Button\MenuButtonHandler.cs" />
-    <Compile Include="UI\AchievementSorter.cs" />
-    <Compile Include="UI\Menu\PluginSectionView.cs" />
-    <Compile Include="UI\Utility\AnimationUtility.cs" />
-    <Compile Include="UI\Utility\GameFonts.cs" />
-    <Compile Include="UI\Utility\GameUtility.cs" />
-    <Compile Include="UI\Utility\LayoutIgnorer.cs" />
-    <Compile Include="UI\Utility\SpriteSlicer.cs" />
-    <Compile Include="UI\Utility\UIUtility.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_frame_normal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_frame_image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_default_hidden.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Audio\Unlock\unlock0.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_default_locked.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_debug_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_preview.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_pause_button.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\achievement_button_glow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Images\UI\statusarrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\Images\EasterEggs\Polaroid096.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Locales\ru-RU.json" />
-    <None Include="Locales\EN.json" />
-  </ItemGroup>
-  <Target Name="CopyToPluginsFolder" AfterTargets="Build">
-    <MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
-  </Target>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProjectGuid>{AF6B4801-77D0-487B-BF1B-3F4C1A701796}</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<RootNamespace>CUAchievements</RootNamespace>
+		<AssemblyName>CUAchievements</AssemblyName>
+		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+		<FileAlignment>512</FileAlignment>
+		<Deterministic>true</Deterministic>
+		<LangVersion>Latest</LangVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\Debug\</OutputPath>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>bin\Release\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<DocumentationFile>bin\Release\CUAchievements.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ProjectName>CUAchievements</ProjectName>
+		<BaseGamePath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo</BaseGamePath>
+		<BepInExDir>$(BaseGamePath)/BepInEx</BepInExDir>
+		<GameAssembliesDir>$(BaseGamePath)/CasualtiesUnknown_Data/Managed</GameAssembliesDir>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="0Harmony">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\core\0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="BepInEx">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\core\BepInEx.dll</HintPath>
+		</Reference>
+		<Reference Include="CUCoreLib, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\plugins\CUCoreLib.dll</HintPath>
+		</Reference>
+		<Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\Newtonsoft.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="System" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="System.Data.DataSetExtensions" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Data" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Xml" />
+		<Reference Include="Unity.TextMeshPro">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>E:\SteamLibrary\steamapps\common\Casualties Unknown Demo\CasualtiesUnknown_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="Anticheat\CommandSafety.cs" />
+		<Compile Include="Persistence\RunSaveProvider.cs" />
+		<Compile Include="Assets\PluginAssetLoader.cs" />
+		<Compile Include="Debug\AchievementDebug.cs" />
+		<Compile Include="AchievementDefinition.cs" />
+		<Compile Include="AchievementDifficulty.cs" />
+		<Compile Include="AchievementScope.cs" />
+		<Compile Include="AchievementType.cs" />
+		<Compile Include="Patches\AnticheatPatches.cs" />
+		<Compile Include="Patches\EndSequencePatch.cs" />
+		<Compile Include="Patches\TryLoadGamePatch.cs" />
+		<Compile Include="Persistence\AchievementPersistence.cs" />
+		<Compile Include="Persistence\SaveCompression.cs" />
+		<Compile Include="Anticheat\ConsoleCommands.cs" />
+		<Compile Include="LocalizedText.cs" />
+		<Compile Include="ConditionalAchievementTracker.cs" />
+		<Compile Include="AchievementsAPI.cs" />
+		<Compile Include="Plugin\CUAchievementsInfo.cs" />
+		<Compile Include="Plugin\Log.cs" />
+		<Compile Include="Registry\AchievementRegistry.cs" />
+		<Compile Include="Persistence\AchievementSaveFile.cs" />
+		<Compile Include="Services\AchievementService.cs" />
+		<Compile Include="Persistence\AchievementProgressData.cs" />
+		<Compile Include="Plugin\Plugin.cs" />
+		<Compile Include="Properties\AssemblyInfo.cs" />
+		<Compile Include="RegisteredAchievement.cs" />
+		<Compile Include="Patches\MenuButtonPatches.cs" />
+		<Compile Include="UI\Menu\Button\PauseMenuButtonBuilder.cs" />
+		<Compile Include="UI\Menu\AchievementCardModel.cs" />
+		<Compile Include="UI\Menu\SidePanels\DetailsPanel.cs" />
+		<Compile Include="AchievementEvents.cs" />
+		<Compile Include="UI\Menu\TextLinkHandler.cs" />
+		<Compile Include="UI\RevealCover.cs" />
+		<Compile Include="UI\UIText.cs" />
+		<Compile Include="UI\Utility\AchievementFrames.cs" />
+		<Compile Include="UI\Menu\AchievementItemUI.cs" />
+		<Compile Include="UI\Menu\AchievementCardView.cs" />
+		<Compile Include="UI\Menu\AchievementListView.cs" />
+		<Compile Include="UI\Menu\MainMenuManager.cs" />
+		<Compile Include="UI\Menu\MainMenuWindow.cs" />
+		<Compile Include="Patches\InputBlockPatch.cs" />
+		<Compile Include="Options\Config.cs" />
+		<Compile Include="UI\Menu\AchievementPluginUI.cs" />
+		<Compile Include="UI\AchievementPopupManager.cs" />
+		<Compile Include="UI\Menu\SidePanels\StatsPanel.cs" />
+		<Compile Include="UI\Menu\Button\MenuButtonBuilder.cs" />
+		<Compile Include="UI\Menu\Button\MenuButtonHandler.cs" />
+		<Compile Include="UI\AchievementSorter.cs" />
+		<Compile Include="UI\Menu\PluginSectionView.cs" />
+		<Compile Include="UI\Utility\AnimationUtility.cs" />
+		<Compile Include="UI\Utility\GameFonts.cs" />
+		<Compile Include="UI\Utility\GameUtility.cs" />
+		<Compile Include="UI\Utility\LayoutIgnorer.cs" />
+		<Compile Include="UI\Utility\SpriteSlicer.cs" />
+		<Compile Include="UI\Utility\UIUtility.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\UI\achievement_frame_normal.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\UI\achievement_frame_image.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\achievement_default_hidden.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Audio\Unlock\unlock0.wav" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\achievement_default_locked.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\achievement_debug_icon.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\achievement_preview.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\UI\achievement_pause_button.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\UI\achievement_button.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\UI\achievement_button_overlay.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\UI\achievement_button_glow.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\achievement_default_sprite.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Images\UI\statusarrow.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Assets\Images\EasterEggs\Polaroid096.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Locales\**\*" />
+	</ItemGroup>
+
+	<Target Name="CopyToPluginsFolder" AfterTargets="Build">
+		<MakeDir Directories="$(BepInExDir)\plugins\$(ProjectName)" Condition="!Exists('$(BepInExDir)\plugins\$(ProjectName)')" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(BepInExDir)\plugins\$(ProjectName)" SkipUnchangedFiles="true" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+
+		<ItemGroup>
+			<LocaleFiles Include="Locales\**\*"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(LocaleFiles)" DestinationFiles="@(LocaleFiles->'$(BepInExDir)\plugins\$(ProjectName)\Locales\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true"/>
+	</Target>
+	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
