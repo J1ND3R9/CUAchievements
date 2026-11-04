@@ -245,5 +245,11 @@ namespace CUAchievements.Persistence
             };
         }
 
+        public static void Reset(string modGuid)
+        {
+            EnsureLoaded(modGuid);
+            Saves[modGuid].Achievements.Clear();
+            if (Save(modGuid)) DirtyPlugins.Remove(modGuid);
+        }
     }
 }

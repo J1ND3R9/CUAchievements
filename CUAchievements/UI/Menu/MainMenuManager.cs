@@ -1,4 +1,5 @@
 ﻿using CUAchievements.Registry;
+using CUAchievements.Services;
 using CUAchievements.UI.Menu;
 using CUAchievements.UI.Menu.SidePanels;
 using CUAchievements.UI.Utility;
@@ -32,7 +33,7 @@ namespace CUAchievements.UI
             window.Initialize();
 
             BuildTabs();
-            statsPanel = StatsPanel.Create(window.Root.transform, window.Panel);
+            statsPanel = StatsPanel.Create(window.Root.transform, window.Panel, OnResetProgress);
             detailsPanel = DetailsPanel.Create(window.Root.transform, window.Panel);
             list = new AchievementListView(window.Content, font, ShowDetails);
 
@@ -42,6 +43,14 @@ namespace CUAchievements.UI
             AchievementEvents.AchievementsChanged += OnAchievementsChanged;
             AchievementEvents.UISettingsChanged += OnUISettingsChanged;
 
+            window.Close();
+        }
+
+        private void OnResetProgress()
+        {
+            AchievementService.ResetAllProgress();
+            detailsPanel.Close();
+            statsPanel.Close();
             window.Close();
         }
 

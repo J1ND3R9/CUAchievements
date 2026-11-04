@@ -20,5 +20,14 @@ namespace CUAchievements.Persistence
             UnlockedAt = unlockedAt;
             Flags = flags;
         }
+
+        public void Reset()
+        {
+            Progress = 0;
+            LastRunProgress = 0;
+            Unlocked = false;
+            UnlockedAt = null;
+            Flags = null;
+        }
     }
 }

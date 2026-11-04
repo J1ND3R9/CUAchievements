@@ -1,5 +1,6 @@
 ﻿using CUAchievements.Registry;
 using CUAchievements.UI.Utility;
+using CUCoreLib.Helpers;
 using CUCoreLib.Registries;
 using System;
 using System.Collections;
@@ -35,16 +36,20 @@ namespace CUAchievements.UI.Menu.SidePanels
         private TextMeshProUGUI unlockedText;
 
         private GameObject modifications;
-
+        private Button resetButton;
+        private TMP_Text resetButtonText;
         private bool needsRefresh = true;
 
-        public static StatsPanel Create(Transform parent, Transform panel)
+        private int resetProgressClicks = 0;
+        private Action onResetConfirmed;
+        public static StatsPanel Create(Transform parent, Transform panel, Action progressReset)
         {
             GameObject statsPanel = Instantiate(panel, parent).gameObject;
             statsPanel.name = "Stats";
 
             StatsPanel panelComponent = statsPanel.AddComponent<StatsPanel>();
 
+            panelComponent.onResetConfirmed = progressReset;
             panelComponent.Initialize();
             return panelComponent;
         }
@@ -115,6 +120,9 @@ namespace CUAchievements.UI.Menu.SidePanels
             UIUtility.CreateSeparator(parent: Content);
 
             CreateByMod(parent: Content);
+            UIUtility.CreateSeparator(parent: Content);
+
+            CreateDanger(parent: Content);
         }
 
         private void CreateByMod(Transform parent)
@@ -129,6 +137,70 @@ namespace CUAchievements.UI.Menu.SidePanels
 
             IReadOnlyDictionary<string, List<RegisteredAchievement>> achievementsPerPlugin = AchievementRegistry.GetAchievementsPerPlugin(nameInsteadGuid: true);
             FillModifications(parent: modifications.transform, achievements: achievementsPerPlugin);
+        }
+
+        private void CreateDanger(Transform parent)
+        {
+            GameObject dangerObject = UIUtility.Create("Danger", parent, typeof(VerticalLayoutGroup));
+            dangerObject.GetComponent<VerticalLayoutGroup>().Configure(spacing: 24f);
+
+            string dangerSectionLocale = LocaleRegistry.Get("achievements_stats_danger_section", "DANGER SECTION");
+            UIUtility.CreateText(dangerObject.transform, "DangetText", dangerSectionLocale, GameFonts.Retro, 18f);
+
+            GameObject dangerActivites = UIUtility.Create("Activities", dangerObject.transform, typeof(VerticalLayoutGroup));
+            dangerActivites.GetComponent<VerticalLayoutGroup>().Configure(spacing: 6f, expandW: true);
+
+            FillDangerActivities(dangerActivites.transform);
+        }
+
+        private void FillDangerActivities(Transform parent)
+        {
+            string resetProgressLocale = LocaleRegistry.Get("achievements_reset_progress", "RESET PROGRESS");
+            resetButton = UIUtility.CreateButton(parent, "ResetProgress", resetProgressLocale, true, OnResetProgressClick);
+            resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f);
+            resetButtonText = resetButton.GetComponentInChildren<TMP_Text>(true);
+            resetButtonText.color = new Color(1f, 0.75f, 0.75f);
+        }
+
+        private void OnResetProgressClick()
+        {
+            if (CUCoreUtils.IsInWorld()) return;
+            resetProgressClicks++;
+            if (resetProgressClicks == 4)
+            {
+                onResetConfirmed?.Invoke();
+            }
+            ResolveStage();
+        }
+
+        private void ResolveStage()
+        {
+            switch (resetProgressClicks)
+            {
+                case 1:
+                    PlayerCamera.PlayUISound("selfharmtap", 1f);
+                    resetButtonText.text = LocaleRegistry.Get("achievement_reset_progress_first", "Are you sure?");
+                    resetButtonText.color = new Color(1f, 0.65f, 0.65f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.65f, 0.65f);
+                    return;
+                case 2:
+                    PlayerCamera.PlayUISound("selfharmtap", 0.75f);
+                    resetButtonText.text = LocaleRegistry.Get("achievement_reset_progress_second", "Are you ABSOLUTELY sure?");
+                    resetButtonText.color = new Color(1f, 0.5f, 0.5f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.5f, 0.5f);
+                    return;
+                case 3:
+                    PlayerCamera.PlayUISound("selfharmtap", 0.5f);
+                    resetButtonText.text = LocaleRegistry.Get("achievement_reset_progress_third", "This decision cannot be changed!");
+                    resetButtonText.color = new Color(1f, 0.35f, 0.35f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.35f, 0.35f);
+                    return;
+                default:
+                    resetButtonText.text = LocaleRegistry.Get("achievements_reset_progress", "RESET PROGRESS");
+                    resetButtonText.color = new Color(1f, 0.75f, 0.75f);
+                    resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f);
+                    return;
+            }
         }
 
         private void FillModifications(Transform parent, IReadOnlyDictionary<string, List<RegisteredAchievement>> achievements)
@@ -183,6 +255,15 @@ namespace CUAchievements.UI.Menu.SidePanels
         private void SetVisible(bool show)
         {
             IsOpen = show;
+
+            resetProgressClicks = 0;
+            resetButton.interactable = !CUCoreUtils.IsInWorld();
+            ResolveStage();
+            if (!resetButton.IsInteractable())
+            {
+                resetButton.GetComponent<Image>().color = new Color(1f, 0.75f, 0.75f, 0.5f);
+                resetButtonText.color = new Color(1f, 0.75f, 0.75f, 0.5f);
+            }
 
             if (show)
                 OnOpen();

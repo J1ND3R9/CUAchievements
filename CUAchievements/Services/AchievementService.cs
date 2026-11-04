@@ -4,6 +4,7 @@ using CUAchievements.Plugin;
 using CUAchievements.Registry;
 using CUAchievements.UI;
 using System;
+using System.Collections.Generic;
 
 namespace CUAchievements.Services
 {
@@ -156,6 +157,20 @@ namespace CUAchievements.Services
                 achievement.ConditionalTracker?.Clear();
             }
             Log.Debug("The run state has been reset.");
+        }
+
+        internal static void ResetAllProgress()
+        {
+            foreach (KeyValuePair<string, List<RegisteredAchievement>> pluginAchievements in AchievementRegistry.GetAchievementsPerPlugin(nameInsteadGuid: false))
+            {
+                foreach (RegisteredAchievement achievement in pluginAchievements.Value)
+                {
+                    achievement.ProgressData.Reset();
+                    achievement.ConditionalTracker.Clear();
+                }
+                AchievementPersistence.Reset(pluginAchievements.Key);
+            }
+            AchievementEvents.RaiseAchievementsChanged();
         }
     }
 }
